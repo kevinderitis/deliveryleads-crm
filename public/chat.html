@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Application</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <header>
+        <!-- <button id="profile-btn" class="profile-button" onclick="backToProfile()"><img src="assets/images/return.svg"
+            alt="Retornar"></button> -->
+        <div class="marquee-wrapper">
+            <img src="images/logovegasnew.png" alt="Logo" class="logo-small" onclick="backToProfile()">
+        </div>
+    </header>
+    <main>
+        <!-- <h2 class="contact-title">Contactos</h2> -->
+        <div class="container">
+            <div class="users-container">
+                <ul class="users">
+                </ul>
+            </div>
+            <div class="chat-container">
+                <button id="return-btn" class="return-button"><img src="assets/images/return.svg"
+                        alt="Retornar"></button>
+                <h1 id="username-id" class="usernameId" onclick="editContact()"></h1>
+                <ul class="chat-box">
+                </ul>
+                <div class="chat-form">
+                    <input type="text" id="message" placeholder="Escribe un mensaje..." />
+                    <button id="send" class="send-button">Enviar</button>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer>
+    </footer>
+    <script src="js/chat.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Orders Table</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="assets/tablelist/css/style.css">
+</head>
+
+<body>
+    <div class="logo__wrapper">
+        <a href="profile.html">
+            <img src="images/logovegasnew.png" alt="Logo" class="logo-small">
+        </a>
+    </div>
+    <button class="btn btn--primary logout-btn" onclick="logout()" style="position: absolute; top: 20px; right: 20px;">
+        Log out
+    </button>
+    <div class="table-widget">
+        <button id="adminBtn" class="btn btn--primary"" onclick="redirectToAdmin()">
+            Panel de administrador
+        </button>
+        <table>
+            <caption>
+                Pre orders
+            </caption>
+            <thead>
+                <tr>
+                    <th>Fecha</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Cantidad</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="order-rows">
+                <!-- Rows will be generated dynamically -->
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4">
+                        <ul class="pagination">
+                        </ul>
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/constants.js"></script>
+    <script src="assets/tablelist/js/pre-orders.js"></script>
+</body>
+
+</html>

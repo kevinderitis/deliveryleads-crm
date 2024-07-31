@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Clientes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" />
+    <link rel="stylesheet" href="assets/tablelist/css/style.css">
+</head>
+
+<body>
+    <div class="logo__wrapper">
+        <a href="profile.html">
+            <img src="images/logovegasnew.png" alt="Logo" class="logo-small">
+        </a>
+    </div>
+    <button class="btn btn--primary logout-btn" onclick="logout()" style="position: absolute; top: 20px; right: 20px;">
+        Log out
+    </button>
+    <div class="table-widget">
+        <button id="adminBtn" class="btn btn--primary"" onclick="redirectToOrders()">
+            Ordenes
+        </button>
+        <input type="text" id="searchInput" placeholder="Buscar por nombre o usuario" oninput="filterClients()">
+        <table>
+            <caption>
+                Clientes
+            </caption>
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>Nombre</th>
+                    <th>Usuario</th>
+                    <th>Telefono</th>
+                    <th>Cajero</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody id="client-rows">
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3">
+                        <!-- <ul class="pagination">
+                        </ul> -->
+                    </td>
+                </tr>
+            </tfoot>
+        </table>
+        <ul class="pagination">
+        </ul>
+        <button class="btn btn--primary" onclick="newClient()">
+            Nuevo cliente
+        </button>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/constants.js"></script>
+    <script src="assets/tablelist/js/clients.js"></script>
+</body>
+
+</html>

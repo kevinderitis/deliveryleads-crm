@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/profile/css/style.css">
+</head>
+
+<body>
+    <div class="logo__wrapper">
+        <img src="images/logovegasnew.png" alt="Logo" class="logo-small">
+    </div>
+    <div class="profile">
+        <button class="btn btn--primary logout-btn" onclick="logout()"
+            style="position: absolute; top: 20px; right: 20px;">
+            Log out
+        </button>
+        <header class="profile__header">
+            <div class="profile__highlight__wrapper">
+                <div class="profile__highlight">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-shopping-cart"
+                        width="24" height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <circle cx="6" cy="19" r="2"></circle>
+                        <circle cx="17" cy="19" r="2"></circle>
+                        <path d="M17 17h-11v-14h-2"></path>
+                        <path d="M6 5l14 1l-1 7h-13"></path>
+                    </svg>
+                    <a id="ordersNumber"></a>
+                </div>
+                Ordenes activas
+            </div>
+            <div class="profile__highlight__wrapper">
+                <div class="profile__highlight">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-chart-bar" width="24"
+                        height="24" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                        <rect x="3" y="12" width="6" height="8" rx="1"></rect>
+                        <rect x="9" y="8" width="6" height="12" rx="1"></rect>
+                        <rect x="15" y="4" width="6" height="16" rx="1"></rect>
+                        <line x1="4" y1="20" x2="18" y2="20"></line>
+                    </svg>
+                    <a id="leadsNumber"></a>
+                </div>
+                Leads restantes
+            </div>
+        </header>
+        <!-- <div class="profile__name">
+            <h2>Name</h2>
+        </div> -->
+        <main>
+                <div>
+                <table class="orders-table">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <button onclick="redirectCRM()" style="background-color: transparent; border: none;">
+                                    <img src="assets/profile/wpp-icon.svg" alt="Editar" width="24" height="24">
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/constants.js"></script>
+    <script src="assets/profile/js/script.js"></script>
+</body>
+
+</html>

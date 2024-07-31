@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Crear Orden</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/order/css/style.css">
+</head>
+
+<body>
+    <div class="logo__wrapper">
+        <a href="profile.html">
+            <img src="images/logovegasnew.png" alt="Logo" class="logo-small">
+        </a>
+    </div>
+    <button class="btn btn--primary logout-btn" onclick="logout()" style="position: absolute; top: 20px; right: 20px;">
+        Log out
+    </button>
+    <form class="order-form" action="" method="POST">
+        <div class="form-group" id="email-field">
+            <label for="client-email">Correo electrónico del cliente:</label>
+            <input type="email" id="client-email" name="client-email">
+        </div>
+        <div class="form-group">
+            <label for="leads-quantity">Cantidad de leads:</label>
+            <input type="number" id="leads-quantity" name="leads-quantity" min="1" required>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn--primary">Crear Orden</button>
+        </div>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/constants.js"></script>
+    <script src="assets/order/js/script.js"></script>
+</body>
+
+</html>

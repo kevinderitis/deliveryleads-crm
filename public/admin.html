@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/admin/css/style.css">
+</head>
+
+<body>
+    <div class="logo__wrapper">
+        <a href="profile.html">
+            <img src="images/logovegasnew.png" alt="Logo" class="logo-small">
+        </a>
+    </div>
+    <button class="btn btn--primary logout-btn" onclick="logout()" style="position: absolute; top: 20px; right: 20px;">
+        Log out
+    </button>
+    <div class="profile">
+        <header class="profile__header">
+            <h1>Admin Panel</h1>
+        </header>
+        <div class="admin-buttons">
+            <button class="admin-button btn btn--primary" onclick="window.location.href = 'profile.html';">
+                Perfil
+            </button>
+            <button class="admin-button btn btn--primary" onclick="window.location.href = 'orders.html';">
+                Ordenes
+            </button>
+            <button class="admin-button btn btn--primary" onclick="window.location.href = 'pre-orders.html';">
+                Draft
+            </button>
+            <button class="admin-button btn btn--primary" onclick="window.location.href = 'clients.html';">
+                Clientes
+            </button>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/constants.js"></script>
+    <script src="assets/admin/js/script.js"></script>
+</body>
+
+</html>

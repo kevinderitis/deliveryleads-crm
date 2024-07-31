@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Registrarse</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Mulish&display=swap" rel="stylesheet" type='text/css'>
+    <link rel="stylesheet" href="assets/signup/css/style.css">
+</head>
+
+<body>
+    <div class="background"></div>
+    <div class="centering">
+        <form class="my-form">
+            <div class="signup-welcome-row">
+                <img src="images/logo-default-399x82.png" alt="Logo">
+                <!-- <h1>Registrate</h1> -->
+            </div>
+            <!-- <div class="socials-row">
+                <a href="#" title="Use Google">
+                    <img src="assets/signup/google.png" alt="Google">
+                    Registro con Google
+                </a>
+            </div> -->
+            <!-- <div class="divider">
+                <div class="divider-line"></div>
+                O
+                <div class="divider-line"></div>
+            </div> -->
+            <div class="my-form__content">
+                <div class="text-field">
+                    <label for="email">Usuario:</label>
+                    <input aria-label="Email" type="text" id="email" name="email" placeholder="Usuario"
+                        autocomplete="off" required>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-mail" width="44"
+                        height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#A7A2CB" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
+                        <path d="M3 7l9 6l9 -6" />
+                    </svg>
+                </div>
+                <div class="text-field">
+                    <label for="name">Nombre:</label>
+                    <input aria-label="Nombre" type="text" id="name" name="name" placeholder="Nombre" autocomplete="off"
+                        required>
+                    <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="44"
+                        height="44" viewBox="0 0 24 24" stroke-width="1.5" stroke="#A7A2CB" fill="none"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <circle cx="12" cy="7" r="4" />
+                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                    </svg>
+                </div>
+                <div class="text-field">
+                    <label for="password">Contraseña:
+                        <input id="password" type="password" name="password" placeholder="Contraseña" title="Minimum 6 characters at 
+                                                            least 1 Alphabet and 1 Number"
+                            pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$" required>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z">
+                            </path>
+                            <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"></path>
+                            <path d="M8 11v-4a4 4 0 1 1 8 0v4"></path>
+                        </svg>
+                    </label>
+                </div>
+                <div class="text-field">
+                    <label for="confirm-password">Confirmar contraseña:
+                        <input id="confirm-password" type="password" name="password" placeholder="Confirmar Contraseña"
+                            title="Minimum 6 characters at east 1 Alphabet and 1 Number"
+                            pattern="^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$" required>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                            <path d="M5 13a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v6a2 2 0 0 1 -2 2h-10a2 2 0 0 1 -2 -2v-6z">
+                            </path>
+                            <path d="M11 16a1 1 0 1 0 2 0a1 1 0 0 0 -2 0"></path>
+                            <path d="M8 11v-4a4 4 0 1 1 8 0v4"></path>
+                        </svg>
+                    </label>
+                </div>
+                <input type="submit" class="my-form__button" value="Registrarse">
+            </div>
+            <div class="my-form__actions">
+                <div>
+                    Al registrarte, aceptas nuestros
+                    <a href="#" title="Reset Password">Términos</a>
+                    y <a href="#" title="Reset Password">Política de Privacidad</a>
+                </div>
+                <div class="my-form__signin">
+                    <a href="login.html" title="Sign In">Ingresar</a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="js/constants.js"></script>
+    <script src="assets/signup/js/script.js"></script>
+</body>
+
+</html>
