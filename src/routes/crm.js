@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { userConnections } from '../websocket/ws-handler.js';
 import { WebSocket } from "ws";
-import { addMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService } from '../services/chatServices.js'; 
+import { addMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService } from '../services/chatServices.js';
 import { deliverLeadToClient } from "../services/leadService.js";
 import { isAuthenticated } from "../middleware/middleware.js";
 
@@ -51,6 +51,93 @@ crmRouter.get('/chats/:selected', async (req, res) => {
     let selectedUser = req.params.selected;
     let messages = await getMessagesForUserService(selectedUser);
     res.send(messages);
+});
+
+const getImageBase64 = async (imageUrl) => {
+    try {
+        const response = await axios.get(imageUrl, {
+            responseType: 'arraybuffer',
+            headers: {
+                Authorization: `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`
+            }
+        });
+        const base64 = Buffer.from(response.data, 'binary').toString('base64');
+        return base64;
+    } catch (error) {
+        console.error('Error fetching image:', error);
+        throw error;
+    }
+};
+
+crmRouter.post('/webhook', async (req, res) => {
+    const body = req.body;
+    try {
+        if (body.object) {
+            body.entry.forEach(entry => {
+                entry.changes.forEach(async change => {
+                    if (change.field === 'messages') {
+                        const message = change.value.messages && change.value.messages[0];
+                        const recipientPhoneId = change.value.metadata.phone_number_id;
+                        if (message) {
+                            let textMessage = message.text?.body || '';
+                            let imageBase64;
+                            console.log(`Numero de telefono: ${message.from}`)
+                            console.log(`Mensaje: ${textMessage}`)
+
+                            if (message.image) {
+                                const imageUrl = message.image.url;
+                                imageBase64 = await getImageBase64(imageUrl);
+                            }
+
+                            let to;
+
+                            let chat = await getChatForUserService(message.from);
+
+                            if (chat) {
+                                to = chat.participants.filter(participant => participant !== message.from)[0];
+                            } else {
+                                let client = await deliverLeadToClient();
+                                to = client.email;
+                            }
+
+                            await addMessageServices(message.from, to, textMessage, imageBase64);
+
+                            const ws = userConnections.get(to);
+                            if (ws && ws.readyState === WebSocket.OPEN) {
+                                ws.send(JSON.stringify({ user: from, text, destination: from }));
+                                res.status(200).send('Message sent');
+                            } else {
+                                res.status(404).send('User not connected or WebSocket not open');
+                            }
+                        }
+                    }
+                });
+            });
+
+            res.status(200).send('EVENT_RECEIVED');
+        } else {
+            res.sendStatus(404);
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send(error);
+    }
+
+});
+
+crmRouter.get('/webhook', async (req, res) => {
+    const mode = req.query['hub.mode'];
+    const token = req.query['hub.verify_token'];
+    const challenge = req.query['hub.challenge'];
+
+    if (mode && token) {
+        if (mode === 'subscribe' && token === config.WHATSAPP_VERIFY_TOKEN) {
+            console.log('WEBHOOK_VERIFIED');
+            res.status(200).send(challenge);
+        } else {
+            res.sendStatus(403);
+        }
+    }
 });
 
 export default crmRouter;

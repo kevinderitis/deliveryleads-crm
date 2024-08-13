@@ -1,5 +1,5 @@
 import { WebSocketServer } from 'ws';
-import { addMessageServices, sendMessageToClientService } from '../services/chatServices.js';
+import { addMessageServices, sendMessageToClientService, sendWhatsappMessage } from '../services/chatServices.js';
 
 const userConnections = new Map();
 
@@ -21,7 +21,8 @@ export const setupWebSocketServer = (server) => {
                     if (text) {
                         console.log(`Message from ${userEmail}: ${text} -> ${selectedUser}`);
                         await addMessageServices(userEmail, selectedUser, text);
-                        await sendMessageToClientService(selectedUser, text);
+                        // await sendMessageToClientService(selectedUser, text);
+                        await sendWhatsappMessage(selectedUser, text);
                         const recipient = userConnections.get(selectedUser);
                         if (recipient && recipient.readyState === WebSocket.OPEN) {
                             recipient.send(JSON.stringify({ user: userEmail, text }));

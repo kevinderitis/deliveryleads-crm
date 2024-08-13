@@ -53,3 +53,22 @@ export const sendMessageToClientService = async (phone, message) => {
         throw error;
     }
 }
+
+export const sendWhatsappMessage = async (to, text) => {
+    try {
+        const response = await axios.post(`${config.WHATSAPP_API_URL}/${config.PHONE_ID}/messages`, {
+            messaging_product: 'whatsapp',
+            to: to,
+            text: { body: text }
+        }, {
+            headers: {
+                'Authorization': `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        console.log(`Message sent to: ${to}`);
+    } catch (error) {
+        console.error('Error sending message:', error);
+        throw error;
+    }
+};
