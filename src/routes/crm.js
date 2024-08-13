@@ -1,4 +1,5 @@
 import { Router } from "express";
+import config from "../config/config.js";
 import { userConnections } from '../websocket/ws-handler.js';
 import { WebSocket } from "ws";
 import { addMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService } from '../services/chatServices.js';
