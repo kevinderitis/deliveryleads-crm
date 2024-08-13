@@ -7,13 +7,11 @@ import { isAuthenticated } from "../middleware/middleware.js";
 
 const crmRouter = Router();
 
-crmRouter.use(isAuthenticated);
-
-crmRouter.get('/', (req, res) => {
+crmRouter.get('/', isAuthenticated, (req, res) => {
     res.sendFile('chat.html', { root: 'public' });
 });
 
-crmRouter.post('/receive', async (req, res) => {
+crmRouter.post('/receive', isAuthenticated, async (req, res) => {
     const { from, text, image } = req.body;
     let to;
 
@@ -37,7 +35,7 @@ crmRouter.post('/receive', async (req, res) => {
     }
 });
 
-crmRouter.get('/users/list/:email', async (req, res) => {
+crmRouter.get('/users/list/:email', isAuthenticated ,async (req, res) => {
     let email = req.params.email;
     try {
         let userList = await getUsersListService(email);
@@ -47,7 +45,7 @@ crmRouter.get('/users/list/:email', async (req, res) => {
     }
 });
 
-crmRouter.get('/chats/:selected', async (req, res) => {
+crmRouter.get('/chats/:selected', isAuthenticated ,async (req, res) => {
     let selectedUser = req.params.selected;
     let messages = await getMessagesForUserService(selectedUser);
     res.send(messages);
