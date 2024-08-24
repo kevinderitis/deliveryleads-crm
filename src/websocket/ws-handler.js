@@ -1,5 +1,5 @@
 import { WebSocketServer } from 'ws';
-import { addMessageServices, sendMessageToClientService, sendWelcomeMessage, sendWhatsappMessage } from '../services/chatServices.js';
+import { addMessageServices, sendMessageToClientService, sendWhatsappMessage } from '../services/chatServices.js';
 
 const userConnections = new Map();
 
