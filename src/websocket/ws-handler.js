@@ -40,7 +40,7 @@ export const setupWebSocketServer = (server) => {
             });
 
             const interval = setInterval(() => {
-                if (ws.readyState === WebSocket.OPEN) {
+                if (ws.readyState === ws.OPEN) {
                     ws.ping(); 
                 }
             }, PING_INTERVAL);
