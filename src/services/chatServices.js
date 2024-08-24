@@ -1,4 +1,5 @@
 import { addMessage, getMessagesForChat, getMessagesForUser, getChatForUser, getUsersList, sendMessageToClient } from "../dao/chatDAO.js";
+import axios from 'axios';
 
 export const addMessageServices = async (from, to, text, image) => {
     try {
