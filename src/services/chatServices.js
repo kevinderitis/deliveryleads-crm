@@ -76,37 +76,37 @@ export const sendWhatsappMessage = async (to, text) => {
     }
 };
 
-export const sendWelcomeMessage = async (to) => {
-    try {
-        const response = await axios.post(`${config.WHATSAPP_API_URL}/${config.PHONE_ID}/messages`, {
-            messaging_product: 'whatsapp',
-            to,
-            type: 'template',
-            template: {
-              name: 'promo_leads',
-              language: { code: 'es_AR' },
-              components: [
-                {
-                  type: 'header',
-                  parameters: [
-                    {
-                      type: 'image',
-                      image: { link: 'https://img.freepik.com/fotos-premium/perro-mirando-caer-billetes-dinero_639249-265.jpg' }
-                    }
-                  ]
-                }
-              ]
-            }
-          }, {
-            headers: {
-                'Authorization': `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`,
-                'Content-Type': 'application/json'
-            }
-        });
-        console.log(response)
-        console.log(`Message sent to: ${to}`);
-    } catch (error) {
-        console.error('Error sending message:', error);
-        throw error;
-    }
-};
+// export const sendWelcomeMessage = async (to) => {
+//     try {
+//         const response = await axios.post(`${config.WHATSAPP_API_URL}/${config.PHONE_ID}/messages`, {
+//             messaging_product: 'whatsapp',
+//             to,
+//             type: 'template',
+//             template: {
+//               name: 'promo_leads',
+//               language: { code: 'es_AR' },
+//               components: [
+//                 {
+//                   type: 'header',
+//                   parameters: [
+//                     {
+//                       type: 'image',
+//                       image: { link: 'https://img.freepik.com/fotos-premium/perro-mirando-caer-billetes-dinero_639249-265.jpg' }
+//                     }
+//                   ]
+//                 }
+//               ]
+//             }
+//           }, {
+//             headers: {
+//                 'Authorization': `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`,
+//                 'Content-Type': 'application/json'
+//             }
+//         });
+//         console.log(response)
+//         console.log(`Message sent to: ${to}`);
+//     } catch (error) {
+//         console.error('Error sending message:', error);
+//         throw error;
+//     }
+// };

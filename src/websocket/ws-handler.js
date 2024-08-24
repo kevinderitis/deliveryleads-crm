@@ -22,8 +22,8 @@ export const setupWebSocketServer = (server) => {
                         console.log(`Message from ${userEmail}: ${text} -> ${selectedUser}`);
                         await addMessageServices(userEmail, selectedUser, text);
                         // await sendMessageToClientService(selectedUser, text);
-                        // await sendWhatsappMessage(selectedUser, text);
-                        await sendWelcomeMessage(selectedUser);
+                        await sendWhatsappMessage(selectedUser, text);
+                        // await sendWelcomeMessage(selectedUser);
                         const recipient = userConnections.get(selectedUser);
                         if (recipient && recipient.readyState === WebSocket.OPEN) {
                             recipient.send(JSON.stringify({ user: userEmail, text }));
