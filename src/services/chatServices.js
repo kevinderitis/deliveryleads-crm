@@ -80,10 +80,13 @@ export const sendWelcomeMessage = async (to) => {
     try {
         const response = await axios.post(`${config.WHATSAPP_API_URL}/${config.PHONE_ID}/messages`, {
             messaging_product: 'whatsapp',
-            to: to,
-            type: "template",
-            template: { name: "promo_leads", language: { code: "es_AR" } }
-        }, {
+            to,  
+            type: 'template',
+            template: {
+              name: 'promo_leads', 
+              language: { code: 'es_AR' }  
+            }
+          }, {
             headers: {
                 'Authorization': `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`,
                 'Content-Type': 'application/json'
