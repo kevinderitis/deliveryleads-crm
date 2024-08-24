@@ -127,7 +127,7 @@ crmRouter.post('/webhook', async (req, res) => {
 
                             const ws = userConnections.get(to);
                             if (ws && ws.readyState === WebSocket.OPEN) {
-                                ws.send(JSON.stringify({ user: message.from, text, destination: message.from }));
+                                ws.send(JSON.stringify({ user: message.from, textMessage, destination: message.from }));
                                 res.status(200).send('Message sent');
                             } else {
                                 res.status(404).send('User not connected or WebSocket not open');
