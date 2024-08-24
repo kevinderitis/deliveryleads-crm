@@ -68,6 +68,7 @@ export const sendWhatsappMessage = async (to, text) => {
                 'Content-Type': 'application/json'
             }
         });
+        console.log(response)
         console.log(`Message sent to: ${to}`);
     } catch (error) {
         console.error('Error sending message:', error);
