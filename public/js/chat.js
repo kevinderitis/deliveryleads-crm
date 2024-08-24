@@ -1,7 +1,51 @@
 let selectedUser;
 
 function editContact() {
-    console.log('edit contact')
+    Swal.fire({
+        title: 'Selecciona una etiqueta',
+        html: `
+            <div>
+                <select id="tag-select" class="swal2-input">
+                    <option value="">Selecciona una etiqueta</option>
+                    <option value="Pago pendiente">Pago pendiente</option>
+                    <option value="Urgente">Urgente</option>
+                    <option value="Interesado">Interesado</option>
+                </select>
+            </div>
+            <div>
+                <input type="text" id="custom-tag" class="swal2-input" placeholder="O crea una etiqueta personalizada">
+            </div>
+        `,
+        showCancelButton: true,
+        confirmButtonText: 'Agregar',
+        preConfirm: () => {
+            const selectedTag = document.getElementById('tag-select').value;
+            const customTag = document.getElementById('custom-tag').value.trim();
+
+            if (!selectedTag && !customTag) {
+                Swal.showValidationMessage('Por favor, selecciona una etiqueta o crea una personalizada');
+                return false;
+            }
+
+            return selectedTag || customTag;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const tag = result.value;
+            // Aquí puedes manejar la etiqueta seleccionada o personalizada
+            console.log('Etiqueta seleccionada o creada:', tag);
+
+            // Si deseas mostrar un mensaje adicional o procesar el mensaje con la etiqueta:
+            Swal.fire({
+                title: 'Etiqueta agregada',
+                text: `Tu mensaje ha sido etiquetado como: ${tag}`,
+                icon: 'success',
+                confirmButtonText: 'OK'
+            });
+
+            // Aquí puedes agregar la lógica para enviar el mensaje al chat con la etiqueta
+        }
+    });
 }
 
 function backToProfile() {
