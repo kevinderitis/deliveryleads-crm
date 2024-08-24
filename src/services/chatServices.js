@@ -82,7 +82,7 @@ export const sendWelcomeMessage = async (to) => {
             messaging_product: 'whatsapp',
             to: to,
             type: "template",
-            template: { name: "promo_leads", language: { code: "en_US" } }
+            template: { name: "promo_leads", language: { code: "es_AR" } }
         }, {
             headers: {
                 'Authorization': `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`,
