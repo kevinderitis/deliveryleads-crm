@@ -80,11 +80,22 @@ export const sendWelcomeMessage = async (to) => {
     try {
         const response = await axios.post(`${config.WHATSAPP_API_URL}/${config.PHONE_ID}/messages`, {
             messaging_product: 'whatsapp',
-            to,  
+            to,
             type: 'template',
             template: {
-              name: 'promo_leads', 
-              language: { code: 'es_AR' }  
+              name: 'promo_leads',
+              language: { code: 'es_AR' },
+              components: [
+                {
+                  type: 'header',
+                  parameters: [
+                    {
+                      type: 'image',
+                      image: { link: 'https://img.freepik.com/fotos-premium/perro-mirando-caer-billetes-dinero_639249-265.jpg' }
+                    }
+                  ]
+                }
+              ]
             }
           }, {
             headers: {
