@@ -12,6 +12,30 @@ crmRouter.get('/', isAuthenticated, (req, res) => {
     res.sendFile('chat.html', { root: 'public' });
 });
 
+crmRouter.post('/new', async (req, res) => {
+    const { from, text, image } = req.body;
+    let to;
+
+    let chat = await getChatForUserService(from);
+
+    if (chat) {
+        to = chat.participants.filter(participant => participant !== from)[0];
+    } else {
+        let client = await deliverLeadToClient();
+        to = client.email;
+    }
+
+    await addMessageServices(from, to, text, image);
+
+    const ws = userConnections.get(to);
+    if (ws && ws.readyState === WebSocket.OPEN) {
+        ws.send(JSON.stringify({ user: from, text, destination: from }));
+        res.status(200).send('Message sent');
+    } else {
+        res.status(404).send('User not connected or WebSocket not open');
+    }
+});
+
 crmRouter.post('/receive', isAuthenticated, async (req, res) => {
     const { from, text, image } = req.body;
     let to;
