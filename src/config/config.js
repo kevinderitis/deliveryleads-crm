@@ -10,7 +10,8 @@ const config = {
     CLIENT_URL: process.env.CLIENT_URL,
     WHATSAPP_API_URL: process.env.WHATSAPP_API_URL,
     PHONE_ID: process.env.PHONE_ID,
-    WHATSAPP_VERIFY_TOKEN: process.env.WHATSAPP_VERIFY_TOKEN
+    WHATSAPP_VERIFY_TOKEN: process.env.WHATSAPP_VERIFY_TOKEN,
+    WHATSAPP_ACCESS_TOKEN: process.env.WHATSAPP_ACCESS_TOKEN
 
 };
 
