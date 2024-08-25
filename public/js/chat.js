@@ -412,7 +412,7 @@ async function getUserEmail() {
     try {
         let response = await fetch(`/auth/data`);
         let data = await response.json();
-        return data.email;
+        return data ? data.email : '';
     } catch (error) {
         console.log(error);
     }
