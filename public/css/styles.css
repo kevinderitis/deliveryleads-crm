@@ -255,8 +255,27 @@ main {
 }
 
 .usernameId {
-    padding: 10px;
+    padding: 5px;
     background-color: #d93d3da0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.usernameId h1 {
+    font-size: 20px;
+    margin: 0;
+    margin-right: 10px;
+}
+
+.usernameId h1:last-child {
+    margin-right: 0;
+}
+
+.tagSection {
+    padding: 10px;
+    background-color: #d93d3d48;
     text-align: center;
     font-size: 20px;
     border-radius: 12px;
@@ -388,4 +407,171 @@ input[type="text"] {
 
 .person.selected {
     background-color: white !important;
+}
+
+.tagSection {
+    padding: 10px;
+    background-color: #f1f1f1;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    background-color: #ffdddd; /* Fondo rosado claro */
+    border: 1px solid #ff4d4d; /* Borde rojo */
+    border-radius: 12px;
+    padding: 5px 10px;
+    margin: 5px;
+    font-size: 14px;
+    color: #ff4d4d;
+}
+
+.tag:hover {
+    background-color: #e15c5cc7;
+}
+
+.tag:active {
+    background-color: #da7272c7;
+}
+
+.remove-btn {
+    background: none;
+    border: none;
+    color: #ff4d4d;
+    font-size: 16px;
+    margin-left: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+}
+
+.remove-btn:hover {
+    color: #ff0000; /* Rojo más intenso al pasar el ratón */
+}
+
+
+.swal2-popup {
+    font-family: Arial, sans-serif;
+}
+
+
+.swal2-confirm,
+.swal2-cancel,
+.swal2-close {
+    background-color: #d93d3dc7;
+    border: none;
+    color: white;
+    font-size: 16px;
+    border-radius: 4px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+
+.swal2-confirm:hover,
+.swal2-cancel:hover,
+.swal2-close:hover {
+    background-color: #d93d3dc7;
+}
+
+
+.swal2-cancel {
+    background-color: #d93d3dc7;
+}
+
+.swal2-cancel:hover {
+    background-color: #d93d3dc7;/
+}
+
+
+.swal2-confirm {
+    background-color: #d74848c7;
+}
+
+.swal2-confirm:hover {
+    background-color: #da7e7ec7;
+}
+
+
+.swal2-close {
+    color: #da2b2b;
+}
+
+/* Estilo para el contenedor del dropdown */
+.swal2-select {
+    background-color: #fff; /* Fondo blanco del dropdown */
+    border: 1px solid #ff4d4d; /* Borde rojo */
+    border-radius: 4px; /* Bordes redondeados */
+    padding: 8px; /* Espaciado interno */
+    font-size: 16px; /* Tamaño de la fuente */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Sombra para darle profundidad */
+}
+
+/* Estilo para las opciones del dropdown */
+.swal2-select option {
+    background-color: #fff; /* Fondo blanco para cada opción */
+    color: #333; /* Color del texto */
+    padding: 8px; /* Espaciado interno */
+}
+
+/* Estilo para las opciones seleccionadas */
+.swal2-select option:checked {
+    background-color: #ff4d4d; /* Fondo rojo para opción seleccionada */
+    color: #fff; /* Color del texto en blanco para opción seleccionada */
+}
+
+/* Estilo para el dropdown al pasar el ratón */
+.swal2-select:hover {
+    border-color: #e60000; /* Borde rojo más oscuro al pasar el ratón */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra más pronunciada */
+}
+
+/* Estilo general para los campos de entrada en SweetAlert2 */
+.swal2-input {
+    border: 1px solid #ff4d4d; /* Borde rojo */
+    border-radius: 4px; /* Bordes redondeados */
+    background-color: #fff; /* Fondo blanco */
+    color: #333; /* Color del texto */
+    padding: 8px; /* Espaciado interno */
+    font-size: 16px; /* Tamaño de la fuente */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+    transition: border-color 0.3s, box-shadow 0.3s; /* Transiciones suaves */
+}
+
+/* Estilo para los campos de entrada al recibir foco */
+.swal2-input:focus {
+    border-color: #ff0000; /* Borde rojo más intenso al enfocar */
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.2); /* Sombra roja al enfocar */
+    outline: none; /* Eliminar el borde azul por defecto en algunos navegadores */
+}
+
+/* Estilo para los campos de entrada deshabilitados */
+.swal2-input:disabled {
+    background-color: #f0f0f0; /* Fondo gris claro */
+    border-color: #ddd; /* Borde gris claro */
+    color: #888; /* Texto gris claro */
+    cursor: not-allowed; /* Cursor de no permitido */
+}
+
+/* Estilo para los campos de entrada de tipo select */
+.swal2-select {
+    border: 1px solid #ff4d4d; /* Borde rojo */
+    border-radius: 4px; /* Bordes redondeados */
+    background-color: #fff; /* Fondo blanco */
+    color: #333; /* Color del texto */
+    padding: 8px; /* Espaciado interno */
+    font-size: 16px; /* Tamaño de la fuente */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+/* Estilo para el campo select al recibir foco */
+.swal2-select:focus {
+    border-color: #ff0000; /* Borde rojo más intenso al enfocar */
+    box-shadow: 0 0 5px rgba(255, 0, 0, 0.2); /* Sombra roja al enfocar */
+    outline: none; /* Eliminar el borde azul por defecto en algunos navegadores */
 }

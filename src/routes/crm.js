@@ -5,7 +5,7 @@ import { WebSocket } from "ws";
 import { addMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService } from '../services/chatServices.js';
 import { deliverLeadToClient } from "../services/leadService.js";
 import { isAuthenticated } from "../middleware/middleware.js";
-import { addTagToChatByParticipant } from "../dao/chatDAO.js";
+import { addTagToChatByParticipant, changeNickname, removeTagFromChatByParticipant } from "../dao/chatDAO.js";
 import axios from "axios";
 
 const crmRouter = Router();
@@ -96,6 +96,13 @@ crmRouter.get('/chats/:selected', isAuthenticated, async (req, res) => {
     let selectedUser = req.params.selected;
     let chat = await getMessagesForUserService(selectedUser);
     res.send(chat);
+});
+
+crmRouter.get('/nickname/:nickname/:user', isAuthenticated, async (req, res) => {
+    let nickName = req.params.nickname;
+    let userId = req.params.user;
+    let response = await changeNickname(nickName, userId);
+    res.send(response);
 });
 
 crmRouter.get('/tags/add/:number/:tag', isAuthenticated, async (req, res) => {

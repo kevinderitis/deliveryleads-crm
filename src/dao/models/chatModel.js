@@ -23,6 +23,9 @@ const chatSchema = new mongoose.Schema({
   messages: [messageSchema],
   tags: {
     type: [String]
+  },
+  nickname: {
+    type: String
   }
 
 }, { timestamps: true });

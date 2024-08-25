@@ -27,7 +27,11 @@
             <div class="chat-container">
                 <button id="return-btn" class="return-button"><img src="assets/images/return.svg"
                         alt="Retornar"></button>
-                <h1 id="username-id" class="usernameId" onclick="editContact()"></h1>
+                <div class="usernameId">
+                    <h1 id="nickname-id" onclick="editContact()"></h1>
+                    <h1 id="username-id" onclick="editContact()"></h1>
+                </div>
+                <div id="tag-section" class="tagSection" onclick="addUserTag()"></div>
                 <ul class="chat-box">
                 </ul>
                 <div class="chat-form">

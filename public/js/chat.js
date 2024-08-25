@@ -64,7 +64,68 @@ const addTag = async (id, tag) => {
     }
 };
 
+const removeTag = async (id, tag) => {
+    try {
+        const response = await fetch(`/crm/tags/remove/${id}/${tag}`);
+    } catch (error) {
+        console.error('Error adding tag:', error);
+        throw error;
+    }
+};
+
+async function saveNickname(nickname, userId) {
+    console.log(nickname, userId)
+    try {
+        await fetch(`/crm/nickname/${nickname}/${userId}`);
+
+        console.log('Nickname guardado exitosamente');
+
+        Swal.fire({
+            title: 'Nickname guardado',
+            text: `Tu nickname "${nickname}" ha sido guardado exitosamente.`,
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+
+    } catch (error) {
+        console.error('Error al guardar el nickname:', error);
+        Swal.fire({
+            title: 'Error',
+            text: 'Hubo un problema al guardar tu nickname. Por favor, intenta nuevamente.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+}
+
 function editContact() {
+    Swal.fire({
+        title: 'Ingresa tu nickname',
+        input: 'text',
+        inputPlaceholder: 'Tu nickname',
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
+        cancelButtonText: 'Cancelar',
+        inputValidator: (value) => {
+            if (!value) {
+                return 'El nickname es obligatorio';
+            }
+            if (value.length < 3) {
+                return 'El nickname debe tener al menos 3 caracteres';
+            }
+            return null;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const nickname = result.value;
+            const userId = getUsernameIdValue();
+            saveNickname(nickname, userId);
+        }
+    });
+}
+
+
+function addUserTag() {
     Swal.fire({
         title: 'Selecciona una etiqueta',
         html: `
@@ -153,7 +214,6 @@ function renderChatMessage(user, message, image, date) {
 
     chatBox.appendChild(li);
     li.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    // renderUsers();
 }
 
 function displayMessages(filteredMessages) {
@@ -164,11 +224,63 @@ function displayMessages(filteredMessages) {
     });
 }
 
-// function renderTags(tags) {
-//     const chatBox = document.querySelector('.chat-box');
-//     chatBox.innerHTML = '';
-//     filteredMessages.forEach(msg => {
-//         renderChatMessage(msg.from, msg.text, msg.image);
+function removeTagFromDOM(tagToRemove) {
+    const tagSection = document.getElementById('tag-section');
+
+    const tagElement = Array.from(tagSection.getElementsByClassName('tag'))
+        .find(tag => tag.textContent.trim() === tagToRemove.trim());
+
+    if (tagElement) {
+        tagSection.removeChild(tagElement);
+    }
+}
+
+function removeTagFromUser(tagToRemove) {
+    let userId = getUsernameIdValue()
+    removeTag(userId, tagToRemove);
+    removeTagFromDOM(tagToRemove)
+}
+
+function renderTags(tagsArray) {
+    const tagSection = document.getElementById('tag-section');
+
+    tagSection.innerHTML = '';
+
+    tagsArray.forEach(tag => {
+        const tagElement = document.createElement('span');
+        tagElement.textContent = tag;
+        tagElement.classList.add('tag');
+
+        const removeButton = document.createElement('button');
+        removeButton.textContent = '×';
+        removeButton.classList.add('remove-btn');
+
+        tagElement.appendChild(removeButton);
+
+        removeButton.addEventListener('click', (event) => {
+            event.stopPropagation();
+            removeTagFromUser(tag);
+        });
+
+        tagSection.appendChild(tagElement);
+    });
+}
+
+// function renderTags(tagsArray) {
+//     const tagSection = document.getElementById('tag-section');
+
+//     tagSection.innerHTML = '';
+
+//     tagsArray.forEach(tag => {
+//         const tagElement = document.createElement('span');
+//         tagElement.textContent = tag;
+//         tagElement.classList.add('tag'); 
+
+//         tagElement.addEventListener('click', () => {
+//             console.log(`Tag clicked: ${tag}`);
+//         });
+
+//         tagSection.appendChild(tagElement);
 //     });
 // }
 
@@ -196,13 +308,15 @@ async function renderUsers() {
     };
 
     list.forEach(user => {
+        let userName = user.nickname ? user.nickname : user.participants[0];
+
         const userElement = `
-            <li class="person" data-chat="${user}">
+            <li class="person" data-chat="${user.participants[0]}">
                 <div class="user">
-                    <img src="${userTemplate.img}" alt="${user}">
+                    <img src="${userTemplate.img}" alt="${userName}">
                 </div>
                 <p class="name-time">
-                    <span class="name">${user}</span>
+                    <span class="name">${userName}</span>
                 </p>
             </li>
         `;
@@ -211,6 +325,35 @@ async function renderUsers() {
     applySelectedStyle(selectedUser);
     applyUnreadStyles();
 }
+
+// async function renderUsers() {
+//     const userEmail = await getUserEmail();
+//     let list = await getUserList(userEmail);
+//     const usersList = document.querySelector('.users');
+//     usersList.innerHTML = '';
+
+//     let userTemplate = {
+//         time: "15/02/2019",
+//         status: "busy",
+//         img: "https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=mail@ashallendesign.co.uk"
+//     };
+
+//     list.forEach(user => {
+//         const userElement = `
+//             <li class="person" data-chat="${user}">
+//                 <div class="user">
+//                     <img src="${userTemplate.img}" alt="${user}">
+//                 </div>
+//                 <p class="name-time">
+//                     <span class="name">${user}</span>
+//                 </p>
+//             </li>
+//         `;
+//         usersList.innerHTML += userElement;
+//     });
+//     applySelectedStyle(selectedUser);
+//     applyUnreadStyles();
+// }
 
 async function getChatMessages(email) {
     try {
@@ -237,14 +380,22 @@ function alternateUserChat() {
     }
 }
 
-async function selectUser(email) {
+async function selectUser(email, nickName) {
     selectedUser = email;
     const usernameId = document.getElementById('username-id');
+    const nicknameId = document.getElementById('nickname-id');
     let chat = await getChatMessages(email);
-    // renderTags(chat.tags);
+    renderTags(chat.tags);
     displayMessages(chat.messages);
     markChatAsUnread(email);
     usernameId.innerHTML = email;
+
+    if (nickName !== email) {
+        nicknameId.innerHTML = nickName;
+    } else {
+        nicknameId.innerHTML = '';
+    }
+
     const chatContainer = document.querySelector('.chat-container');
     const userContainer = document.querySelector('.users-container');
 
@@ -325,13 +476,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 
+
     document.querySelector('.users').addEventListener('click', (event) => {
         const li = event.target.closest('li.person');
         if (li) {
-            const userSpan = li.querySelector('.name');
-            if (userSpan) {
-                const email = userSpan.textContent.trim();
-                selectUser(email);
+            const chatValue = li.getAttribute('data-chat');
+            const nameSpan = li.querySelector('.name');
+            const nickname = nameSpan ? nameSpan.textContent.trim() : '';
+            if (chatValue) {
+                selectUser(chatValue, nickname);
             }
         }
     });
