@@ -1,5 +1,32 @@
 let selectedUser;
 
+function markChatAsRead(chatValue) {
+    let unreadChats = JSON.parse(localStorage.getItem('unreadChats')) || [];
+
+    if (!unreadChats.includes(chatValue)) {
+        unreadChats.push(chatValue);
+        localStorage.setItem('unreadChats', JSON.stringify(unreadChats));
+    }
+};
+
+function markChatAsUnread(chatValue) {
+    let unreadChats = JSON.parse(localStorage.getItem('unreadChats')) || [];
+
+    unreadChats = unreadChats.filter(chat => chat !== chatValue);
+    localStorage.setItem('unreadChats', JSON.stringify(unreadChats));
+};
+
+function applyUnreadStyles() {
+    const unreadChats = JSON.parse(localStorage.getItem('unreadChats')) || [];
+
+    unreadChats.forEach(chatValue => {
+        const listItem = document.querySelector(`li[data-chat="${chatValue}"]`);
+        if (listItem) {
+            listItem.style.backgroundColor = '#d93d3da0';
+        }
+    });
+};
+
 function editContact() {
     Swal.fire({
         title: 'Selecciona una etiqueta',
@@ -35,7 +62,6 @@ function editContact() {
             // Aquí puedes manejar la etiqueta seleccionada o personalizada
             console.log('Etiqueta seleccionada o creada:', tag);
 
-            // Si deseas mostrar un mensaje adicional o procesar el mensaje con la etiqueta:
             Swal.fire({
                 title: 'Etiqueta agregada',
                 text: `Tu mensaje ha sido etiquetado como: ${tag}`,
@@ -43,7 +69,6 @@ function editContact() {
                 confirmButtonText: 'OK'
             });
 
-            // Aquí puedes agregar la lógica para enviar el mensaje al chat con la etiqueta
         }
     });
 }
@@ -52,12 +77,22 @@ function backToProfile() {
     window.location.href = 'profile.html';
 }
 
+function addInactiveNotification(chatValue) {
+    const listItem = document.querySelector(`li[data-chat="${chatValue}"]`);
+
+    if (listItem) {
+        listItem.style.backgroundColor = 'green';
+    } else {
+        console.error(`No se encontró ningún li con data-chat="${chatValue}"`);
+    }
+}
+
 function renderChatMessage(user, message, image) {
     const chatBox = document.querySelector('.chat-box');
     const li = document.createElement('li');
 
     if (user === selectedUser) {
-        if (image) { 
+        if (image) {
             li.innerHTML = `
                 <div class="user-chat-box">
                     <span>${user}: </span>
@@ -126,6 +161,8 @@ async function renderUsers() {
         `;
         usersList.innerHTML += userElement;
     });
+
+    applyUnreadStyles();
 }
 
 async function getChatMessages(email) {
@@ -158,6 +195,7 @@ async function selectUser(email) {
     const usernameId = document.getElementById('username-id');
     let chatMessages = await getChatMessages(email);
     displayMessages(chatMessages);
+    markChatAsUnread(email);
     usernameId.innerHTML = email;
     const chatContainer = document.querySelector('.chat-container');
     const userContainer = document.querySelector('.users-container');
@@ -181,16 +219,38 @@ async function getUserEmail() {
     }
 }
 
+function playSoundNotificacion() {
+    const audio = new Audio('assets/sonidos/windows-notificacion.mp3');
+    audio.play().catch(error => {
+        console.error('Error al reproducir el sonido:', error);
+    });
+}
+
+function swalNotification(senderName, messageContent) {
+    Swal.fire({
+        title: `Mensaje de ${senderName}`,
+        text: messageContent,
+        position: 'top',
+        timer: 3000,
+        showConfirmButton: false,
+        toast: true,
+    });
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     const userEmail = await getUserEmail();
-    const ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
+    const ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
 
     renderUsers();
 
     ws.onmessage = (event) => {
         const { user, text, destination, image } = JSON.parse(event.data);
+        swalNotification(destination, text);
         if (destination === selectedUser) {
             renderChatMessage(user, text, image);
+        } else {
+            markChatAsRead(destination);
+            applyUnreadStyles();
         }
 
     };
