@@ -139,6 +139,7 @@ crmRouter.post('/webhook', async (req, res) => {
                         if (message) {
                             let textMessage = message.text?.body || '';
                             let imageBase64;
+
                             console.log(`Numero de telefono: ${message.from}`)
                             console.log(`Mensaje: ${textMessage}`)
 
@@ -146,7 +147,11 @@ crmRouter.post('/webhook', async (req, res) => {
                                 // const imageUrl = message.image.url;
                                 // imageBase64 = await getImageBase64(imageUrl);
                                 textMessage = 'IMAGEN';
+                            } else if (message.audio) {
+                                // const audioUrl = message.audio.url;
+                                textMessage = 'AUDIO';
                             }
+
                             let to;
 
                             let chat = await getChatForUserService(message.from);
@@ -160,12 +165,14 @@ crmRouter.post('/webhook', async (req, res) => {
 
                             await addMessageServices(message.from, to, textMessage, imageBase64);
 
-                            const ws = userConnections.get(to);
-                            if (ws && ws.readyState === WebSocket.OPEN) {
-                                ws.send(JSON.stringify({ user: message.from, textMessage, destination: message.from }));
-                                console.log('Message sent')
-                            } else {
-                                console.log('Error sending message')
+                            const recipientConnections = userConnections.get(to) || [];
+
+                            if (recipientConnections.length > 0) {
+                                recipientConnections.forEach(ws => {
+                                    if (ws.readyState === WebSocket.OPEN) {
+                                        ws.send(JSON.stringify({ user: from, text, destination: from }));
+                                    }
+                                });
                             }
                         }
                     }

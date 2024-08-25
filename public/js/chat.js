@@ -18,24 +18,26 @@ function markChatAsUnread(chatValue) {
 
 function applyUnreadStyles() {
     const unreadChats = JSON.parse(localStorage.getItem('unreadChats')) || [];
-
     unreadChats.forEach(chatValue => {
-        console.log(chatValue)
-        console.log(selectedUser)
-        if (chatValue !== selectedUser) {
-            const listItem = document.querySelector(`li[data-chat="${chatValue}"]`);
-            if (listItem) {
-                listItem.style.backgroundColor = '#d93d3da0';
-            }
+        const listItem = document.querySelector(`li[data-chat="${chatValue}"]`);
+        if (listItem) {
+            listItem.style.backgroundColor = '#d93d3da0';
         }
+
 
     });
 };
 
+
 function applySelectedStyle(chatValue) {
+    const previouslySelected = document.querySelector('li.person.selected');
+    if (previouslySelected) {
+        previouslySelected.classList.remove('selected');
+    }
+
     const listItem = document.querySelector(`li[data-chat="${chatValue}"]`);
     if (listItem) {
-        listItem.style.backgroundColor = '#d93d3da0';
+        listItem.classList.add('selected');
     }
 }
 
@@ -123,9 +125,11 @@ function addInactiveNotification(chatValue) {
     }
 }
 
-function renderChatMessage(user, message, image) {
+function renderChatMessage(user, message, image, date) {
     const chatBox = document.querySelector('.chat-box');
     const li = document.createElement('li');
+    const dateObj = new Date(date);
+    const formattedDate = `${dateObj.getHours()}:${dateObj.getMinutes()}`;
 
     if (user === selectedUser) {
         if (image) {
@@ -139,23 +143,24 @@ function renderChatMessage(user, message, image) {
         } else {
             li.innerHTML = `
                 <span class="user-chat-box">${user}: </span> 
-                <span class="message-chat-box">${message}</span>`;
+                <span class="message-chat-box">${message}</span>
+                <span class="message-time">${formattedDate}</span>`;
         }
     } else {
-        li.innerHTML = `<span class="user-chat-box">${user}: </span> <span class="message-chat-box">${message}</span>`;
+        li.innerHTML = `<span class="user-chat-box">${user}: </span> <span class="message-chat-box">${message}</span> <span class="message-time">${formattedDate}</span>`;
         li.classList.add('other-message');
     }
 
     chatBox.appendChild(li);
     li.scrollIntoView({ behavior: 'smooth', block: 'end' });
-    renderUsers();
+    // renderUsers();
 }
 
 function displayMessages(filteredMessages) {
     const chatBox = document.querySelector('.chat-box');
     chatBox.innerHTML = '';
     filteredMessages.forEach(msg => {
-        renderChatMessage(msg.from, msg.text, msg.image);
+        renderChatMessage(msg.from, msg.text, msg.image, msg.createdAt);
     });
 }
 
@@ -203,7 +208,7 @@ async function renderUsers() {
         `;
         usersList.innerHTML += userElement;
     });
-
+    applySelectedStyle(selectedUser);
     applyUnreadStyles();
 }
 
@@ -239,7 +244,6 @@ async function selectUser(email) {
     // renderTags(chat.tags);
     displayMessages(chat.messages);
     markChatAsUnread(email);
-    applySelectedStyle(email);
     usernameId.innerHTML = email;
     const chatContainer = document.querySelector('.chat-container');
     const userContainer = document.querySelector('.users-container');
@@ -250,6 +254,7 @@ async function selectUser(email) {
     } else {
         chatContainer.style.display = 'block';
     }
+    renderUsers();
 }
 
 async function getUserEmail() {
@@ -282,7 +287,7 @@ function swalNotification(senderName, messageContent) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const userEmail = await getUserEmail();
-    const ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
+    const ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
 
     renderUsers();
 
@@ -295,7 +300,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             markChatAsRead(destination);
             applyUnreadStyles();
         }
-
+        renderUsers();
     };
 
 

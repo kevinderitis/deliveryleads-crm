@@ -125,7 +125,6 @@ export const sendWelcomeMessage = async (to) => {
                 'Content-Type': 'application/json'
             }
         });
-        console.log(response)
         console.log(`Message sent to: ${to}`);
     } catch (error) {
         console.error('Error sending message:', error);
@@ -136,13 +135,13 @@ export const sendWelcomeMessage = async (to) => {
 
 const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-const sendMessages = async (phoneNumbersList) => {
+const sendBulkMessages = async (phoneNumbersList) => {
     console.log(phoneNumbersList);
     try {
         for (const number of phoneNumbersList) {
             const response = await sendWelcomeMessage(number);
             console.log(`Mensaje enviado a ${number}:`, response);
-            
+
             await delay(8000);
         }
     } catch (error) {
@@ -150,4 +149,14 @@ const sendMessages = async (phoneNumbersList) => {
     }
 };
 
-sendMessages(phoneNumbers);
+const sendMessage = async (number) => {
+    try {
+        await sendWelcomeMessage(number);
+    } catch (error) {
+        console.log('Error al enviar el mensaje:', error);
+    }
+}
+
+// sendBulkMessages(phoneNumbers);
+
+// sendMessage('5492634390767');

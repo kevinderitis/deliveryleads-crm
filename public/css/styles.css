@@ -372,3 +372,20 @@ input[type="text"] {
     width: 10rem;
     overflow: hidden;
 }
+
+.message-chat-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.message-time {
+    font-size: 0.8em;
+    color: gray;
+    white-space: nowrap;
+}
+
+.person.selected {
+    background-color: white !important;
+}
