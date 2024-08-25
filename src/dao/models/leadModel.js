@@ -16,6 +16,9 @@ const leadSchema = new mongoose.Schema({
   isSent: {
     type: Boolean,
     default: false
+  },
+  chatId: {
+    type: String
   }
 });
 

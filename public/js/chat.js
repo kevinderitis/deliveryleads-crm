@@ -20,12 +20,24 @@ function applyUnreadStyles() {
     const unreadChats = JSON.parse(localStorage.getItem('unreadChats')) || [];
 
     unreadChats.forEach(chatValue => {
-        const listItem = document.querySelector(`li[data-chat="${chatValue}"]`);
-        if (listItem) {
-            listItem.style.backgroundColor = '#d93d3da0';
+        console.log(chatValue)
+        console.log(selectedUser)
+        if (chatValue !== selectedUser) {
+            const listItem = document.querySelector(`li[data-chat="${chatValue}"]`);
+            if (listItem) {
+                listItem.style.backgroundColor = '#d93d3da0';
+            }
         }
+
     });
 };
+
+function applySelectedStyle(chatValue) {
+    const listItem = document.querySelector(`li[data-chat="${chatValue}"]`);
+    if (listItem) {
+        listItem.style.backgroundColor = '#d93d3da0';
+    }
+}
 
 const getUsernameIdValue = () => {
     const usernameElement = document.getElementById('username-id');
@@ -34,21 +46,21 @@ const getUsernameIdValue = () => {
 
 const addTag = async (id, tag) => {
     try {
-      const response = await fetch(`/crm/tags/add/${id}/${tag}`);
-  
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-  
-      const result = await response.json();
-      console.log('Tag added successfully:', result);
-      return result;
-  
+        const response = await fetch(`/crm/tags/add/${id}/${tag}`);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Tag added successfully:', result);
+        return result;
+
     } catch (error) {
-      console.error('Error adding tag:', error);
-      throw error; 
+        console.error('Error adding tag:', error);
+        throw error;
     }
-  };
+};
 
 function editContact() {
     Swal.fire({
@@ -159,7 +171,6 @@ async function getUserList(email) {
     try {
         let response = await fetch(`/crm/users/list/${email}`)
         let userList = await response.json();
-        console.log(userList)
         return userList;
     } catch (error) {
         console.log(error);
@@ -228,6 +239,7 @@ async function selectUser(email) {
     // renderTags(chat.tags);
     displayMessages(chat.messages);
     markChatAsUnread(email);
+    applySelectedStyle(email);
     usernameId.innerHTML = email;
     const chatContainer = document.querySelector('.chat-container');
     const userContainer = document.querySelector('.users-container');
@@ -244,7 +256,6 @@ async function getUserEmail() {
     try {
         let response = await fetch(`/auth/data`);
         let data = await response.json();
-        console.log(data.email)
         return data.email;
     } catch (error) {
         console.log(error);
@@ -271,7 +282,7 @@ function swalNotification(senderName, messageContent) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const userEmail = await getUserEmail();
-    const ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
+    const ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
 
     renderUsers();
 

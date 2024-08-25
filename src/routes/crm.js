@@ -124,10 +124,10 @@ crmRouter.post('/webhook', async (req, res) => {
                             console.log(`Mensaje: ${textMessage}`)
 
                             if (message.image) {
-                                const imageUrl = message.image.url;
-                                imageBase64 = await getImageBase64(imageUrl);
+                                // const imageUrl = message.image.url;
+                                // imageBase64 = await getImageBase64(imageUrl);
+                                textMessage = 'IMAGEN';
                             }
-
                             let to;
 
                             let chat = await getChatForUserService(message.from);
