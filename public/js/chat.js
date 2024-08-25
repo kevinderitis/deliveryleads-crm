@@ -225,7 +225,7 @@ async function selectUser(email) {
     selectedUser = email;
     const usernameId = document.getElementById('username-id');
     let chat = await getChatMessages(email);
-    renderTags(chat.tags);
+    // renderTags(chat.tags);
     displayMessages(chat.messages);
     markChatAsUnread(email);
     usernameId.innerHTML = email;
