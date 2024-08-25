@@ -18,23 +18,33 @@ crmRouter.post('/new', async (req, res) => {
     const { from, text, image } = req.body;
     let to;
 
-    let chat = await getChatForUserService(from);
+    try {
+        let chat = await getChatForUserService(from);
 
-    if (chat) {
-        to = chat.participants.filter(participant => participant !== from)[0];
-    } else {
-        let client = await deliverLeadToClient();
-        to = client.email;
-    }
+        if (chat) {
+            to = chat.participants.find(participant => participant !== from);
+        } else {
+            let client = await deliverLeadToClient();
+            to = client.email;
+        }
 
-    await addMessageServices(from, to, text, image);
+        await addMessageServices(from, to, text, image);
 
-    const ws = userConnections.get(to);
-    if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ user: from, text, destination: from }));
-        res.status(200).send('Message sent');
-    } else {
-        res.status(404).send('User not connected or WebSocket not open');
+        const recipientConnections = userConnections.get(to) || [];
+
+        if (recipientConnections.length > 0) {
+            recipientConnections.forEach(ws => {
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ user: from, text, destination: from }));
+                }
+            });
+            res.status(200).send('Message sent to all connections');
+        } else {
+            res.status(404).send('No connections found for the recipient');
+        }
+    } catch (error) {
+        console.error('Error handling message:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
 
@@ -42,27 +52,37 @@ crmRouter.post('/receive', isAuthenticated, async (req, res) => {
     const { from, text, image } = req.body;
     let to;
 
-    let chat = await getChatForUserService(from);
+    try {
+        let chat = await getChatForUserService(from);
 
-    if (chat) {
-        to = chat.participants.filter(participant => participant !== from)[0];
-    } else {
-        let client = await deliverLeadToClient();
-        to = client.email;
-    }
+        if (chat) {
+            to = chat.participants.find(participant => participant !== from);
+        } else {
+            let client = await deliverLeadToClient();
+            to = client.email;
+        }
 
-    await addMessageServices(from, to, text, image);
+        await addMessageServices(from, to, text, image);
 
-    const ws = userConnections.get(to);
-    if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(JSON.stringify({ user: from, text, destination: from }));
-        res.status(200).send('Message sent');
-    } else {
-        res.status(404).send('User not connected or WebSocket not open');
+        const recipientConnections = userConnections.get(to) || [];
+
+        if (recipientConnections.length > 0) {
+            recipientConnections.forEach(ws => {
+                if (ws.readyState === WebSocket.OPEN) {
+                    ws.send(JSON.stringify({ user: from, text, destination: from }));
+                }
+            });
+            res.status(200).send('Message sent to all connections');
+        } else {
+            res.status(404).send('No connections found for the recipient');
+        }
+    } catch (error) {
+        console.error('Error handling message:', error);
+        res.status(500).send('Internal Server Error');
     }
 });
 
-crmRouter.get('/users/list/:email', isAuthenticated ,async (req, res) => {
+crmRouter.get('/users/list/:email', isAuthenticated, async (req, res) => {
     let email = req.params.email;
     try {
         let userList = await getUsersListService(email);
@@ -72,20 +92,20 @@ crmRouter.get('/users/list/:email', isAuthenticated ,async (req, res) => {
     }
 });
 
-crmRouter.get('/chats/:selected', isAuthenticated ,async (req, res) => {
+crmRouter.get('/chats/:selected', isAuthenticated, async (req, res) => {
     let selectedUser = req.params.selected;
     let chat = await getMessagesForUserService(selectedUser);
     res.send(chat);
 });
 
-crmRouter.get('/tags/add/:number/:tag', isAuthenticated ,async (req, res) => {
+crmRouter.get('/tags/add/:number/:tag', isAuthenticated, async (req, res) => {
     let chatId = req.params.number;
     let tag = req.params.tag;
     let response = await addTagToChatByParticipant(chatId, tag);
     res.send(response);
 });
 
-crmRouter.get('/tags/remove/:number/:tag', isAuthenticated ,async (req, res) => {
+crmRouter.get('/tags/remove/:number/:tag', isAuthenticated, async (req, res) => {
     let chatId = req.params.number;
     let tag = req.params.tag;
     let response = await removeTagFromChatByParticipant(chatId, tag);
@@ -104,7 +124,6 @@ const getImageBase64 = async (imageUrl) => {
         return base64;
     } catch (error) {
         console.error('Error fetching image:', error);
-        throw error;
     }
 };
 

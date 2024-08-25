@@ -1,5 +1,5 @@
 import { WebSocketServer } from 'ws';
-import { addMessageServices, sendMessageToClientService, sendWhatsappMessage } from '../services/chatServices.js';
+import { addMessageServices, sendWhatsappMessage } from '../services/chatServices.js';
 import config from '../config/config.js';
 
 const userConnections = new Map();
@@ -13,7 +13,11 @@ export const setupWebSocketServer = (server) => {
         const userEmail = queryParams.get('userEmail');
 
         if (userEmail) {
-            userConnections.set(userEmail, ws);
+            if (!userConnections.has(userEmail)) {
+                userConnections.set(userEmail, []);
+            }
+            const connections = userConnections.get(userEmail);
+            connections.push(ws);
             console.log(`Connection established for user: ${userEmail}`);
 
             ws.on('message', async (message) => {
@@ -24,10 +28,13 @@ export const setupWebSocketServer = (server) => {
                         console.log(`Message from ${userEmail}: ${text} -> ${selectedUser}`);
                         await addMessageServices(userEmail, selectedUser, text);
                         await sendWhatsappMessage(selectedUser, text);
-                        const recipient = userConnections.get(selectedUser);
-                        if (recipient && recipient.readyState === WebSocket.OPEN) {
-                            recipient.send(JSON.stringify({ user: userEmail, text }));
-                        }
+
+                        const recipientConnections = userConnections.get(selectedUser) || [];
+                        recipientConnections.forEach((recipientWs) => {
+                            if (recipientWs.readyState === WebSocket.OPEN) {
+                                recipientWs.send(JSON.stringify({ user: userEmail, text }));
+                            }
+                        });
                     }
                 } catch (err) {
                     console.error('Error parsing message:', err);
@@ -35,13 +42,20 @@ export const setupWebSocketServer = (server) => {
             });
 
             ws.on('close', () => {
-                userConnections.delete(userEmail);
+                const connections = userConnections.get(userEmail) || [];
+                const index = connections.indexOf(ws);
+                if (index !== -1) {
+                    connections.splice(index, 1);
+                }
+                if (connections.length === 0) {
+                    userConnections.delete(userEmail);
+                }
                 console.log(`Connection closed for user: ${userEmail}`);
             });
 
             const interval = setInterval(() => {
                 if (ws.readyState === ws.OPEN) {
-                    ws.ping(); 
+                    ws.ping();
                 }
             }, PING_INTERVAL);
 
@@ -50,7 +64,7 @@ export const setupWebSocketServer = (server) => {
             });
 
             ws.on('close', () => {
-                clearInterval(interval); 
+                clearInterval(interval);
             });
         } else {
             console.error('User email not provided in the query string');
