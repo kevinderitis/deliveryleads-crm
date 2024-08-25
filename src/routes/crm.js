@@ -5,6 +5,8 @@ import { WebSocket } from "ws";
 import { addMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService } from '../services/chatServices.js';
 import { deliverLeadToClient } from "../services/leadService.js";
 import { isAuthenticated } from "../middleware/middleware.js";
+import { addTagToChatByParticipant } from "../dao/chatDAO.js";
+import axios from "axios";
 
 const crmRouter = Router();
 
@@ -72,8 +74,22 @@ crmRouter.get('/users/list/:email', isAuthenticated ,async (req, res) => {
 
 crmRouter.get('/chats/:selected', isAuthenticated ,async (req, res) => {
     let selectedUser = req.params.selected;
-    let messages = await getMessagesForUserService(selectedUser);
-    res.send(messages);
+    let chat = await getMessagesForUserService(selectedUser);
+    res.send(chat);
+});
+
+crmRouter.get('/tags/add/:number/:tag', isAuthenticated ,async (req, res) => {
+    let chatId = req.params.number;
+    let tag = req.params.tag;
+    let response = await addTagToChatByParticipant(chatId, tag);
+    res.send(response);
+});
+
+crmRouter.get('/tags/remove/:number/:tag', isAuthenticated ,async (req, res) => {
+    let chatId = req.params.number;
+    let tag = req.params.tag;
+    let response = await removeTagFromChatByParticipant(chatId, tag);
+    res.send(response);
 });
 
 const getImageBase64 = async (imageUrl) => {

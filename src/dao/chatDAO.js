@@ -43,7 +43,7 @@ export const getMessagesForUser = async participants => {
             return [];
         }
 
-        return chat.messages;
+        return chat;
     } catch (error) {
         throw new Error('Error retrieving messages: ' + error.message);
     }
@@ -93,3 +93,43 @@ export const sendMessageToClient = async (phone, message) => {
         throw error;
     }
 }
+
+export const addTagToChatByParticipant = async (participant, tagName) => {
+    try {
+      const chat = await Chat.findOne({ participants: participant });
+      if (!chat) {
+        throw new Error('Chat no encontrado para este participante');
+      }
+  
+      const tagExists = chat.tags.some(tag => tag === tagName);
+      if (!tagExists) {
+        chat.tags.push(tagName);
+        await chat.save();
+        console.log(`Tag '${tagName}' agregado al chat para el participante '${participant}'.`);
+      } else {
+        console.log(`El tag '${tagName}' ya existe en el chat para el participante '${participant}'.`);
+      }
+    } catch (error) {
+      console.error('Error al agregar el tag:', error.message);
+    }
+  };
+  
+  export const removeTagFromChatByParticipant = async (participant, tagName) => {
+    try {
+      const chat = await Chat.findOne({ participants: participant });
+      if (!chat) {
+        throw new Error('Chat no encontrado para este participante');
+      }
+  
+      const updatedTags = chat.tags.filter(tag => tag.name !== tagName);
+      if (updatedTags.length !== chat.tags.length) {
+        chat.tags = updatedTags;
+        await chat.save();
+        console.log(`Tag '${tagName}' eliminado del chat para el participante '${participant}'.`);
+      } else {
+        console.log(`El tag '${tagName}' no se encontró en el chat para el participante '${participant}'.`);
+      }
+    } catch (error) {
+      console.error('Error al eliminar el tag:', error.message);
+    }
+  };

@@ -20,7 +20,10 @@ const chatSchema = new mongoose.Schema({
     type: [String],
     required: true
   },
-  messages: [messageSchema]
+  messages: [messageSchema],
+  tags: {
+    type: [String]
+  }
 
 }, { timestamps: true });
 

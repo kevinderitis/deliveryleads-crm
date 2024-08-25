@@ -27,6 +27,29 @@ function applyUnreadStyles() {
     });
 };
 
+const getUsernameIdValue = () => {
+    const usernameElement = document.getElementById('username-id');
+    return usernameElement.textContent || usernameElement.innerText;
+};
+
+const addTag = async (id, tag) => {
+    try {
+      const response = await fetch(`/crm/tags/add/${id}/${tag}`);
+  
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+  
+      const result = await response.json();
+      console.log('Tag added successfully:', result);
+      return result;
+  
+    } catch (error) {
+      console.error('Error adding tag:', error);
+      throw error; 
+    }
+  };
+
 function editContact() {
     Swal.fire({
         title: 'Selecciona una etiqueta',
@@ -59,7 +82,8 @@ function editContact() {
     }).then((result) => {
         if (result.isConfirmed) {
             const tag = result.value;
-            // Aquí puedes manejar la etiqueta seleccionada o personalizada
+            const userId = getUsernameIdValue();
+            addTag(userId, tag);
             console.log('Etiqueta seleccionada o creada:', tag);
 
             Swal.fire({
@@ -123,6 +147,14 @@ function displayMessages(filteredMessages) {
     });
 }
 
+// function renderTags(tags) {
+//     const chatBox = document.querySelector('.chat-box');
+//     chatBox.innerHTML = '';
+//     filteredMessages.forEach(msg => {
+//         renderChatMessage(msg.from, msg.text, msg.image);
+//     });
+// }
+
 async function getUserList(email) {
     try {
         let response = await fetch(`/crm/users/list/${email}`)
@@ -155,7 +187,6 @@ async function renderUsers() {
                 </div>
                 <p class="name-time">
                     <span class="name">${user}</span>
-                    <span class="time">${userTemplate.time}</span>
                 </p>
             </li>
         `;
@@ -193,8 +224,9 @@ function alternateUserChat() {
 async function selectUser(email) {
     selectedUser = email;
     const usernameId = document.getElementById('username-id');
-    let chatMessages = await getChatMessages(email);
-    displayMessages(chatMessages);
+    let chat = await getChatMessages(email);
+    renderTags(chat.tags);
+    displayMessages(chat.messages);
     markChatAsUnread(email);
     usernameId.innerHTML = email;
     const chatContainer = document.querySelector('.chat-container');
