@@ -119,18 +119,45 @@ crmRouter.get('/tags/remove/:number/:tag', isAuthenticated, async (req, res) => 
     res.send(response);
 });
 
+// const getImageBase64 = async (imageId) => {
+//     const url = `${config.WHATSAPP_API_URL}/${imageId}`;
+//     try {
+//         const response = await axios.get(url, {
+//             responseType: 'arraybuffer',
+//             headers: {
+//                 Authorization: `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`
+//             }
+//         });
+//         const base64 = Buffer.from(response.data, 'binary').toString('base64');
+//         console.log(`Base 64 ----> ${base64}`)
+//         return base64;
+//     } catch (error) {
+//         console.error('Error fetching image:', error);
+//     }
+// };
+
 const getImageBase64 = async (imageId) => {
     const url = `${config.WHATSAPP_API_URL}/${imageId}`;
-    console.log(`URL ----> ${url}`)
+    
     try {
         const response = await axios.get(url, {
-            responseType: 'arraybuffer',
+            responseType: 'json',
             headers: {
                 Authorization: `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`
             }
         });
-        const base64 = Buffer.from(response.data, 'binary').toString('base64');
-        console.log(`Base 64 ----> ${base64}`)
+        
+        const imageUrl = response.data.url;
+        if (!imageUrl) {
+            throw new Error('No image URL found in response.');
+        }
+
+        const imageResponse = await axios.get(imageUrl, {
+            responseType: 'arraybuffer'
+        });
+        
+        const base64 = Buffer.from(imageResponse.data, 'binary').toString('base64');
+        console.log(`Base 64 ----> ${base64}`);
         return base64;
     } catch (error) {
         console.error('Error fetching image:', error);
@@ -173,7 +200,6 @@ crmRouter.post('/webhook', async (req, res) => {
                                 let client = await deliverLeadToClient();
                                 to = client.email;
                             }
-                            console.log(`Image base: ${imageBase64}`)
                             await addMessageServices(message.from, to, textMessage, imageBase64);
 
                             const recipientConnections = userConnections.get(to) || [];

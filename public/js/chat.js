@@ -191,7 +191,6 @@ function renderChatMessage(user, message, image, date) {
     const li = document.createElement('li');
     const dateObj = new Date(date);
     const formattedDate = `${dateObj.getHours()}:${dateObj.getMinutes()}`;
-
     if (user === selectedUser) {
         if (image) {
             li.innerHTML = `
@@ -385,6 +384,7 @@ async function selectUser(email, nickName) {
     const usernameId = document.getElementById('username-id');
     const nicknameId = document.getElementById('nickname-id');
     let chat = await getChatMessages(email);
+    console.log(chat)
     renderTags(chat.tags);
     displayMessages(chat.messages);
     markChatAsUnread(email);
