@@ -130,7 +130,7 @@ const getImageBase64 = async (imageId) => {
         });
 
         const imageUrl = response.data.url;
-        
+
         const imageResponse = await axios.get(imageUrl, {
             responseType: 'arraybuffer'
         });
@@ -160,6 +160,7 @@ crmRouter.post('/webhook', async (req, res) => {
 
                             if (message.image) {
                                 const imageUrl = message.image.url;
+                                console.log(`Esta es la image url${imageUrl}`)
                                 imageBase64 = await getImageBase64(imageUrl);
                                 textMessage = 'IMAGEN';
                             } else if (message.audio) {
