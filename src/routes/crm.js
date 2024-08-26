@@ -179,7 +179,7 @@ crmRouter.post('/webhook', async (req, res) => {
                             if (recipientConnections.length > 0) {
                                 recipientConnections.forEach(ws => {
                                     if (ws.readyState === WebSocket.OPEN) {
-                                        ws.send(JSON.stringify({ user: message.from, textMessage, destination: message.from }));
+                                        ws.send(JSON.stringify({ user: message.from, textMessage, destination: message.from, image: imageBase64 }));
                                     }
                                 });
                             }
