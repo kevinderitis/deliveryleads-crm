@@ -575,3 +575,13 @@ input[type="text"] {
     box-shadow: 0 0 5px rgba(255, 0, 0, 0.2); /* Sombra roja al enfocar */
     outline: none; /* Eliminar el borde azul por defecto en algunos navegadores */
 }
+
+.name-time .preview {
+    display: block;
+    font-size: 12px;
+    color: #888; /* Color clarito */
+    margin-top: 3px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}

@@ -190,7 +190,9 @@ function renderChatMessage(user, message, image, date) {
     const chatBox = document.querySelector('.chat-box');
     const li = document.createElement('li');
     const dateObj = new Date(date);
-    const formattedDate = `${dateObj.getHours()}:${dateObj.getMinutes()}`;
+    let hours = dateObj.getHours();
+    let minutes = dateObj.getMinutes().toString().length === 1 ? `0${dateObj.getMinutes()}` : dateObj.getMinutes();
+    const formattedDate = `${hours}:${minutes}`;
     if (user === selectedUser) {
         if (image) {
             li.innerHTML = `
@@ -308,6 +310,10 @@ async function renderUsers() {
 
     list.forEach(user => {
         let userName = user.nickname ? user.nickname : user.participants[0];
+        let lastMessage = user.messages.slice(-1)[0];
+        let preview = lastMessage.text;
+
+        let to = lastMessage.to === user.participants[0] ? 'Tú: ' : '';
 
         const userElement = `
             <li class="person" data-chat="${user.participants[0]}">
@@ -316,6 +322,7 @@ async function renderUsers() {
                 </div>
                 <p class="name-time">
                     <span class="name">${userName}</span>
+                    <span class="preview">${to}${preview}</span>
                 </p>
             </li>
         `;
@@ -438,7 +445,7 @@ function swalNotification(senderName, messageContent) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const userEmail = await getUserEmail();
-    const ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
+    const ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
 
     renderUsers();
 

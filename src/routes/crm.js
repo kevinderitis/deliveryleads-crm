@@ -160,9 +160,7 @@ const getImageBase64 = async (imageId) => {
             }
         });
 
-        console.log(`Image response -----> ${imageResponse.data}`);
         const base64 = Buffer.from(imageResponse.data, 'binary').toString('base64');
-        console.log(`Base 64 ----> ${base64}`);
         return base64;
     } catch (error) {
         console.error('Error fetching image:', error);
