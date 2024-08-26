@@ -119,13 +119,15 @@ crmRouter.get('/tags/remove/:number/:tag', isAuthenticated, async (req, res) => 
     res.send(response);
 });
 
-const getImageBase64 = async (imageUrl) => {
+const getImageBase64 = async (imageId) => {
+    const url = `${config.WHATSAPP_API_URL}/${imageId}`;
     try {
-        const response = await axios.get(imageUrl, {
+        const response = await axios.get(url, {
             responseType: 'arraybuffer',
             headers: {
                 Authorization: `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`
-            }
+            },
+            responseType: 'arraybuffer'
         });
         const base64 = Buffer.from(response.data, 'binary').toString('base64');
         return base64;
@@ -152,9 +154,6 @@ crmRouter.post('/webhook', async (req, res) => {
 
                             if (message.image) {
                                 const imageUrl = message.image.url;
-                                console.log(`message: ${JSON.stringify(message)}`)
-                                console.log(`message image: ${message.imge}`)
-                                console.log(`image url *********: ${imageUrl}`)
                                 imageBase64 = await getImageBase64(imageUrl);
                                 textMessage = 'IMAGEN';
                             } else if (message.audio) {
