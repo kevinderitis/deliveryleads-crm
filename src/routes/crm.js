@@ -148,13 +148,16 @@ const getImageBase64 = async (imageId) => {
         });
         
         const imageUrl = response.data.url;
-        console.log(`IMAGE URL ---> ${imageUrl}`)
+
         if (!imageUrl) {
             throw new Error('No image URL found in response.');
         }
 
         const imageResponse = await axios.get(imageUrl, {
-            responseType: 'arraybuffer'
+            responseType: 'arraybuffer',
+            headers: {
+                Authorization: `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`
+            }
         });
         
         const base64 = Buffer.from(imageResponse.data, 'binary').toString('base64');
