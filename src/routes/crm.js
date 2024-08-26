@@ -159,7 +159,8 @@ const getImageBase64 = async (imageId) => {
                 Authorization: `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`
             }
         });
-        
+
+        console.log(`Image response -----> ${imageResponse.data}`);
         const base64 = Buffer.from(imageResponse.data, 'binary').toString('base64');
         console.log(`Base 64 ----> ${base64}`);
         return base64;
