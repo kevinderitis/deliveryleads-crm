@@ -121,6 +121,7 @@ crmRouter.get('/tags/remove/:number/:tag', isAuthenticated, async (req, res) => 
 
 const getImageBase64 = async (imageId) => {
     const url = `${config.WHATSAPP_API_URL}/${imageId}`;
+    console.log(`URL ----> ${url}`)
     try {
         const response = await axios.get(url, {
             responseType: 'arraybuffer',
@@ -130,12 +131,14 @@ const getImageBase64 = async (imageId) => {
         });
 
         const imageUrl = response.data.url;
+        console.log(`Image URL ----> ${imageUrl}`)
 
         const imageResponse = await axios.get(imageUrl, {
             responseType: 'arraybuffer'
         });
 
         const base64 = Buffer.from(imageResponse.data, 'binary').toString('base64');
+        console.log(`Base 64 ----> ${base64}`)
         return base64;
     } catch (error) {
         console.error('Error fetching image:', error);
@@ -154,13 +157,13 @@ crmRouter.post('/webhook', async (req, res) => {
                         if (message) {
                             let textMessage = message.text?.body || '';
                             let imageBase64;
-
+                          
                             console.log(`Numero de telefono: ${message.from}`)
                             console.log(`Mensaje: ${textMessage}`)
-                            console.log(`Esta es la image: ${JSON.stringify(message.image)}`)
-                            console.log(`Esta es la id: ${message.image.id}`)
+                           
                             if (message.image) {
                                 const imageId = message.image.id;
+                                console.log(imageId);
                                 imageBase64 = await getImageBase64(imageId);
                                 textMessage = 'IMAGEN';
                             } else if (message.audio) {
