@@ -21,6 +21,19 @@
         <!-- <h2 class="contact-title">Contactos</h2> -->
         <div class="container">
             <div class="users-container">
+                <input type="text" id="user-search" class="user-search" placeholder="Buscar...">
+                <div class="dropdown">
+                    <button class="dropdown-button">Filtrar</button>
+                    <div class="dropdown-content">
+                        <a href="#" data-filter="Pendiente">Pago pendiente</a>
+                        <a href="#" data-filter="Bronce">Bronce</a>
+                        <a href="#" data-filter="Plata">Plata</a>
+                        <a href="#" data-filter="Oro">Oro</a>
+                        <a href="#" data-filter="Urgente">Urgente</a>
+                        <a href="#" data-filter="Retiro">Retiro</a>
+                    </div>
+                </div>
+                <button class="clear-filter-button" onclick="clearFilter()">×</button>
                 <ul class="users">
                 </ul>
             </div>
@@ -31,7 +44,13 @@
                     <h1 id="nickname-id" onclick="editContact()"></h1>
                     <h1 id="username-id" onclick="editContact()"></h1>
                 </div>
-                <div id="tag-section" class="tagSection" onclick="addUserTag()"></div>
+                <div id="buttons-section" class="buttonsSection">
+                    <button class="custom-button" onclick="createUser()">Crear usuario</button>  
+                    <button class="custom-button">Pago</button>
+                    <button class="custom-button">Predefinidos</button>
+                    <button class="custom-button"  onclick="addUserTag()"">Etiquetas</button>
+                </div>
+                <div id="tag-section" class="tagSection"></div>
                 <ul class="chat-box">
                 </ul>
                 <div class="chat-form">

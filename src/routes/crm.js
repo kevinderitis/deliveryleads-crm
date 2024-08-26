@@ -2,7 +2,7 @@ import { Router } from "express";
 import config from "../config/config.js";
 import { userConnections } from '../websocket/ws-handler.js';
 import { WebSocket } from "ws";
-import { addMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService } from '../services/chatServices.js';
+import { addMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService, getUsersFilteredListService } from '../services/chatServices.js';
 import { deliverLeadToClient } from "../services/leadService.js";
 import { isAuthenticated } from "../middleware/middleware.js";
 import { addTagToChatByParticipant, changeNickname, removeTagFromChatByParticipant } from "../dao/chatDAO.js";
@@ -92,6 +92,17 @@ crmRouter.get('/users/list/:email', isAuthenticated, async (req, res) => {
     }
 });
 
+crmRouter.get('/users/list/:email/:filter', isAuthenticated, async (req, res) => {
+    let email = req.params.email;
+    let filter = req.params.filter;
+    try {
+        let userList = await getUsersFilteredListService(email, filter);
+        res.send(userList)
+    } catch (error) {
+        res.send('No se pudo obtener lista')
+    }
+});
+
 crmRouter.get('/chats/:selected', isAuthenticated, async (req, res) => {
     let selectedUser = req.params.selected;
     let chat = await getMessagesForUserService(selectedUser);
@@ -102,6 +113,14 @@ crmRouter.get('/nickname/:nickname/:user', isAuthenticated, async (req, res) => 
     let nickName = req.params.nickname;
     let userId = req.params.user;
     let response = await changeNickname(nickName, userId);
+    res.send(response);
+});
+
+crmRouter.get('/nickname/:nickname/:user/:password', isAuthenticated, async (req, res) => {
+    let nickName = req.params.nickname;
+    let userId = req.params.user;
+    let password = req.params.password;
+    let response = await changeNickname(nickName, userId, password);
     res.send(response);
 });
 

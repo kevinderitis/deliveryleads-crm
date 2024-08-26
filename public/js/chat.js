@@ -1,4 +1,5 @@
 let selectedUser;
+let selectedTag;
 
 function markChatAsRead(chatValue) {
     let unreadChats = JSON.parse(localStorage.getItem('unreadChats')) || [];
@@ -73,10 +74,10 @@ const removeTag = async (id, tag) => {
     }
 };
 
-async function saveNickname(nickname, userId) {
-    console.log(nickname, userId)
+async function saveNickname(nickname, userId, password) {
+    let url = password ? `/crm/nickname/${nickname}/${userId}/${password}` : `/crm/nickname/${nickname}/${userId}`;
     try {
-        await fetch(`/crm/nickname/${nickname}/${userId}`);
+        await fetch(url);
 
         console.log('Nickname guardado exitosamente');
 
@@ -96,6 +97,40 @@ async function saveNickname(nickname, userId) {
             confirmButtonText: 'OK'
         });
     }
+}
+
+function createUser() {
+    let inputMessage = document.getElementById('message');
+    Swal.fire({
+        title: 'Ingresa tus credenciales',
+        html:
+            '<input id="swal-input-username" class="swal2-input" placeholder="Usuario">' +
+            '<input id="swal-input-password" type="password" class="swal2-input" placeholder="Contraseña">',
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
+        cancelButtonText: 'Cancelar',
+        preConfirm: () => {
+            const username = document.getElementById('swal-input-username').value;
+            const password = document.getElementById('swal-input-password').value;
+            if (!username || !password) {
+                Swal.showValidationMessage('Ambos campos son obligatorios');
+                return false;
+            }
+            if (username.length < 3) {
+                Swal.showValidationMessage('El nombre de usuario debe tener al menos 3 caracteres');
+                return false;
+            }
+            return { username, password };
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const { username, password } = result.value;
+            let userId = getUsernameIdValue();
+            saveNickname(username, userId, password);
+            inputMessage.value = `Usuario: ${username} -> Contraseña: ${password}`;;
+        }
+    });
 }
 
 function editContact() {
@@ -124,7 +159,6 @@ function editContact() {
     });
 }
 
-
 function addUserTag() {
     Swal.fire({
         title: 'Selecciona una etiqueta',
@@ -132,9 +166,12 @@ function addUserTag() {
             <div>
                 <select id="tag-select" class="swal2-input">
                     <option value="">Selecciona una etiqueta</option>
-                    <option value="Pago pendiente">Pago pendiente</option>
+                    <option value="Pendiente">Pago pendiente</option>
+                    <option value="Bronce">Bronce</option>
+                    <option value="Plata">Plata</option>
+                    <option value="Oro">Oro</option>
                     <option value="Urgente">Urgente</option>
-                    <option value="Interesado">Interesado</option>
+                    <option value="Retiro">Retiro</option>
                 </select>
             </div>
             <div>
@@ -295,10 +332,26 @@ async function getUserList(email) {
     }
 }
 
+async function getFilteredList(email, filter) {
+    try {
+        let response = await fetch(`/crm/users/list/${email}/${filter}`)
+        let userList = await response.json();
+        return userList;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 
 async function renderUsers() {
     const userEmail = await getUserEmail();
-    let list = await getUserList(userEmail);
+    let list;
+    if (!selectedTag) {
+        list = await getUserList(userEmail);
+    } else {
+        list = await getFilteredList(userEmail, selectedTag);
+    }
+
     const usersList = document.querySelector('.users');
     usersList.innerHTML = '';
 
@@ -330,6 +383,11 @@ async function renderUsers() {
     });
     applySelectedStyle(selectedUser);
     applyUnreadStyles();
+
+    if(!selectedUser) {
+        selectUser(list[0].participants[0], list[0].nickname);
+    }
+    
 }
 
 // async function renderUsers() {
@@ -443,9 +501,44 @@ function swalNotification(senderName, messageContent) {
     });
 }
 
+
+function renderFilteredUsers(tag) {
+    console.log(tag);
+}
+
+
+const dropdownButton = document.querySelector('.dropdown-button');
+const dropdownContent = document.querySelector('.dropdown-content');
+
+function toggleDropdown() {
+    const isVisible = dropdownContent.style.display === 'block';
+    dropdownContent.style.display = isVisible ? 'none' : 'block';
+}
+
+function handleDropdownSelection(event) {
+    if (event.target.tagName === 'A') {
+        const filterValue = event.target.getAttribute('data-filter');
+        selectedTag = filterValue;
+        renderUsers();
+        dropdownContent.style.display = 'none';
+    }
+}
+
+dropdownButton.addEventListener('click', toggleDropdown);
+
+dropdownContent.addEventListener('click', handleDropdownSelection);
+
+window.addEventListener('click', (event) => {
+    if (!event.target.matches('.dropdown-button')) {
+        if (dropdownContent.style.display === 'block') {
+            dropdownContent.style.display = 'none';
+        }
+    }
+});
+
 document.addEventListener('DOMContentLoaded', async () => {
     const userEmail = await getUserEmail();
-    const ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
+    const ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
 
     renderUsers();
 
@@ -505,4 +598,25 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     document.getElementById('return-btn').addEventListener('click', alternateUserChat);
+
 });
+
+document.getElementById('user-search').addEventListener('input', function () {
+    const filter = this.value.toLowerCase();
+    const users = document.querySelectorAll('.users .person');
+
+    users.forEach(function (user) {
+        const userName = user.querySelector('.name').textContent.toLowerCase();
+        if (userName.includes(filter)) {
+            user.style.display = '';
+        } else {
+            user.style.display = 'none';
+        }
+    });
+});
+
+
+function clearFilter() {
+    selectedTag = undefined;
+    renderUsers();
+}

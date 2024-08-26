@@ -26,6 +26,9 @@ const chatSchema = new mongoose.Schema({
   },
   nickname: {
     type: String
+  },
+  password: {
+    type: String
   }
 
 }, { timestamps: true });

@@ -1,4 +1,4 @@
-import { addMessage, getMessagesForChat, getMessagesForUser, getChatForUser, getUsersList, sendMessageToClient } from "../dao/chatDAO.js";
+import { addMessage, getMessagesForChat, getMessagesForUser, getChatForUser, getUsersList, sendMessageToClient, getFilteredUsersList } from "../dao/chatDAO.js";
 import axios from 'axios';
 import config from "../config/config.js";
 
@@ -40,6 +40,15 @@ export const getChatForUserService = async (user) => {
 export const getUsersListService = async (email) => {
     try {
         let response = await getUsersList(email);
+        return response;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+export const getUsersFilteredListService = async (email, filter) => {
+    try {
+        let response = await getFilteredUsersList(email, filter);
         return response;
     } catch (error) {
         console.log(error);

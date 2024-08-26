@@ -82,6 +82,19 @@ export const getUsersList = async email => {
   }
 }
 
+export const getFilteredUsersList = async (email, filter) => {
+  try {
+    const chats = await Chat.find({ 
+      participants: email,
+      tags: filter
+    }).sort({ updatedAt: -1 });
+
+    return chats;
+  } catch (error) {
+    throw new Error('Error retrieving user list: ' + error.message);
+  }
+}
+
 export const sendMessageToClient = async (phone, message) => {
   try {
     const response = await axios.post(config.CLIENT_URL, {
@@ -95,7 +108,7 @@ export const sendMessageToClient = async (phone, message) => {
   }
 }
 
-export const changeNickname = async (nickName, userId) => {
+export const changeNickname = async (nickName, userId, password) => {
   try {
     const chat = await Chat.findOne({ participants: userId });
 
@@ -103,6 +116,10 @@ export const changeNickname = async (nickName, userId) => {
       throw new Error('Chat no encontrado para este participante');
     }
     chat.nickname = nickName;
+
+    if(password) {
+      chat.password = password;
+    }
 
     await chat.save();
   } catch (error) {
@@ -141,7 +158,9 @@ export const removeTagFromChatByParticipant = async (participant, tagName) => {
       throw new Error('La propiedad tags no es un array');
     }
 
-    const updatedTags = chat.tags.filter(tag => tag && tag.trim() === tagName.trim());
+    const updatedTags = chat.tags.filter(tag => {
+      tag && tag.trim() === tagName.trim()
+    });
 
     if (updatedTags.length !== chat.tags.length) {
       chat.tags = chat.tags.filter(tag => tag.trim() !== tagName.trim());
