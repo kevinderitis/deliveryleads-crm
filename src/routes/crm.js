@@ -129,7 +129,7 @@ const getImageBase64 = async (imageId) => {
                 Authorization: `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`
             }
         });
-        console.log(`Response ----> ${JSON.stringify(response)}`)
+        console.log(`Response Data ----> ${JSON.stringify(response.data)}`); 
         const imageUrl = response.data.url;
         console.log(`Image URL ----> ${imageUrl}`)
 
