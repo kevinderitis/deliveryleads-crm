@@ -148,6 +148,7 @@ const getImageBase64 = async (imageId) => {
         });
         
         const imageUrl = response.data.url;
+        console.log(`IMAGE URL ---> ${imageUrl}`)
         if (!imageUrl) {
             throw new Error('No image URL found in response.');
         }
