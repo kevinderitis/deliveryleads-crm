@@ -158,6 +158,7 @@ crmRouter.post('/webhook', async (req, res) => {
                             console.log(`Numero de telefono: ${message.from}`)
                             console.log(`Mensaje: ${textMessage}`)
                             console.log(`Esta es la image: ${JSON.stringify(message.image)}`)
+                            console.log(`Esta es la id: ${message.image.id}`)
                             if (message.image) {
                                 const imageId = message.image.id;
                                 imageBase64 = await getImageBase64(imageId);
