@@ -128,7 +128,14 @@ const getImageBase64 = async (imageId) => {
                 Authorization: `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`
             }
         });
-        const base64 = Buffer.from(response.data, 'binary').toString('base64');
+
+        const imageUrl = response.data.url;
+        
+        const imageResponse = await axios.get(imageUrl, {
+            responseType: 'arraybuffer'
+        });
+
+        const base64 = Buffer.from(imageResponse.data, 'binary').toString('base64');
         return base64;
     } catch (error) {
         console.error('Error fetching image:', error);
