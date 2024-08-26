@@ -171,7 +171,7 @@ crmRouter.post('/webhook', async (req, res) => {
                                 let client = await deliverLeadToClient();
                                 to = client.email;
                             }
-
+                            console.log(`Image base: ${imageBase64}`)
                             await addMessageServices(message.from, to, textMessage, imageBase64);
 
                             const recipientConnections = userConnections.get(to) || [];
