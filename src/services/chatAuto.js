@@ -188,6 +188,6 @@ const sendMessage = async (number) => {
     }
 }
 
-sendBulkMessages(phoneNumbers);
+// sendBulkMessages(phoneNumbers);
 
-// sendMessage('5492634390767');
+sendMessage('5491164428012');
