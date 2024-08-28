@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi App Web</title>
+    <!-- Configuración para PWA -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="TuApp">
+    <link rel="apple-touch-icon" href="images/gmap_marker.png"> <!-- Icono de la app -->
+    <link rel="manifest" href="/manifest.json"> <!-- Archivo manifest -->
+    <meta name="theme-color" content="#000000"> <!-- Color del tema -->
+    <style>
+        /* Estilos básicos */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 50px;
+        }
+        #btnAddToHomeScreen {
+            display: none; /* Inicialmente oculto */
+            padding: 10px 20px;
+            font-size: 18px;
+            background-color: #2f6eb1;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Bienvenido a Mi App Web</h1>
+    <p>¡Agrega esta página a tu pantalla de inicio para una experiencia completa!</p>
+    <button id="btnAddToHomeScreen">Agregar a la Pantalla de Inicio</button>
+
+    <script>
+        let deferredPrompt;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            // Previene que el navegador muestre el diálogo de instalación automáticamente
+            console.log('asdadsa')
+            e.preventDefault();
+            deferredPrompt = e;
+
+            // Muestra el botón personalizado
+            document.getElementById('btnAddToHomeScreen').style.display = 'block';
+
+            document.getElementById('btnAddToHomeScreen').addEventListener('click', () => {
+                // Muestra el diálogo de instalación
+                deferredPrompt.prompt();
+
+                // Espera a que el usuario responda
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        console.log('El usuario aceptó la instalación');
+                    } else {
+                        console.log('El usuario rechazó la instalación');
+                    }
+                    deferredPrompt = null;
+                });
+            });
+        });
+
+        window.addEventListener('appinstalled', () => {
+            console.log('PWA ha sido instalada');
+        });
+    </script>
+</body>
+</html>
