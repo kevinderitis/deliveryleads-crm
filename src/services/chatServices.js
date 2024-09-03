@@ -1,4 +1,5 @@
 import { addMessage, getMessagesForChat, getMessagesForUser, getChatForUser, getUsersList, sendMessageToClient, getFilteredUsersList } from "../dao/chatDAO.js";
+import { sendMessageUnofficial } from "../routes/whatsappRouter.js";
 import axios from 'axios';
 import config from "../config/config.js";
 
@@ -78,6 +79,16 @@ export const sendWhatsappMessage = async (to, text) => {
             }
         });
         console.log(response)
+        console.log(`Message sent to: ${to}`);
+    } catch (error) {
+        console.error('Error sending message:', error);
+        throw error;
+    }
+};
+
+export const sendUnofficialWhatsapp = async (to, text) => {
+    try {
+        await sendMessageUnofficial(to, text);
         console.log(`Message sent to: ${to}`);
     } catch (error) {
         console.error('Error sending message:', error);

@@ -1,0 +1,15 @@
+2024/09/03-16:30:28.655 8c03 Reusing MANIFEST /Users/kevinderitis/Documents/Proyectos/deliveryleads-crm/src/routes/whatsapp-sessions/session-client-0206/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2024/09/03-16:30:28.655 8c03 Recovering log #54
+2024/09/03-16:30:28.663 8c03 Reusing old log /Users/kevinderitis/Documents/Proyectos/deliveryleads-crm/src/routes/whatsapp-sessions/session-client-0206/Default/IndexedDB/https_web.whatsapp.com_0.indexeddb.leveldb/000054.log 
+2024/09/03-16:30:28.664 8c03 Delete type=2 #55
+2024/09/03-16:30:28.664 8c03 Delete type=2 #52
+2024/09/03-16:30:30.371 f203 Level-0 table #59: started
+2024/09/03-16:30:30.381 f203 Level-0 table #59: 104860 bytes OK
+2024/09/03-16:30:30.390 f203 Delete type=0 #54
+2024/09/03-16:30:30.391 1930b Manual compaction at level-0 from '\x00\x1c\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x1d\x00\x00\x00' @ 0 : 0; will stop at (end)
+2024/09/03-16:30:31.947 22c07 Compacting 1@1 + 1@2 files
+2024/09/03-16:30:31.971 22c07 Generated table #60@1: 18156 keys, 630130 bytes
+2024/09/03-16:30:31.971 22c07 Compacted 1@1 + 1@2 files => 630130 bytes
+2024/09/03-16:30:31.978 22c07 compacted to: files[ 0 0 1 0 0 0 0 ]
+2024/09/03-16:30:31.979 22c07 Delete type=2 #59
+2024/09/03-16:30:31.979 22c07 Delete type=2 #56

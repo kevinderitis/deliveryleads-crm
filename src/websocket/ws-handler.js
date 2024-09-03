@@ -1,5 +1,5 @@
 import { WebSocketServer } from 'ws';
-import { addMessageServices, sendWhatsappMessage } from '../services/chatServices.js';
+import { addMessageServices, sendWhatsappMessage, sendUnofficialWhatsapp } from '../services/chatServices.js';
 import config from '../config/config.js';
 
 const userConnections = new Map();
@@ -27,7 +27,13 @@ export const setupWebSocketServer = (server) => {
                     if (text) {
                         console.log(`Message from ${userEmail}: ${text} -> ${selectedUser}`);
                         await addMessageServices(userEmail, selectedUser, text);
-                        await sendWhatsappMessage(selectedUser, text);
+
+                        if (selectedUser.endsWith('@c.us')) {
+                            await sendUnofficialWhatsapp(selectedUser, text);
+                        } else {
+                            await sendWhatsappMessage(selectedUser, text);
+                        }
+
 
                         const recipientConnections = userConnections.get(selectedUser) || [];
                         recipientConnections.forEach((recipientWs) => {
