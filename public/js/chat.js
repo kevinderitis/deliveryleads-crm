@@ -304,6 +304,55 @@ function renderTags(tagsArray) {
     });
 }
 
+
+function selectPredefinedMessage() {
+    const predefinedMessages = [
+        { title: 'Bienvenida', content: 'Hola, bienvenido a nuestro servicio.' },
+        { title: 'Pago Pendiente', content: 'Tienes un pago pendiente. Por favor, realiza el pago lo antes posible.' },
+        { title: 'Confirmación de Pedido', content: 'Tu pedido ha sido confirmado y está en camino.' },
+        { title: 'Recordatorio de Cita', content: 'Este es un recordatorio de tu cita programada.' },
+        { title: 'Agradecimiento', content: 'Gracias por tu compra. Esperamos verte pronto de nuevo.' }
+    ];
+
+    const htmlContent = `
+        <div>
+            <select id="message-select" class="swal2-input">
+                <option value="">Selecciona un mensaje predefinido</option>
+                ${predefinedMessages.map(msg => `<option value="${msg.content}">${msg.title}</option>`).join('')}
+            </select>
+        </div>
+        <div>
+            <textarea id="message-text" class="swal2-textarea" placeholder="El mensaje seleccionado aparecerá aquí..." readonly></textarea>
+        </div>
+    `;
+
+    Swal.fire({
+        title: 'Selecciona un mensaje predefinido',
+        html: htmlContent,
+        showCancelButton: true,
+        confirmButtonText: 'Enviar',
+        preConfirm: () => {
+            const selectedMessage = document.getElementById('message-text').value.trim();
+            if (!selectedMessage) {
+                Swal.showValidationMessage('Por favor, selecciona un mensaje predefinido o modifícalo');
+                return false;
+            }
+            return selectedMessage;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('message').value = result.value;
+        }
+    });
+
+    document.addEventListener('change', function (event) {
+        if (event.target && event.target.id === 'message-select') {
+            const selectedContent = event.target.value;
+            document.getElementById('message-text').value = selectedContent;
+        }
+    });
+}
+
 // function renderTags(tagsArray) {
 //     const tagSection = document.getElementById('tag-section');
 
@@ -562,7 +611,6 @@ function renderFilteredUsers(tag) {
     console.log(tag);
 }
 
-
 const dropdownButton = document.querySelector('.dropdown-button');
 const dropdownContent = document.querySelector('.dropdown-content');
 
@@ -594,7 +642,7 @@ window.addEventListener('click', (event) => {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const userEmail = await getUserEmail();
-    const ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
+    const ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
 
     renderUsers();
 
