@@ -384,10 +384,10 @@ async function renderUsers() {
     applySelectedStyle(selectedUser);
     applyUnreadStyles();
 
-    if(!selectedUser) {
+    if (!selectedUser) {
         selectUser(list[0].participants[0], list[0].nickname);
     }
-    
+
 }
 
 // async function renderUsers() {
@@ -418,6 +418,62 @@ async function renderUsers() {
 //     applySelectedStyle(selectedUser);
 //     applyUnreadStyles();
 // }
+
+async function startNewChat(from, text) {
+    try {
+        let response = await fetch('/crm/new', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ from, text })
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        let result = await response.json();
+        return result;
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
+}
+
+
+function newChat() {
+    Swal.fire({
+        title: 'Nuevo Chat',
+        html:
+            '<input id="swal-input-number" class="swal2-input" placeholder="Número de teléfono">',
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
+        cancelButtonText: 'Cancelar',
+        preConfirm: () => {
+            const number = document.getElementById('swal-input-number').value;
+
+            if (!number) {
+                Swal.showValidationMessage('El número de teléfono es obligatorio');
+                return false;
+            }
+
+            const phoneNumberPattern = /^[0-9]+$/;
+            if (!phoneNumberPattern.test(number)) {
+                Swal.showValidationMessage('El número de teléfono debe contener solo números');
+                return false;
+            }
+
+            return { number };
+        }
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            const { number } = result.value;
+            await startNewChat(number, 'New Contact');
+        }
+    });
+}
+
 
 async function getChatMessages(email) {
     try {
@@ -538,7 +594,7 @@ window.addEventListener('click', (event) => {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const userEmail = await getUserEmail();
-    const ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
+    const ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
 
     renderUsers();
 

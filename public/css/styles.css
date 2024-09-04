@@ -615,7 +615,7 @@ input[type="text"] {
     padding: 10px 20px;
     border: none;
     border-radius: 5px;
-    font-size: 16px;
+    font-size: 12px;
     cursor: pointer;
     transition: background-color 0.3s ease, transform 0.3s ease;
 }
@@ -642,7 +642,19 @@ input[type="text"] {
 .dropdown {
     position: relative;
     display: inline-block;
-    margin-bottom: 20px; /* Espacio debajo del dropdown */
+    margin-bottom: 20px;
+}
+
+.new-chat {
+    background-color: transparent;
+    /* border: none; */
+    position: relative;
+    display: inline-block;
+    margin-bottom: 20px;
+    margin-left: 40px;
+    color: #333;
+    cursor: pointer;
+    border-radius: 5px;
 }
 
 .dropdown-button {
