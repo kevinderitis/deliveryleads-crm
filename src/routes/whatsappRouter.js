@@ -14,13 +14,8 @@ const whatsappRouter = Router();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const sessionsDir = path.join(__dirname, 'whatsapp-sessions');
-if (!fs.existsSync(sessionsDir)) {
-    fs.mkdirSync(sessionsDir, { recursive: true });
-}
-
 let client = new Client({
-    authStrategy: new LocalAuth({ clientId: `client-0206`, dataPath: sessionsDir }),
+    authStrategy: new LocalAuth({ clientId: `client-0206`}),
     puppeteer: {
         args: [
             '--no-sandbox',
@@ -44,7 +39,6 @@ let client = new Client({
 let qrData;
 
 export const initializeClient = () => {
-    console.log('Trying to initialice');
     client.on('qr', async (qr) => {
         qrData = qr;
         console.log(`Este es la data de qr: ${qrData}`);
