@@ -44,6 +44,7 @@ let client = new Client({
 let qrData;
 
 export const initializeClient = () => {
+    console.log('Trying to initialice');
     client.on('qr', async (qr) => {
         qrData = qr;
         console.log(`Este es la data de qr: ${qrData}`);
