@@ -54,11 +54,6 @@ const addTag = async (id, tag) => {
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-
-        const result = await response.json();
-        console.log('Tag added successfully:', result);
-        return result;
-
     } catch (error) {
         console.error('Error adding tag:', error);
         throw error;
@@ -200,10 +195,10 @@ function addUserTag() {
 
             Swal.fire({
                 title: 'Etiqueta agregada',
-                text: `Tu mensaje ha sido etiquetado como: ${tag}`,
+                text: `El cliente ha sido etiquetado como: ${tag}`,
                 icon: 'success',
                 confirmButtonText: 'OK'
-            });
+            }).then(result => selectUser(userId, ''));
 
         }
     });
@@ -262,21 +257,9 @@ function displayMessages(filteredMessages) {
     });
 }
 
-function removeTagFromDOM(tagToRemove) {
-    const tagSection = document.getElementById('tag-section');
-
-    const tagElement = Array.from(tagSection.getElementsByClassName('tag'))
-        .find(tag => tag.textContent.trim() === tagToRemove.trim());
-
-    if (tagElement) {
-        tagSection.removeChild(tagElement);
-    }
-}
-
 function removeTagFromUser(tagToRemove) {
     let userId = getUsernameIdValue()
-    removeTag(userId, tagToRemove);
-    removeTagFromDOM(tagToRemove)
+    removeTag(userId, tagToRemove).then(result => selectUser(userId, ''));
 }
 
 function renderTags(tagsArray) {
@@ -304,6 +287,27 @@ function renderTags(tagsArray) {
     });
 }
 
+function copyNumber() {
+    const numberElement = document.getElementById('username-id');
+    const numberText = numberElement.innerText;
+
+    const tempInput = document.createElement('input');
+    tempInput.value = numberText;
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempInput);
+
+    Swal.fire({
+        position: 'top-end',
+        icon: 'success',
+        title: 'Copiado',
+        text: numberText,
+        showConfirmButton: false,
+        timer: 1500,
+        toast: true
+    });
+}
 
 function selectPredefinedMessage() {
     const predefinedMessages = [

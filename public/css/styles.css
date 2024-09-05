@@ -270,16 +270,18 @@ main {
 .usernameId {
     padding: 5px;
     background-color: #d93d3da0;
-    /* border-radius: 12px; */
+    border-radius: 0px 0px 12px 12px;
     display: flex;
     align-items: center;
     justify-content: center;
+    color: rgb(245, 236, 236);
 }
 
 .usernameId h1 {
     font-size: 20px;
     margin: 0;
-    margin-right: 10px;
+    margin-right: 30px;
+    margin-left: 30px;
 }
 
 .usernameId h1:last-child {
@@ -288,7 +290,7 @@ main {
 
 .buttonsSection {
     padding: 10px;
-    background-color: #d93d3d48;
+    /* background-color: #d93d3d48; */
     text-align: center;
     font-size: 20px;
     /* border-radius: 0px 0px 12px 12px; */
@@ -444,12 +446,10 @@ input[type="text"] {
     display: inline-flex;
     align-items: center;
     background-color: #ffdddd;
-    /* Fondo rosado claro */
     border: 1px solid #ff4d4d;
-    /* Borde rojo */
     border-radius: 12px;
     padding: 5px 10px;
-    margin: 5px;
+    margin: 0px;
     font-size: 14px;
     color: #ff4d4d;
 }
@@ -604,7 +604,7 @@ input[type="text"] {
 
 .buttonsSection {
     display: flex;
-    justify-content: space-around;
+    /* justify-content: space-around; */
     gap: 10px;
     padding: 10px;
 }
@@ -683,6 +683,7 @@ input[type="text"] {
     top: 100%; 
     left: 0;
 }
+
 
 .dropdown-content a {
     color: #333;

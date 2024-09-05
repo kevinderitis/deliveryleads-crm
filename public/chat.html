@@ -7,6 +7,7 @@
     <title>Chat Application</title>
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 
 <body>
@@ -35,7 +36,6 @@
                         </div>
                     </div>
                     <button class="clear-filter-button" onclick="clearFilter()">×</button>
-                    <button class="new-chat" onclick="newChat()">Nuevo</button>
                 </div>
                 <div>
                     <ul class="users">
@@ -47,14 +47,23 @@
                 <button id="return-btn" class="return-button"><img src="assets/images/return.svg"
                         alt="Retornar"></button>
                 <div class="usernameId">
-                    <h1 id="nickname-id" onclick="editContact()"></h1>
-                    <h1 id="username-id" onclick="editContact()"></h1>
+                    <i class="fas fa-user"></i>
+                    <h1 id="nickname-id"></h1>
+                    <h1 id="username-id" onclick="copyNumber()"></h1>
                 </div>
                 <div id="buttons-section" class="buttonsSection">
-                    <button class="custom-button" onclick="createUser()">Crear usuario</button>
-                    <button class="custom-button">Pago</button>
-                    <button class="custom-button" onclick="selectPredefinedMessage()">Predefinidos</button>
-                    <button class="custom-button" onclick="addUserTag()"">Etiquetas</button>
+                    <button class="custom-button" onclick="newChat()">
+                        <i class="fab fa-whatsapp"></i> Chat
+                    </button>
+                    <button class="custom-button" onclick="createUser()">
+                        <i class="fas fa-user"></i> Usuario
+                    </button>
+                    <button class="custom-button">
+                        <i class="fas fa-wallet"></i> Pago
+                    </button>
+                    <button class="custom-button" onclick="addUserTag()">
+                        <i class="fas fa-tag"></i> Etiquetas
+                    </button>
                 </div>
                 <div id="tag-section" class="tagSection">
                 </div>
@@ -62,6 +71,9 @@
                 </ul>
                 <div class="chat-form">
                     <input type="text" id="message" placeholder="Escribe un mensaje..." />
+                    <button class="custom-button" onclick="selectPredefinedMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
                     <button id="send" class="send-button">Enviar</button>
                 </div>
             </div>
