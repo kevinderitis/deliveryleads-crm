@@ -6,7 +6,7 @@ body {
 }
 
 header {
-    overflow: hidden;
+    /* overflow: hidden; */
     position: relative;
     background-color: #d93d3dc7;
     color: #fff;
@@ -732,8 +732,8 @@ input[type="text"] {
 
 .filter-container {
     position: sticky;
-    top: 0; /* Mantiene el filtro en la parte superior mientras haces scroll */
-    background-color: #f1f1f1; /* Fondo para que el contenido detrás no se vea */
-    z-index: 1000; /* Asegura que el filtro esté por encima de otros elementos */
+    top: 0; 
+    background-color: #f1f1f1; 
+    z-index: 1000; 
     padding: 10px;
 }

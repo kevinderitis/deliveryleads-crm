@@ -3,7 +3,7 @@ import axios from 'axios';
 import config from '../config/config.js';
 import db from "./db.js";
 
-export const addMessage = async (from, to, text, image) => {
+export const addMessage = async (from, to, text, image, audioUrl) => {
   try {
     let chat = await Chat.findOne({ participants: { $all: [from, to] } });
 
@@ -11,7 +11,7 @@ export const addMessage = async (from, to, text, image) => {
       chat = new Chat({ participants: [from, to], messages: [] });
     }
 
-    chat.messages.push({ from, to, text, image });
+    chat.messages.push({ from, to, text, image, audioUrl });
 
     await chat.save();
 

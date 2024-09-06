@@ -2,10 +2,13 @@ import { addMessage, getMessagesForChat, getMessagesForUser, getChatForUser, get
 import { sendMessageUnofficial } from "../routes/whatsappRouter.js";
 import axios from 'axios';
 import config from "../config/config.js";
+import path from 'path';
+import fs from 'fs';
+import crypto from 'crypto';
 
-export const addMessageServices = async (from, to, text, image) => {
+export const addMessageServices = async (from, to, text, image, audioUrl) => {
     try {
-        await addMessage(from, to, text, image);
+        await addMessage(from, to, text, image, audioUrl);
     } catch (error) {
         console.log(error);
     }
@@ -96,6 +99,28 @@ export const sendUnofficialWhatsapp = async (to, text) => {
     }
 };
 
+const AUDIO_DIR = path.resolve('./public/audios');
+
+function generateShortId() {
+    return crypto.randomBytes(8).toString('hex'); 
+}
+
+export async function saveAudio(audioData, fileName) {
+    const shortId = generateShortId(); 
+    const fileExtension = path.extname(fileName) || '.mp3'; 
+    const safeFileName = `${shortId}${fileExtension}`; 
+
+    const filePath = path.join(AUDIO_DIR, safeFileName);
+
+    if (!fs.existsSync(AUDIO_DIR)) {
+        fs.mkdirSync(AUDIO_DIR, { recursive: true });
+    }
+
+    fs.writeFileSync(filePath, Buffer.from(audioData, 'base64'));
+    console.log(`Audio saved to ${filePath}`);
+
+    return safeFileName;
+}
 // export const sendWelcomeMessage = async (to) => {
 //     try {
 //         const response = await axios.post(`${config.WHATSAPP_API_URL}/${config.PHONE_ID}/messages`, {

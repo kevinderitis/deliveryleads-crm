@@ -218,7 +218,7 @@ function addInactiveNotification(chatValue) {
     }
 }
 
-function renderChatMessage(user, message, image, date) {
+function renderChatMessage(user, message, image, audioUrl, date) {
     const chatBox = document.querySelector('.chat-box');
     const li = document.createElement('li');
     const dateObj = new Date(date);
@@ -228,17 +228,28 @@ function renderChatMessage(user, message, image, date) {
     if (user === selectedUser) {
         if (image) {
             li.innerHTML = `
-                <div class="user-chat-box">
-                    <span>${user}: </span>
-                    <div class="image-container">
-                        <img src="data:image/jpeg;base64,${image}" alt="">
-                    </div>
-                </div>`;
+        <div class="user-chat-box">
+            <span>${user}: </span>
+            <div class="image-container">
+                <img src="data:image/jpeg;base64,${image}" alt="">
+            </div>
+        </div>`;
+        } else if (audioUrl) {
+            li.innerHTML = `
+        <div class="user-chat-box">
+            <span>${user}: </span>
+            <div class="audio-container">
+                <audio controls>
+                    <source src="audios/${audioUrl}" type="audio/mp3">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+        </div>`;
         } else {
             li.innerHTML = `
-                <span class="user-chat-box">${user}: </span> 
-                <span class="message-chat-box">${message}</span>
-                <span class="message-time">${formattedDate}</span>`;
+        <span class="user-chat-box">${user}: </span> 
+        <span class="message-chat-box">${message}</span>
+        <span class="message-time">${formattedDate}</span>`;
         }
     } else {
         li.innerHTML = `<span class="user-chat-box">${user}: </span> <span class="message-chat-box">${message}</span> <span class="message-time">${formattedDate}</span>`;
@@ -253,7 +264,7 @@ function displayMessages(filteredMessages) {
     const chatBox = document.querySelector('.chat-box');
     chatBox.innerHTML = '';
     filteredMessages.forEach(msg => {
-        renderChatMessage(msg.from, msg.text, msg.image, msg.createdAt);
+        renderChatMessage(msg.from, msg.text, msg.image, msg.audioUrl, msg.createdAt);
     });
 }
 
@@ -558,7 +569,6 @@ async function selectUser(email, nickName) {
     const usernameId = document.getElementById('username-id');
     const nicknameId = document.getElementById('nickname-id');
     let chat = await getChatMessages(email);
-    console.log(chat)
     renderTags(chat.tags);
     displayMessages(chat.messages);
     markChatAsUnread(email);
@@ -650,11 +660,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     renderUsers();
 
+    function getCurrentDateTime() {
+        const date = new Date();
+        return date.toISOString();
+    }
+    
+
     ws.onmessage = (event) => {
-        const { user, text, destination, image } = JSON.parse(event.data);
-        swalNotification(destination, text);
+        const { user, textMessage, destination, image, audioUrl } = JSON.parse(event.data);
+        swalNotification(destination, textMessage);
         if (destination === selectedUser) {
-            renderChatMessage(user, text, image);
+            let currentDateTime = getCurrentDateTime();
+            renderChatMessage(user, textMessage, image, audioUrl, currentDateTime);
         } else {
             markChatAsRead(destination);
             applyUnreadStyles();
@@ -662,13 +679,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         renderUsers();
     };
 
-
     function sendMessage() {
         const input = document.querySelector('#message');
         if (input.value.trim()) {
             const message = JSON.stringify({ userEmail, text: input.value, selectedUser });
             ws.send(message);
-            renderChatMessage(userEmail, input.value);
+            let currentDateTime = getCurrentDateTime();
+            renderChatMessage(userEmail, input.value, '', '', currentDateTime);
             input.value = '';
         }
     }
