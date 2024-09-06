@@ -14,7 +14,7 @@ async function stablishWsConnection() {
   let userData = await getUserEmail();
 
   if (userData.email) {
-    ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userData.email)}`);
+    ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userData.email)}`);
     renderMessages(userData.chat.messages, userData.email);
     ws.onmessage = (event) => {
       const { user, textMessage, destination, image, audioUrl } = JSON.parse(event.data);
