@@ -21,6 +21,24 @@ export const addMessage = async (from, to, text, image, audioUrl) => {
   }
 };
 
+export const addWelcomeMessage = async (from, to, text, image, audioUrl) => {
+  try {
+    let chat = await Chat.findOne({ participants: { $all: [from, to] } });
+
+    if (!chat) {
+      chat = new Chat({ participants: [to, from], messages: [] });
+    }
+
+    chat.messages.push({ from, to, text, image, audioUrl });
+
+    await chat.save();
+
+    return chat;
+  } catch (error) {
+    throw new Error('Error adding message: ' + error.message);
+  }
+};
+
 export const getMessagesForChat = async participants => {
   try {
     const chat = await Chat.findOne({ participants: { $all: participants } });

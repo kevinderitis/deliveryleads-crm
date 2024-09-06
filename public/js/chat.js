@@ -419,11 +419,9 @@ async function renderUsers() {
     const usersList = document.querySelector('.users');
     usersList.innerHTML = '';
 
-    let userTemplate = {
-        time: "15/02/2019",
-        status: "busy",
-        img: "https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=mail@ashallendesign.co.uk"
-    };
+
+    let img = "https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=mail@ashallendesign.co.uk";
+    
 
     list.forEach(user => {
         let userName = user.nickname ? user.nickname : user.participants[0];
@@ -435,10 +433,10 @@ async function renderUsers() {
         const userElement = `
             <li class="person" data-chat="${user.participants[0]}">
                 <div class="user">
-                    <img src="${userTemplate.img}" alt="${userName}">
+                    <img src="${img}" alt="${userName}">
                 </div>
                 <p class="name-time">
-                    <span class="name">${userName}</span>
+                    <span class="name">${user.participants[0]}</span>
                     <span class="preview">${to}${preview}</span>
                 </p>
             </li>
@@ -656,7 +654,7 @@ window.addEventListener('click', (event) => {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const userEmail = await getUserEmail();
-    const ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
+    const ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
 
     renderUsers();
 

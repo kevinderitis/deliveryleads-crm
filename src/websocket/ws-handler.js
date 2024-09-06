@@ -1,5 +1,5 @@
 import { WebSocketServer } from 'ws';
-import { addMessageServices, sendWhatsappMessage, sendUnofficialWhatsapp } from '../services/chatServices.js';
+import { addMessageServices, sendWhatsappMessage, sendUnofficialWhatsapp, getChatForUserService } from '../services/chatServices.js';
 import config from '../config/config.js';
 
 const userConnections = new Map();
@@ -22,9 +22,9 @@ export const setupWebSocketServer = (server) => {
 
             ws.on('message', async (message) => {
                 try {
-                    const { text, selectedUser } = JSON.parse(message);
+                    const { text, selectedUser, type } = JSON.parse(message);
 
-                    if (text) {
+                    if (type !== 'lead') {
                         console.log(`Message from ${userEmail}: ${text} -> ${selectedUser}`);
                         await addMessageServices(userEmail, selectedUser, text);
 
@@ -39,6 +39,29 @@ export const setupWebSocketServer = (server) => {
                         recipientConnections.forEach((recipientWs) => {
                             if (recipientWs.readyState === WebSocket.OPEN) {
                                 recipientWs.send(JSON.stringify({ user: userEmail, text }));
+                            }
+                        });
+                    } else {
+                        console.log(text)
+                        console.log(userEmail);
+
+                        let chat = await getChatForUserService(userEmail);
+                        let imageBase64;
+                        let audioUrl;
+                        let to;
+
+                        if (chat) {
+                            to = chat.participants.filter(participant => participant !== userEmail)[0];
+                        } else {
+                            let client = await deliverLeadToClient();
+                            to = client.email;
+                        }
+                        await addMessageServices(userEmail, to, text, imageBase64, audioUrl);
+
+                        const recipientConnections = userConnections.get(to) || [];
+                        recipientConnections.forEach(ws => {
+                            if (ws.readyState === WebSocket.OPEN) {
+                                ws.send(JSON.stringify({ user: userEmail, text, destination: userEmail, image: imageBase64, audioUrl }));
                             }
                         });
                     }
