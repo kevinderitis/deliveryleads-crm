@@ -1,4 +1,4 @@
-import { WebSocketServer } from 'ws';
+import { WebSocketServer, WebSocket } from 'ws';
 import { addMessageServices, sendWhatsappMessage, sendUnofficialWhatsapp, getChatForUserService } from '../services/chatServices.js';
 import config from '../config/config.js';
 
@@ -31,7 +31,7 @@ export const setupWebSocketServer = (server) => {
                         if (selectedUser.endsWith('@c.us')) {
                             await sendUnofficialWhatsapp(selectedUser, text);
                         } else {
-                            await sendWhatsappMessage(selectedUser, text);
+                            // await sendWhatsappMessage(selectedUser, text);
                         }
 
 
@@ -61,7 +61,7 @@ export const setupWebSocketServer = (server) => {
                         const recipientConnections = userConnections.get(to) || [];
                         recipientConnections.forEach(ws => {
                             if (ws.readyState === WebSocket.OPEN) {
-                                ws.send(JSON.stringify({ user: userEmail, text, destination: userEmail, image: imageBase64, audioUrl }));
+                                ws.send(JSON.stringify({ user: userEmail, textMessage: text, destination: userEmail, image: imageBase64, audioUrl }));
                             }
                         });
                     }

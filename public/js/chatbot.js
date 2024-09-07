@@ -16,17 +16,10 @@ async function stablishWsConnection() {
   if (userData.email) {
     ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userData.email)}`);
     renderMessages(userData.chat.messages, userData.email);
+
     ws.onmessage = (event) => {
-      const { user, textMessage, destination, image, audioUrl } = JSON.parse(event.data);
-      swalNotification(destination, textMessage);
-      if (destination === selectedUser) {
-        let currentDateTime = getCurrentDateTime();
-        renderChatMessage(user, textMessage, image, audioUrl, currentDateTime);
-      } else {
-        markChatAsRead(destination);
-        applyUnreadStyles();
-      }
-      renderUsers();
+      const { user, text } = JSON.parse(event.data);
+      generate_message(text, 'user')
     };
   } else {
     console.log('not logued')
@@ -348,6 +341,4 @@ document.getElementById("submit-existing-user").addEventListener("click", async 
 
 document.addEventListener('DOMContentLoaded', (event) => {
   stablishWsConnection();
-  $("#chat-circle").toggle('scale');
-  $(".chat-box").toggle('scale');
 });
