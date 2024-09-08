@@ -16,6 +16,8 @@ async function stablishWsConnection() {
   if (userData.email) {
     ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userData.email)}`);
     renderMessages(userData.chat.messages, userData.email);
+    $("#chat-circle").toggle('scale');
+    $(".chat-box").toggle('scale');
 
     ws.onmessage = (event) => {
       const { user, text } = JSON.parse(event.data);
@@ -29,7 +31,12 @@ async function stablishWsConnection() {
 
 function sendMessage(msg) {
   const message = JSON.stringify({ text: msg, type: 'lead' });
-  ws.send(message);
+  if(ws){
+    ws.send(message);
+  }else{
+    generate_message("Hola! Para hablar con tu cajero por favor presiona jugar e ingresa con tu usuario y contraseña. Si no tenes uno presiona jugar y luego 'Quiero mi usuario' para empezar a jugar. Mucha suerte", 'user')
+  }
+ 
 }
 
 var INDEX = 0;
@@ -265,9 +272,6 @@ document.getElementById('submit-new-user').addEventListener('click', async funct
       var modal = document.getElementById("myModal");
       modal.style.display = "none";
 
-      $("#chat-circle").toggle('scale');
-      $(".chat-box").toggle('scale');
-
       stablishWsConnection();
       // sendInitialMessage(username);
     } else {
@@ -322,9 +326,6 @@ document.getElementById("submit-existing-user").addEventListener("click", async 
       const modal = document.getElementById("myModal");
       modal.style.display = "none";
 
-      $("#chat-circle").toggle('scale');
-      $(".chat-box").toggle('scale');
-
       stablishWsConnection();
     } else {
       loginError.textContent = data.msg;
@@ -337,8 +338,17 @@ document.getElementById("submit-existing-user").addEventListener("click", async 
   }
 });
 
-
+function isSocialMediaBrowser() {
+  const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+  return (userAgent.includes("Instagram") || userAgent.includes("FBAN") || userAgent.includes("FBAV"));
+}
 
 document.addEventListener('DOMContentLoaded', (event) => {
+
+  if (isSocialMediaBrowser()) {
+    console.log('socialmedia browser ->  redirecting')
+    const url = window.location.href;
+    window.open(url, '_blank');
+}
   stablishWsConnection();
 });
