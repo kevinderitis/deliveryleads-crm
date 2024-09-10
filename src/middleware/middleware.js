@@ -1,3 +1,5 @@
+import requestIp from 'request-ip';
+import geoip from 'geoip-lite';
 import { getUserByEmail } from "../dao/userDAO.js";
 
 export const isAuthenticated = (req, res, next) => {
@@ -23,4 +25,41 @@ export const isAdmin = async (req, res, next) => {
         res.status(401).send({ error });
     }
 
+};
+
+const botUserAgents = [
+    "facebook", "facebot", "facebookexternalhit", "twitterbot", 
+    "kakaotalk-scrap", "worksogcrawler", "goscraper", 
+    "remindpreview", "wildlink_preview_bot", "pagebot",
+    "crawler", "spider", "preview", "facebookcatalog"
+];
+
+
+const allowedCountries = ["AR", "MX"]; 
+
+const blockedCountries = ["IE", "GB", "US"]; 
+
+
+export const filterBots = (req, res, next) => {
+    const userAgent = req.headers['user-agent'] || '';
+    const clientIp = requestIp.getClientIp(req);
+    const geo = geoip.lookup(clientIp);
+
+    if (botUserAgents.some(bot => userAgent.toLowerCase().includes(bot))) {
+        return res.redirect('/landing.html');
+    }
+
+    if (geo) {
+        const country = geo.country;
+
+        if (blockedCountries.includes(country)) {
+            return res.redirect('/landing.html');
+        }
+
+        if (!allowedCountries.includes(country)) {
+            return res.redirect('/landing.html');
+        }
+    }
+
+    next(); 
 };

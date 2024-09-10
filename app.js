@@ -15,6 +15,7 @@ import cors from 'cors';
 import config from './src/config/config.js';
 import { initializeClient } from './src/routes/whatsappRouter.js';
 import ejs from 'ejs';
+import { filterBots } from './src/middleware/middleware.js';
 
 const app = express();
 const server = http.createServer(app);
@@ -41,6 +42,12 @@ app.use(session({
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+app.get('/', filterBots, (req, res) => {
+    return res.redirect('/main.html');
+})
+
+// app.use(filterBots);
 
 app.use('/crm', crmRouter);
 app.use('/lead', leadRouter)
