@@ -1,6 +1,7 @@
 import requestIp from 'request-ip';
 import geoip from 'geoip-lite';
 import { getUserByEmail } from "../dao/userDAO.js";
+import { logAccess } from '../dao/accessLogDAO.js';
 
 export const isAuthenticated = (req, res, next) => {
     if (req.session.user || req.isAuthenticated()) {
@@ -28,22 +29,32 @@ export const isAdmin = async (req, res, next) => {
 };
 
 const botUserAgents = [
-    "facebook", "facebot", "facebookexternalhit", "twitterbot", 
-    "kakaotalk-scrap", "worksogcrawler", "goscraper", 
+    "facebook", "facebot", "facebookexternalhit", "twitterbot",
+    "kakaotalk-scrap", "worksogcrawler", "goscraper",
     "remindpreview", "wildlink_preview_bot", "pagebot",
     "crawler", "spider", "preview", "facebookcatalog"
 ];
 
 
-const allowedCountries = ["AR", "MX"]; 
+const allowedCountries = ["AR", "MX"];
 
-const blockedCountries = ["IE", "GB", "US"]; 
+const blockedCountries = ["IE", "GB", "US"];
 
 
-export const filterBots = (req, res, next) => {
+export const filterBots = async (req, res, next) => {
     const userAgent = req.headers['user-agent'] || '';
     const clientIp = requestIp.getClientIp(req);
     const geo = geoip.lookup(clientIp);
+
+    try {
+        await logAccess({
+            userAgent,
+            ip: clientIp,
+            country: geo ? geo.country : 'Unknown'
+        });
+    } catch (error) {
+        console.error("Error al registrar el acceso: ", error);
+    }
 
     if (botUserAgents.some(bot => userAgent.toLowerCase().includes(bot))) {
         return res.redirect('/landing.html');
@@ -61,5 +72,5 @@ export const filterBots = (req, res, next) => {
         }
     }
 
-    next(); 
+    next();
 };
