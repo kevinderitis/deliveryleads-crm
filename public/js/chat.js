@@ -421,7 +421,7 @@ async function renderUsers() {
 
 
     let img = "https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=mail@ashallendesign.co.uk";
-    
+
 
     list.forEach(user => {
         let userName = user.nickname ? user.nickname : user.participants[0];
@@ -567,7 +567,13 @@ async function selectUser(email, nickName) {
     const usernameId = document.getElementById('username-id');
     const nicknameId = document.getElementById('nickname-id');
     let chat = await getChatMessages(email);
-    renderTags(chat.tags);
+    
+    if (chat.tags) {
+        renderTags(chat.tags);
+    }else{
+        console.log('No tags for user');
+    }
+
     displayMessages(chat.messages);
     markChatAsUnread(email);
     usernameId.innerHTML = email;
@@ -662,7 +668,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const date = new Date();
         return date.toISOString();
     }
-    
+
 
     ws.onmessage = (event) => {
         const { user, textMessage, destination, image, audioUrl } = JSON.parse(event.data);
