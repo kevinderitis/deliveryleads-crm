@@ -273,6 +273,7 @@ document.getElementById('submit-new-user').addEventListener('click', async funct
       modal.style.display = "none";
 
       stablishWsConnection();
+      onUserRegistration();
       // sendInitialMessage(username);
     } else {
       phoneError.textContent = data.msg;
@@ -352,3 +353,8 @@ document.addEventListener('DOMContentLoaded', (event) => {
 }
   stablishWsConnection();
 });
+
+function onUserRegistration() {
+  console.log("Usuario registrado. Enviando evento a Facebook Pixel.");
+  fbq('track', 'CompleteRegistration');
+}
