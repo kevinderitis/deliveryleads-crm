@@ -578,11 +578,13 @@ async function selectUser(email, nickName) {
     markChatAsUnread(email);
     usernameId.innerHTML = email;
 
-    if (nickName !== email) {
-        nicknameId.innerHTML = nickName;
-    } else {
-        nicknameId.innerHTML = '';
-    }
+    nicknameId.innerHTML = nickName;
+
+    // if (nickName !== email) {
+    //     nicknameId.innerHTML = nickName;
+    // } else {
+    //     nicknameId.innerHTML = '';
+    // }
 
     const chatContainer = document.querySelector('.chat-container');
     const userContainer = document.querySelector('.users-container');
