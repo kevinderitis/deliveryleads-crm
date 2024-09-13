@@ -567,8 +567,7 @@ async function selectUser(email, nickName) {
     const usernameId = document.getElementById('username-id');
     const nicknameId = document.getElementById('nickname-id');
     let chat = await getChatMessages(email);
-    console.log(email);
-    console.log(chat);
+
     if (chat.tags) {
         renderTags(chat.tags);
     }else{

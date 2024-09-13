@@ -234,7 +234,7 @@ window.addEventListener("click", function (event) {
 document.getElementById('submit-new-user').addEventListener('click', async function (event) {
   event.preventDefault();
 
-  const username = document.getElementById('new-username').value;
+  const username = document.getElementById('new-username').value.replace(/\s+/g, '');
   const phone = document.getElementById('new-phone').value;
   const phoneError = document.getElementById('phone-error');
 
