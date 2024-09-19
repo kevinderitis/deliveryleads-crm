@@ -445,8 +445,6 @@ async function renderUsers() {
     applySelectedStyle(selectedUser);
     applyUnreadStyles();
 
-    console.log(list)
-    console.log(list[0]);
     if (!selectedUser) {
         selectUser(list[0].username, list[0].phone);
     }
@@ -567,7 +565,7 @@ async function selectUser(email, phone) {
     console.log(`Selection user: ${email}`)
     selectedUser = email;
     const usernameId = document.getElementById('username-id');
-    const nicknameId = document.getElementById('nickname-id');
+    // const nicknameId = document.getElementById('nickname-id');
     let chat = await getChatMessages(email);
 
     if (chat.tags) {
@@ -580,7 +578,7 @@ async function selectUser(email, phone) {
     markChatAsUnread(email);
     usernameId.innerHTML = phone;
 
-    nicknameId.innerHTML = email;
+    // nicknameId.innerHTML = email;
 
     // if (nickName !== email) {
     //     nicknameId.innerHTML = nickName;

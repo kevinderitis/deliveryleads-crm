@@ -58,7 +58,7 @@ app.use('/auth', authRouter)
 app.use('/draft', draftOrderRouter)
 app.use('/whatsapp', whatsappRouter);
 
-initializeClient();
+// initializeClient();
 
 const PORT = config.PORT;
 server.listen(PORT, () => console.log(`Server running on port: ${server.address().port}`))
