@@ -615,16 +615,7 @@ function playSoundNotificacion() {
     });
 }
 
-function swalNotification(senderName, messageContent) {
-    Swal.fire({
-        title: `Mensaje de ${senderName}`,
-        text: messageContent,
-        position: 'top',
-        timer: 3000,
-        showConfirmButton: false,
-        toast: true,
-    });
-
+function showNotification(senderName) {
     navigator.serviceWorker.ready.then(function (registration) {
         registration.showNotification(`Mensaje de ${senderName}`, {
             body: 'Nuevo mensaje.',
@@ -635,6 +626,43 @@ function swalNotification(senderName, messageContent) {
             ]
         });
     });
+}
+
+function requestNotificationPermissionAndShow(senderName) {
+    if ('Notification' in window) {
+        if (Notification.permission === 'granted') {
+            showNotification(senderName);
+        } else if (Notification.permission === 'default') {
+            Notification.requestPermission().then((permission) => {
+                if (permission === 'granted') {
+                    showNotification(senderName);
+                } else {
+                    console.error('Permiso de notificación no concedido.');
+                }
+            }).catch((error) => {
+                console.error('Error solicitando permiso de notificación:', error);
+            });
+        } else {
+            console.error('Permiso de notificación denegado.');
+        }
+    } else {
+        console.error('Las notificaciones no están soportadas en este navegador.');
+    }
+}
+
+
+function swalNotification(senderName, messageContent) {
+    Swal.fire({
+        title: `Mensaje de ${senderName}`,
+        text: messageContent,
+        position: 'top',
+        timer: 3000,
+        showConfirmButton: false,
+        toast: true,
+    });
+
+    requestNotificationPermissionAndShow(senderName);
+
 }
 
 

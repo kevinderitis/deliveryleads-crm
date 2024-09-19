@@ -10,6 +10,43 @@ async function getUserEmail() {
   }
 }
 
+
+function showNotification() {
+  navigator.serviceWorker.ready.then(function (registration) {
+      registration.showNotification(`Mensaje de Carla`, {
+          body: 'Nuevo mensaje.',
+          icon: '../images/beneficios.png',
+          actions: [
+              { action: 'open', title: 'Abrir' },
+              { action: 'close', title: 'Cerrar' }
+          ]
+      });
+  });
+}
+
+function requestNotificationPermissionAndShow() {
+  if ('Notification' in window) {
+      if (Notification.permission === 'granted') {
+          showNotification();
+      } else if (Notification.permission === 'default') {
+          Notification.requestPermission().then((permission) => {
+              if (permission === 'granted') {
+                  showNotification();
+              } else {
+                  console.error('Permiso de notificación no concedido.');
+              }
+          }).catch((error) => {
+              console.error('Error solicitando permiso de notificación:', error);
+          });
+      } else {
+          console.error('Permiso de notificación denegado.');
+      }
+  } else {
+      console.error('Las notificaciones no están soportadas en este navegador.');
+  }
+}
+
+
 async function stablishWsConnection() {
   let userData = await getUserEmail();
 
@@ -23,16 +60,7 @@ async function stablishWsConnection() {
       const { user, text } = JSON.parse(event.data);
       generate_message(text, 'user')
 
-      navigator.serviceWorker.ready.then(function (registration) {
-        registration.showNotification(`Mensaje de Carla`, {
-            body: 'Nuevo mensaje.',
-            icon: '../images/beneficios.png',
-            actions: [
-                { action: 'open', title: 'Abrir' },
-                { action: 'close', title: 'Cerrar' }
-            ]
-        });
-    });
+      requestNotificationPermissionAndShow();
     };
   } else {
     console.log('not logued')
