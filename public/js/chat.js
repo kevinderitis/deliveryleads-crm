@@ -445,6 +445,8 @@ async function renderUsers() {
     applySelectedStyle(selectedUser);
     applyUnreadStyles();
 
+    console.log(list)
+    console.log(list[0]);
     if (!selectedUser) {
         selectUser(list[0].username, list[0].phone);
     }
