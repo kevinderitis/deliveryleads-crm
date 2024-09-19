@@ -1,7 +1,23 @@
 import bcrypt from 'bcrypt';
 import { getClientByEmail, createNewClient, isAdmin } from '../dao/clientDAO.js';
-import { addWelcomeMessage, changeNickname, getChatForUser } from '../dao/chatDAO.js';
+import { addWelcomeMessage, changeNickname, getChatForUser, setUserProperties } from '../dao/chatDAO.js';
 import { deliverLeadToClient } from '../services/leadService.js';
+
+const formatNumber = number => {
+    let cleaned = number.replace(/^\+/, '').replace(/\D/g, '');
+
+    if (cleaned.startsWith('549') && cleaned.length === 13) {
+        return `549${cleaned.substring(3, 5)}${cleaned.substring(5)}`;
+    } else if (cleaned.length === 10 || cleaned.length === 11) {
+        if (cleaned.length === 10) {
+            return `549${cleaned.substring(0, 2)}${cleaned.substring(2)}`;
+        } else {
+            return `549${cleaned.substring(1, 4)}${cleaned.substring(4)}`;
+        }
+    } else {
+        return `Numero invalido:  ${cleaned}`;
+    }
+}
 
 export const signup = async (req, res) => {
     const { name, email, password } = req.body;
@@ -24,9 +40,11 @@ export const signup = async (req, res) => {
 };
 
 export const leadSignUp = async (req, res) => {
+    // Funcion a cambiar para unificar numero
     const { username, phone } = req.body;
     try {
         const existingLead = await getChatForUser(username);
+        const formattedPhone = formatNumber(phone);
 
         if (existingLead) {
             return res.status(400).send({ result: 'error', msg: `El nombre de usuario ya está registrado` });
@@ -37,7 +55,8 @@ export const leadSignUp = async (req, res) => {
         await addWelcomeMessage(to, username, `Bienvenido ${username}! Soy Carla, tu cajera de confianza. En que puedo ayudarte?`)
 
         if (phone) {
-            await changeNickname(phone, username);
+            // await changeNickname(phone, username);
+            await setUserProperties(formattedPhone, username);
         }
 
         req.session.lead = username;

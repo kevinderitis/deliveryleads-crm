@@ -1,4 +1,4 @@
-import { addMessage, getMessagesForChat, getMessagesForUser, getChatForUser, getUsersList, sendMessageToClient, getFilteredUsersList } from "../dao/chatDAO.js";
+import { addMessage, addUserMessage ,getMessagesForChat, getMessagesForUser, getChatForUser, getUsersList, sendMessageToClient, getFilteredUsersList } from "../dao/chatDAO.js";
 import { sendMessageUnofficial } from "../routes/whatsappRouter.js";
 import axios from 'axios';
 import config from "../config/config.js";
@@ -6,7 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 
-export const addMessageServices = async (from, to, text, image, audioUrl) => {
+export const addClientMessageServices = async (from, to, text, image, audioUrl) => {
     try {
         await addMessage(from, to, text, image, audioUrl);
     } catch (error) {
@@ -14,9 +14,18 @@ export const addMessageServices = async (from, to, text, image, audioUrl) => {
     }
 }
 
+export const addUserMessageServices = async (from, to, text, image, audioUrl) => {
+    try {
+        await addUserMessage(from, to, text, image, audioUrl);
+    } catch (error) {
+        console.log(error);
+    }
+}
+
 export const getMessagesForChatService = async (from, to) => {
     try {
-        let response = await getMessagesForChat([from, to]);
+        // let response = await getMessagesForChat([from, to]);
+        let response = await getMessagesForChat(from, to);
         return response;
     } catch (error) {
         console.log(error);
@@ -25,7 +34,8 @@ export const getMessagesForChatService = async (from, to) => {
 
 export const getMessagesForUserService = async (user) => {
     try {
-        let response = await getMessagesForUser([user]);
+        // let response = await getMessagesForUser([user]);
+        let response = await getMessagesForUser(user);
         return response;
     } catch (error) {
         console.log(error);
@@ -34,7 +44,8 @@ export const getMessagesForUserService = async (user) => {
 
 export const getChatForUserService = async (user) => {
     try {
-        let response = await getChatForUser([user]);
+        // let response = await getChatForUser([user]);
+        let response = await getChatForUser(user);
         return response;
     } catch (error) {
         console.log(error);

@@ -3,7 +3,7 @@ import { Router } from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { addMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService, getUsersFilteredListService, saveAudio } from '../services/chatServices.js';
+import { addClientMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService, getUsersFilteredListService, saveAudio } from '../services/chatServices.js';
 import { userConnections } from '../websocket/ws-handler.js';
 import { WebSocket } from "ws";
 import { deliverLeadToClient } from "../services/leadService.js";
@@ -85,7 +85,7 @@ export const initializeClient = () => {
                 let client = await deliverLeadToClient();
                 to = client.email;
             }
-            await addMessageServices(sender, to, textMessage, imageBase64, audioUrl);
+            await addClientMessageServices(sender, to, textMessage, imageBase64, audioUrl);
     
             const recipientConnections = userConnections.get(to) || [];
             recipientConnections.forEach(ws => {

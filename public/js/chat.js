@@ -225,7 +225,7 @@ function renderChatMessage(user, message, image, audioUrl, date) {
     let hours = dateObj.getHours();
     let minutes = dateObj.getMinutes().toString().length === 1 ? `0${dateObj.getMinutes()}` : dateObj.getMinutes();
     const formattedDate = `${hours}:${minutes}`;
-    if (user === selectedUser) {
+    if (user === 'user') {
         if (image) {
             li.innerHTML = `
         <div class="user-chat-box">
@@ -252,7 +252,7 @@ function renderChatMessage(user, message, image, audioUrl, date) {
         <span class="message-time">${formattedDate}</span>`;
         }
     } else {
-        li.innerHTML = `<span class="user-chat-box">${user}: </span> <span class="message-chat-box">${message}</span> <span class="message-time">${formattedDate}</span>`;
+        li.innerHTML = `<span class="user-chat-box">Tú: </span> <span class="message-chat-box">${message}</span> <span class="message-time">${formattedDate}</span>`;
         li.classList.add('other-message');
     }
 
@@ -424,19 +424,18 @@ async function renderUsers() {
 
 
     list.forEach(user => {
-        let userName = user.nickname ? user.nickname : user.participants[0];
+        let userName = user.username;
         let lastMessage = user.messages.slice(-1)[0];
         let preview = lastMessage.text;
-
-        let to = lastMessage.to === user.participants[0] ? 'Tú: ' : '';
+        let to = lastMessage.to === 'user' ? 'Tú: ' : '';
 
         const userElement = `
-            <li class="person" data-chat="${user.participants[0]}">
+            <li class="person" data-chat="${userName}">
                 <div class="user">
                     <img src="${img}" alt="${userName}">
                 </div>
                 <p class="name-time">
-                    <span class="name">${user.participants[0]}</span>
+                    <span class="name">${userName}</span>
                     <span class="preview">${to}${preview}</span>
                 </p>
             </li>
@@ -447,7 +446,7 @@ async function renderUsers() {
     applyUnreadStyles();
 
     if (!selectedUser) {
-        selectUser(list[0].participants[0], list[0].nickname);
+        selectUser(list[0].username, list[0].phone);
     }
 
 }
@@ -562,7 +561,8 @@ function alternateUserChat() {
     }
 }
 
-async function selectUser(email, nickName) {
+async function selectUser(email, phone) {
+    console.log(`Selection user: ${email}`)
     selectedUser = email;
     const usernameId = document.getElementById('username-id');
     const nicknameId = document.getElementById('nickname-id');
@@ -570,15 +570,15 @@ async function selectUser(email, nickName) {
 
     if (chat.tags) {
         renderTags(chat.tags);
-    }else{
+    } else {
         console.log('No tags for user');
     }
 
     displayMessages(chat.messages);
     markChatAsUnread(email);
-    usernameId.innerHTML = email;
+    usernameId.innerHTML = phone;
 
-    nicknameId.innerHTML = nickName;
+    nicknameId.innerHTML = email;
 
     // if (nickName !== email) {
     //     nicknameId.innerHTML = nickName;
@@ -624,6 +624,17 @@ function swalNotification(senderName, messageContent) {
         showConfirmButton: false,
         toast: true,
     });
+
+    navigator.serviceWorker.ready.then(function (registration) {
+        registration.showNotification(`Mensaje de ${senderName}`, {
+            body: 'Nuevo mensaje.',
+            icon: '../images/beneficios.png',
+            actions: [
+                { action: 'open', title: 'Abrir' },
+                { action: 'close', title: 'Cerrar' }
+            ]
+        });
+    });
 }
 
 
@@ -662,7 +673,7 @@ window.addEventListener('click', (event) => {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const userEmail = await getUserEmail();
-    const ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
+    const ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
 
     renderUsers();
 
@@ -675,6 +686,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     ws.onmessage = (event) => {
         const { user, textMessage, destination, image, audioUrl } = JSON.parse(event.data);
         swalNotification(destination, textMessage);
+
         if (destination === selectedUser) {
             let currentDateTime = getCurrentDateTime();
             renderChatMessage(user, textMessage, image, audioUrl, currentDateTime);
@@ -715,7 +727,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             const nameSpan = li.querySelector('.name');
             const nickname = nameSpan ? nameSpan.textContent.trim() : '';
             if (chatValue) {
-                selectUser(chatValue, nickname);
+                selectUser(nickname, chatValue);
             }
         }
     });
@@ -750,4 +762,13 @@ document.getElementById('user-search').addEventListener('input', function () {
 function clearFilter() {
     selectedTag = undefined;
     renderUsers();
+}
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/services-worker.js', { scope: '/' })
+        .then(function (registration) {
+            console.log('Service Worker registrado con éxito:', registration);
+        }).catch(function (error) {
+            console.log('Fallo en el registro del Service Worker:', error);
+        });
 }

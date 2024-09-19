@@ -5,31 +5,13 @@ import db from "./db.js";
 
 export const addMessage = async (from, to, text, image, audioUrl) => {
   try {
-    let chat = await Chat.findOne({ username: to, client: from });
+    let chat = await Chat.findOne({ participants: { $all: [from, to] } });
 
     if (!chat) {
-      chat = new Chat({ username: to, client: from , messages: [] });
+      chat = new Chat({ participants: [from, to], messages: [] });
     }
 
-    chat.messages.push({ from: 'client', to: 'user', text, image, audioUrl });
-
-    await chat.save();
-
-    return chat;
-  } catch (error) {
-    throw new Error('Error adding message: ' + error.message);
-  }
-};
-
-export const addUserMessage = async (from, to, text, image, audioUrl) => {
-  try {
-    let chat = await Chat.findOne({ username: from });
-
-    if (!chat) {
-      chat = new Chat({ username: to, client: from , messages: [] });
-    }
-
-    chat.messages.push({ from: 'user', to: 'client', text, image, audioUrl });
+    chat.messages.push({ from, to, text, image, audioUrl });
 
     await chat.save();
 
@@ -41,13 +23,13 @@ export const addUserMessage = async (from, to, text, image, audioUrl) => {
 
 export const addWelcomeMessage = async (from, to, text, image, audioUrl) => {
   try {
-    let chat = await Chat.findOne({ username: to, client: from });
+    let chat = await Chat.findOne({ username: from, client: to });
 
     if (!chat) {
-      chat = new Chat({ username: to, client: from , messages: [] });
+      chat = new Chat({ username: from, client: to , messages: [] });
     }
 
-    chat.messages.push({ from: 'client', to: 'user', text, image, audioUrl });
+    chat.messages.push({ from, to, text, image, audioUrl });
 
     await chat.save();
 
@@ -57,16 +39,28 @@ export const addWelcomeMessage = async (from, to, text, image, audioUrl) => {
   }
 };
 
+// export const addWelcomeMessage = async (from, to, text, image, audioUrl) => {
+//   try {
+//     let chat = await Chat.findOne({ participants: { $all: [from, to] } });
 
-export const getMessagesForChat = async (fromParam, toParam) => {
+//     if (!chat) {
+//       chat = new Chat({ participants: [to, from], messages: [] });
+//     }
+
+//     chat.messages.push({ from, to, text, image, audioUrl });
+
+//     await chat.save();
+
+//     return chat;
+//   } catch (error) {
+//     throw new Error('Error adding message: ' + error.message);
+//   }
+// };
+
+export const getMessagesForChat = async participants => {
   try {
-    // const chat = await Chat.findOne({ participants: { $all: participants } });
-    const chat = await Chat.find({
-        $or: [
-          { from: fromParam, to: toParam },
-          { from: toParam, to: fromParam }
-        ]
-      });
+    const chat = await Chat.findOne({ participants: { $all: participants } });
+
     if (!chat) {
       return [];
     }
@@ -77,9 +71,9 @@ export const getMessagesForChat = async (fromParam, toParam) => {
   }
 }
 
-export const getMessagesForUser = async user => {
+export const getMessagesForUser = async participants => {
   try {
-    const chat = await Chat.findOne({ username: user });
+    const chat = await Chat.findOne({ participants: { $in: participants } });
 
     if (!chat) {
       return [];
@@ -91,9 +85,9 @@ export const getMessagesForUser = async user => {
   }
 }
 
-export const getChatForUser = async username => {
+export const getChatForUser = async participants => {
   try {
-    const chat = await Chat.findOne({ username });
+    const chat = await Chat.findOne({ participants: { $in: participants } });
     return chat;
   } catch (error) {
     throw new Error('Error retrieving messages: ' + error.message);
@@ -102,8 +96,22 @@ export const getChatForUser = async username => {
 
 export const getUsersList = async email => {
   try {
-    const chats = await Chat.find({ client: email }).sort({ updatedAt: -1 });
+    const chats = await Chat.find({ participants: email }).sort({ updatedAt: -1 });
 
+    // if (!chats.length) {
+    //     return [];
+    // }
+
+    // const usersSet = new Set();
+    // chats.forEach(chat => {
+    //     chat.participants.forEach(participant => {
+    //         if (participant !== email) {
+    //             usersSet.add(participant);
+    //         }
+    //     });
+    // });
+
+    // return Array.from(usersSet);
     return chats;
   } catch (error) {
     throw new Error('Error retrieving user list: ' + error.message);
@@ -157,12 +165,12 @@ export const changeNickname = async (nickName, userId, password) => {
 
 export const setUserProperties = async (phone, username) => {
   try {
-    const chat = await Chat.findOne({ username });
+    const chat = await Chat.findOne({ participants: username });
 
     if (!chat) {
       throw new Error('Chat no encontrado para este participante');
     }
-    chat.username = username;
+    chat.nickname = username;
     chat.phone = phone
 
     await chat.save();

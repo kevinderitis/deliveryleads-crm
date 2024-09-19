@@ -30,6 +30,15 @@ const chatSchema = new mongoose.Schema({
   nickname: {
     type: String
   },
+  username: {
+    type: String
+  },
+  client: {
+    type: String
+  },
+  phone: {
+    type: String
+  },
   password: {
     type: String
   }

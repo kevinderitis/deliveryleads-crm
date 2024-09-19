@@ -14,7 +14,7 @@ async function stablishWsConnection() {
   let userData = await getUserEmail();
 
   if (userData.email) {
-    ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userData.email)}`);
+    ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userData.email)}`);
     renderMessages(userData.chat.messages, userData.email);
     $("#chat-circle").toggle('scale');
     $(".chat-box").toggle('scale');
@@ -22,6 +22,17 @@ async function stablishWsConnection() {
     ws.onmessage = (event) => {
       const { user, text } = JSON.parse(event.data);
       generate_message(text, 'user')
+
+      navigator.serviceWorker.ready.then(function (registration) {
+        registration.showNotification(`Mensaje de Carla`, {
+            body: 'Nuevo mensaje.',
+            icon: '../images/beneficios.png',
+            actions: [
+                { action: 'open', title: 'Abrir' },
+                { action: 'close', title: 'Cerrar' }
+            ]
+        });
+    });
     };
   } else {
     console.log('not logued')
@@ -357,4 +368,13 @@ document.addEventListener('DOMContentLoaded', (event) => {
 function onUserRegistration() {
   console.log("Usuario registrado. Enviando evento a Facebook Pixel.");
   fbq('track', 'CompleteRegistration');
+}
+
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/services-worker.js', { scope: '/' })
+      .then(function (registration) {
+          console.log('Service Worker registrado con éxito:', registration);
+      }).catch(function (error) {
+          console.log('Fallo en el registro del Service Worker:', error);
+      });
 }

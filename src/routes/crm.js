@@ -2,7 +2,7 @@ import { Router } from "express";
 import config from "../config/config.js";
 import { userConnections } from '../websocket/ws-handler.js';
 import { WebSocket } from "ws";
-import { addMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService, getUsersFilteredListService } from '../services/chatServices.js';
+import { addClientMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService, getUsersFilteredListService } from '../services/chatServices.js';
 import { deliverLeadToClient } from "../services/leadService.js";
 import { isAuthenticated } from "../middleware/middleware.js";
 import { addTagToChatByParticipant, changeNickname, removeTagFromChatByParticipant } from "../dao/chatDAO.js";
@@ -28,7 +28,7 @@ crmRouter.post('/new', async (req, res) => {
             to = client.email;
         }
 
-        await addMessageServices(from, to, text, image);
+        await addClientMessageServices(from, to, text, image);
 
         const recipientConnections = userConnections.get(to) || [];
 
@@ -62,7 +62,7 @@ crmRouter.post('/receive', isAuthenticated, async (req, res) => {
             to = client.email;
         }
 
-        await addMessageServices(from, to, text, image);
+        await addClientMessageServices(from, to, text, image);
 
         const recipientConnections = userConnections.get(to) || [];
 
@@ -222,7 +222,7 @@ crmRouter.post('/webhook', async (req, res) => {
                                 let client = await deliverLeadToClient();
                                 to = client.email;
                             }
-                            await addMessageServices(message.from, to, textMessage, imageBase64);
+                            await addClientMessageServices(message.from, to, textMessage, imageBase64);
 
                             const recipientConnections = userConnections.get(to) || [];
 
