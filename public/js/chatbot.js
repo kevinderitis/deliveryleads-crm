@@ -11,56 +11,107 @@ async function getUserEmail() {
 }
 
 
-function showNotification() {
-  navigator.serviceWorker.ready.then(function (registration) {
-      registration.showNotification(`Mensaje de Carla`, {
-          body: 'Nuevo mensaje.',
-          icon: '../images/beneficios.png',
-          actions: [
-              { action: 'open', title: 'Abrir' },
-              { action: 'close', title: 'Cerrar' }
-          ]
-      });
-  });
-}
+// function showNotification() {
+//   navigator.serviceWorker.ready.then(function (registration) {
+//       registration.showNotification(`Mensaje de Carla`, {
+//           body: 'Nuevo mensaje.',
+//           icon: '../images/beneficios.png',
+//           actions: [
+//               { action: 'open', title: 'Abrir' },
+//               { action: 'close', title: 'Cerrar' }
+//           ]
+//       });
+//   });
+// }
 
-function requestNotificationPermissionAndShow() {
+// function requestNotificationPermissionAndShow() {
+//   if ('Notification' in window) {
+//       if (Notification.permission === 'granted') {
+//           showNotification();
+//       } else if (Notification.permission === 'default') {
+//           Notification.requestPermission().then((permission) => {
+//               if (permission === 'granted') {
+//                   showNotification();
+//               } else {
+//                   console.error('Permiso de notificación no concedido.');
+//               }
+//           }).catch((error) => {
+//               console.error('Error solicitando permiso de notificación:', error);
+//           });
+//       } else {
+//           console.error('Permiso de notificación denegado.');
+//       }
+//   } else {
+//       console.error('Las notificaciones no están soportadas en este navegador.');
+//   }
+// }
+
+function requestNotificationPermissionAndSend(user) {
   if ('Notification' in window) {
-      if (Notification.permission === 'granted') {
-          showNotification();
-      } else if (Notification.permission === 'default') {
-          Notification.requestPermission().then((permission) => {
-              if (permission === 'granted') {
-                  showNotification();
-              } else {
-                  console.error('Permiso de notificación no concedido.');
-              }
-          }).catch((error) => {
-              console.error('Error solicitando permiso de notificación:', error);
-          });
-      } else {
-          console.error('Permiso de notificación denegado.');
-      }
+    if (Notification.permission === 'granted') {
+      console.log('Permiso de notificación ya concedido.');
+      sendServicesNotification(user)
+    } else if (Notification.permission === 'default') {
+      Notification.requestPermission().then(permission => {
+        if (permission === 'granted') {
+          console.log('Permiso de notificación concedido.');
+          subscribeUser();
+          sendServicesNotification(user)
+        } else {
+          console.error('Permiso de notificación no concedido.');
+        }
+      }).catch(error => {
+        console.error('Error solicitando permiso de notificación:', error);
+      });
+    } else {
+      console.error('Permiso de notificación denegado.');
+    }
   } else {
-      console.error('Las notificaciones no están soportadas en este navegador.');
+    console.error('Las notificaciones no son soportadas en este navegador.');
   }
 }
 
 
+function sendServicesNotification(user) {
+  const payload = JSON.stringify({
+    title: '¡Nuevo mensaje!',
+    body: 'Tienes un nuevo mensaje.',
+    icon: '/icon.png',
+  });
+
+  fetch('/crm/subscription/send', {
+    method: 'POST',
+    body: JSON.stringify({ user, payload }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  })
+    .then(response => response.json())
+    .then(data => console.log('Notificación enviada:', data))
+    .catch(error => console.error('Error al enviar la notificación:', error));
+}
+
 async function stablishWsConnection() {
   let userData = await getUserEmail();
-
   if (userData.email) {
-    ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userData.email)}`);
+    ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userData.email)}`);
     renderMessages(userData.chat.messages, userData.email);
     $("#chat-circle").toggle('scale');
     $(".chat-box").toggle('scale');
+
+    subscribeUser();
 
     ws.onmessage = (event) => {
       const { user, text } = JSON.parse(event.data);
       generate_message(text, 'user')
 
-      requestNotificationPermissionAndShow();
+      if (document.hidden) {
+        console.log('La página está oculta. Enviando notificación...');
+        requestNotificationPermissionAndSend(userData.email);
+      } else {
+        console.log('La página está visible. No se envía la notificación.');
+      }
+
     };
   } else {
     console.log('not logued')
@@ -70,12 +121,12 @@ async function stablishWsConnection() {
 
 function sendMessage(msg) {
   const message = JSON.stringify({ text: msg, type: 'lead' });
-  if(ws){
+  if (ws) {
     ws.send(message);
-  }else{
+  } else {
     generate_message("Hola! Para hablar con tu cajero por favor presiona jugar e ingresa con tu usuario y contraseña. Si no tenes uno presiona jugar y luego 'Quiero mi usuario' para empezar a jugar. Mucha suerte", 'user')
   }
- 
+
 }
 
 var INDEX = 0;
@@ -389,7 +440,7 @@ document.addEventListener('DOMContentLoaded', (event) => {
     console.log('socialmedia browser ->  redirecting')
     const url = window.location.href;
     window.open(url, '_blank');
-}
+  }
   stablishWsConnection();
 });
 
@@ -398,11 +449,53 @@ function onUserRegistration() {
   fbq('track', 'CompleteRegistration');
 }
 
-if ('serviceWorker' in navigator) {
-  navigator.serviceWorker.register('/services-worker.js', { scope: '/' })
-      .then(function (registration) {
-          console.log('Service Worker registrado con éxito:', registration);
-      }).catch(function (error) {
-          console.log('Fallo en el registro del Service Worker:', error);
-      });
+// if ('serviceWorker' in navigator) {
+//   navigator.serviceWorker.register('/services-worker.js', { scope: '/' })
+//       .then(function (registration) {
+//           console.log('Service Worker registrado con éxito:', registration);
+//       }).catch(function (error) {
+//           console.log('Fallo en el registro del Service Worker:', error);
+//       });
+// }
+
+const publicVapidKey = 'BLH1jhlZ9PhH04dr2O-CbvxunSvRX59mLg82xlYiu7Ur1KFKr1NriVrIXYSpDGLQEAuZp9yKCPhbkiZdxIrL8LA';
+
+// if ('serviceWorker' in navigator) {
+//   subscribeUser().catch(err => console.error(err));
+// }
+
+async function subscribeUser() {
+  const register = await navigator.serviceWorker.register('/services-worker.js', {
+    scope: '/'
+  });
+
+  const userData = await getUserEmail();
+  const user = userData.email;
+
+  const subscription = await register.pushManager.subscribe({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+  });
+
+  await fetch('/crm/subscribe', {
+    method: 'POST',
+    body: JSON.stringify({ subscription, user }),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  console.log('Suscripción enviada al servidor.');
+
+}
+
+function urlBase64ToUint8Array(base64String) {
+  const padding = '='.repeat((4 - base64String.length % 4) % 4);
+  const base64 = (base64String + padding).replace(/\-/g, '+').replace(/_/g, '/');
+  const rawData = window.atob(base64);
+  const outputArray = new Uint8Array(rawData.length);
+  for (let i = 0; i < rawData.length; ++i) {
+    outputArray[i] = rawData.charCodeAt(i);
+  }
+  return outputArray;
 }

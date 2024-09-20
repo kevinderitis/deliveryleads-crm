@@ -12,7 +12,9 @@ const config = {
     PHONE_ID: process.env.PHONE_ID,
     WHATSAPP_VERIFY_TOKEN: process.env.WHATSAPP_VERIFY_TOKEN,
     WHATSAPP_ACCESS_TOKEN: process.env.WHATSAPP_ACCESS_TOKEN,
-    PING_INTERVAL_WS: process.env.PING_INTERVAL_WSM
+    PING_INTERVAL_WS: process.env.PING_INTERVAL_WSM,
+    VAPID_PUBLIC: process.env.VAPID_PUBLIC,
+    VAPID_PRIVATE: process.env.VAPID_PRIVATE
 
 };
 

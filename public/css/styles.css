@@ -84,9 +84,20 @@ main {
 }
 
 .user {
+    position: relative;
     display: flex;
     align-items: center;
     margin-right: 10px;
+}
+
+.status-dot {
+    width: 10px;        
+    height: 10px;       
+    border-radius: 50%; 
+    position: absolute;
+    bottom: 5px;        
+    right: 5px;         
+    border: 2px solid white; 
 }
 
 .user img {

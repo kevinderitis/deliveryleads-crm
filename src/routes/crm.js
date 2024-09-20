@@ -7,6 +7,7 @@ import { deliverLeadToClient } from "../services/leadService.js";
 import { isAuthenticated } from "../middleware/middleware.js";
 import { addTagToChatByParticipant, changeNickname, removeTagFromChatByParticipant } from "../dao/chatDAO.js";
 import axios from "axios";
+import webPush from 'web-push';
 
 const crmRouter = Router();
 
@@ -157,7 +158,7 @@ crmRouter.get('/tags/remove/:number/:tag', isAuthenticated, async (req, res) => 
 
 const getImageBase64 = async (imageId) => {
     const url = `${config.WHATSAPP_API_URL}/${imageId}`;
-    
+
     try {
         const response = await axios.get(url, {
             responseType: 'json',
@@ -165,7 +166,7 @@ const getImageBase64 = async (imageId) => {
                 Authorization: `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`
             }
         });
-        
+
         const imageUrl = response.data.url;
 
         if (!imageUrl) {
@@ -198,10 +199,10 @@ crmRouter.post('/webhook', async (req, res) => {
                         if (message) {
                             let textMessage = message.text?.body || '';
                             let imageBase64;
-                          
+
                             console.log(`Numero de telefono: ${message.from}`)
                             console.log(`Mensaje: ${textMessage}`)
-                           
+
                             if (message.image) {
                                 const imageId = message.image.id;
                                 console.log(imageId);
@@ -262,6 +263,39 @@ crmRouter.get('/webhook', async (req, res) => {
             res.sendStatus(403);
         }
     }
+});
+
+const publicVapidKey = config.VAPID_PUBLIC;
+const privateVapidKey = config.VAPID_PRIVATE;
+
+export const subscriptionsMap = new Map();
+
+webPush.setVapidDetails('mailto:tu-email@example.com', publicVapidKey, privateVapidKey);
+
+crmRouter.post('/subscribe', (req, res) => {
+    const subscription = req.body.subscription;
+    const user = req.body.user;
+
+    subscriptionsMap.set(user, subscription);
+
+    res.status(201).json({});
+});
+
+crmRouter.post('/subscription/send', async (req, res) => {
+    const user = req.body.user;
+    const payload = req.body.payload;
+    const subscription = subscriptionsMap.get(user);
+
+    try {
+        if (subscription) {
+            await webPush.sendNotification(subscription, payload);
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(404).json({ error: 'Suscripción no encontrada.' });
+    }
+
+    res.status(201).json({ msg: 'Sent'});
 });
 
 export default crmRouter;

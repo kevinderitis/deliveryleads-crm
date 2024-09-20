@@ -225,11 +225,12 @@ function renderChatMessage(user, message, image, audioUrl, date) {
     let hours = dateObj.getHours();
     let minutes = dateObj.getMinutes().toString().length === 1 ? `0${dateObj.getMinutes()}` : dateObj.getMinutes();
     const formattedDate = `${hours}:${minutes}`;
+
     if (user === 'user') {
         if (image) {
             li.innerHTML = `
         <div class="user-chat-box">
-            <span>${user}: </span>
+            <span>${selectedUser}: </span>
             <div class="image-container">
                 <img src="data:image/jpeg;base64,${image}" alt="">
             </div>
@@ -237,7 +238,7 @@ function renderChatMessage(user, message, image, audioUrl, date) {
         } else if (audioUrl) {
             li.innerHTML = `
         <div class="user-chat-box">
-            <span>${user}: </span>
+            <span>${selectedUser}: </span>
             <div class="audio-container">
                 <audio controls>
                     <source src="audios/${audioUrl}" type="audio/mp3">
@@ -247,7 +248,7 @@ function renderChatMessage(user, message, image, audioUrl, date) {
         </div>`;
         } else {
             li.innerHTML = `
-        <span class="user-chat-box">${user}: </span> 
+        <span class="user-chat-box">${selectedUser}: </span> 
         <span class="message-chat-box">${message}</span>
         <span class="message-time">${formattedDate}</span>`;
         }
@@ -419,9 +420,7 @@ async function renderUsers() {
     const usersList = document.querySelector('.users');
     usersList.innerHTML = '';
 
-
     let img = "https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=mail@ashallendesign.co.uk";
-
 
     list.forEach(user => {
         let userName = user.username;
@@ -429,10 +428,15 @@ async function renderUsers() {
         let preview = lastMessage.text;
         let to = lastMessage.to === 'user' ? 'Tú: ' : '';
 
+        let statusColor = user.online ? 'green' : 'white';
+
+        console.log(`User: ${user.username} - status: ${user.online}`)
+
         const userElement = `
             <li class="person" data-chat="${userName}">
                 <div class="user">
                     <img src="${img}" alt="${userName}">
+                    <span class="status-dot" style="background-color: ${statusColor};"></span>
                 </div>
                 <p class="name-time">
                     <span class="name">${userName}</span>
@@ -440,15 +444,16 @@ async function renderUsers() {
                 </p>
             </li>
         `;
+
         usersList.innerHTML += userElement;
     });
+
     applySelectedStyle(selectedUser);
     applyUnreadStyles();
 
     if (!selectedUser) {
         selectUser(list[0].username, list[0].phone);
     }
-
 }
 
 // async function renderUsers() {
@@ -661,7 +666,13 @@ function swalNotification(senderName, messageContent) {
         toast: true,
     });
 
-    requestNotificationPermissionAndShow(senderName);
+    if (document.hidden) {
+        console.log('La página está oculta. Enviando notificación...');
+        requestNotificationPermissionAndShow(senderName);
+    } else {
+        console.log('La página está visible. No se envía la notificación.');
+    }
+
 
 }
 
@@ -701,7 +712,7 @@ window.addEventListener('click', (event) => {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const userEmail = await getUserEmail();
-    const ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
+    const ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
 
     renderUsers();
 
@@ -717,7 +728,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (destination === selectedUser) {
             let currentDateTime = getCurrentDateTime();
-            renderChatMessage(user, textMessage, image, audioUrl, currentDateTime);
+            renderChatMessage('user', textMessage, image, audioUrl, currentDateTime);
         } else {
             markChatAsRead(destination);
             applyUnreadStyles();

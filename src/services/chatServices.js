@@ -1,5 +1,6 @@
 import { addMessage, addUserMessage ,getMessagesForChat, getMessagesForUser, getChatForUser, getUsersList, sendMessageToClient, getFilteredUsersList } from "../dao/chatDAO.js";
 import { sendMessageUnofficial } from "../routes/whatsappRouter.js";
+import { userConnections } from "../websocket/ws-handler.js";
 import axios from 'axios';
 import config from "../config/config.js";
 import path from 'path';
@@ -55,7 +56,13 @@ export const getChatForUserService = async (user) => {
 export const getUsersListService = async (email) => {
     try {
         let response = await getUsersList(email);
-        return response;
+
+        const usersWithOnlineStatus = response.map(user => ({
+            ...user._doc, 
+            online: userConnections.has(user.username) 
+        }));
+
+        return usersWithOnlineStatus;
     } catch (error) {
         console.log(error);
     }
@@ -64,7 +71,13 @@ export const getUsersListService = async (email) => {
 export const getUsersFilteredListService = async (email, filter) => {
     try {
         let response = await getFilteredUsersList(email, filter);
-        return response;
+
+        const usersWithOnlineStatus = response.map(user => ({
+            ...user._doc, 
+            online: userConnections.has(user.email) 
+        }));
+
+        return usersWithOnlineStatus;
     } catch (error) {
         console.log(error);
     }

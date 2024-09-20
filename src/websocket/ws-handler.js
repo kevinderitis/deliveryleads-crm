@@ -1,5 +1,6 @@
 import { WebSocketServer, WebSocket } from 'ws';
-import { addClientMessageServices, addUserMessageServices ,sendWhatsappMessage, sendUnofficialWhatsapp, getChatForUserService } from '../services/chatServices.js';
+import { addClientMessageServices, addUserMessageServices, sendWhatsappMessage, sendUnofficialWhatsapp, getChatForUserService } from '../services/chatServices.js';
+import { subscriptionsMap } from '../routes/crm.js';
 import config from '../config/config.js';
 
 const userConnections = new Map();
@@ -58,12 +59,35 @@ export const setupWebSocketServer = (server) => {
                         }
                         await addUserMessageServices(userEmail, to, text, imageBase64, audioUrl);
 
-                        const recipientConnections = userConnections.get(to) || [];
-                        recipientConnections.forEach(ws => {
-                            if (ws.readyState === WebSocket.OPEN) {
-                                ws.send(JSON.stringify({ user: userEmail, textMessage: text, destination: userEmail, image: imageBase64, audioUrl }));
+                        if (userConnections.has(to)) {
+                            const recipientConnections = userConnections.get(to) || [];
+                            recipientConnections.forEach(ws => {
+                                if (ws.readyState === WebSocket.OPEN) {
+                                    ws.send(JSON.stringify({ user: userEmail, textMessage: text, destination: userEmail, image: imageBase64, audioUrl }));
+                                }
+                            });
+                        } else {
+                            console.log('Enviando notificacion.')
+
+                            const payload = JSON.stringify({
+                                title: '¡Nuevo mensaje!',
+                                body: 'Tienes un nuevo mensaje.',
+                                icon: '/icon.png',
+                              });
+
+                            if (subscriptionsMap.has(to)) {
+                                try {
+                                    let subscription = subscriptionsMap.get(to);
+                                    if (subscription) {
+                                        await webPush.sendNotification(subscription, payload);
+                                    }
+                                } catch (error) {
+                                    console.log(error);
+                                    return res.status(404).json({ error: 'Suscripción no encontrada.' });
+                                }
                             }
-                        });
+                        }
+
                     }
                 } catch (err) {
                     console.error('Error parsing message:', err);
