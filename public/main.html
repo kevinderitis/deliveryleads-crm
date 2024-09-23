@@ -48,7 +48,7 @@
       s.parentNode.insertBefore(t, s)
     }(window, document, 'script',
       'https://connect.facebook.net/en_US/fbevents.js');
-    fbq('init', '498313933093830');
+    fbq('init', '1013749040151196');
     fbq('track', 'PageView');
   </script>
   <noscript><img height="1" width="1" style="display:none"
@@ -278,7 +278,7 @@
         <input type="text" id="new-email" placeholder="Email" />
         <span id="email-error" style="color: red; display: none;"></span>
         <!-- <span id="phone-error" style="color: red; display: none;"></span> -->
-        <button id="submit-new-user">Registrarse</button>
+        <button id="submit-new-user" onclick="fbq('track', 'Lead');">Registrarse</button>
       </div>
 
       <button id="existingUser" class="modal-button">Ya tengo mi usuario</button>
