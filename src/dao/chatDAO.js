@@ -113,7 +113,7 @@ export const getUsersList = async email => {
 export const getFilteredUsersList = async (email, filter) => {
   try {
     const chats = await Chat.find({
-      username: email,
+      client: email,
       tags: filter
     }).sort({ updatedAt: -1 });
 
