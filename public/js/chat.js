@@ -73,7 +73,6 @@ async function saveNickname(nickname, userId, password) {
     let url = password ? `/crm/nickname/${nickname}/${userId}/${password}` : `/crm/nickname/${nickname}/${userId}`;
     try {
         await fetch(url);
-
         console.log('Nickname guardado exitosamente');
 
         Swal.fire({
@@ -94,38 +93,67 @@ async function saveNickname(nickname, userId, password) {
     }
 }
 
-function createUser() {
+async function createUser() {
+    let userChat = await getChatMessages(selectedUser);
     let inputMessage = document.getElementById('message');
-    Swal.fire({
-        title: 'Ingresa tus credenciales',
-        html:
-            '<input id="swal-input-username" class="swal2-input" placeholder="Usuario">' +
-            '<input id="swal-input-password" type="password" class="swal2-input" placeholder="Contraseña">',
-        focusConfirm: false,
-        showCancelButton: true,
-        confirmButtonText: 'Guardar',
-        cancelButtonText: 'Cancelar',
-        preConfirm: () => {
-            const username = document.getElementById('swal-input-username').value;
-            const password = document.getElementById('swal-input-password').value;
-            if (!username || !password) {
-                Swal.showValidationMessage('Ambos campos son obligatorios');
-                return false;
+    if (userChat.nickname) {
+        Swal.fire({
+            title: 'Credenciales',
+            html: `
+                <div>
+                    <p><strong>Usuario:</strong> <span id="username">${userChat.nickname}</span></p>
+                </div>
+                <div style="margin-top: 10px;">
+                    <p><strong>Contraseña:</strong> <span id="password">${userChat.password}</span></p>
+                </div>
+                <div style="margin-top: 10px;">
+                    <p><strong>Whatsapp:</strong> <span id="phone">${userChat.phone}</span></p>
+                </div>
+                <div style="margin-top: 10px;">
+                    <p><strong>Email:</strong> <span id="email">${userChat.email}</span></p>
+                </div>
+            `,
+            showCloseButton: true,
+            focusConfirm: false,
+            confirmButtonText: 'Aceptar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                inputMessage.value = `Usuario: ${userChat.nickname} -> Contraseña: ${userChat.password}`;;
             }
-            if (username.length < 3) {
-                Swal.showValidationMessage('El nombre de usuario debe tener al menos 3 caracteres');
-                return false;
+        });
+    } else {
+        Swal.fire({
+            title: 'Ingresa usuario y contraseña',
+            html:
+                '<input id="swal-input-username" class="swal2-input" placeholder="Usuario">' +
+                '<input id="swal-input-password" type="password" class="swal2-input" placeholder="Contraseña">',
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Guardar',
+            cancelButtonText: 'Cancelar',
+            preConfirm: () => {
+                const username = document.getElementById('swal-input-username').value;
+                const password = document.getElementById('swal-input-password').value;
+                if (!username || !password) {
+                    Swal.showValidationMessage('Ambos campos son obligatorios');
+                    return false;
+                }
+                if (username.length < 3) {
+                    Swal.showValidationMessage('El nombre de usuario debe tener al menos 3 caracteres');
+                    return false;
+                }
+                return { username, password };
             }
-            return { username, password };
-        }
-    }).then((result) => {
-        if (result.isConfirmed) {
-            const { username, password } = result.value;
-            let userId = getUsernameIdValue();
-            saveNickname(username, userId, password);
-            inputMessage.value = `Usuario: ${username} -> Contraseña: ${password}`;;
-        }
-    });
+        }).then((result) => {
+            if (result.isConfirmed) {
+                const { username, password } = result.value;
+                let userId = getUsernameIdValue();
+                saveNickname(username, userId, password);
+                inputMessage.value = `Usuario: ${username} -> Contraseña: ${password}`;;
+            }
+        });
+    }
+
 }
 
 function editContact() {
@@ -430,8 +458,6 @@ async function renderUsers() {
 
         let statusColor = user.online ? 'green' : 'white';
 
-        console.log(`User: ${user.username} - status: ${user.online}`)
-
         const userElement = `
             <li class="person" data-chat="${userName}">
                 <div class="user">
@@ -567,10 +593,8 @@ function alternateUserChat() {
 }
 
 async function selectUser(email, phone) {
-    console.log(`Selection user: ${email}`)
     selectedUser = email;
     const usernameId = document.getElementById('username-id');
-    // const nicknameId = document.getElementById('nickname-id');
     let chat = await getChatMessages(email);
 
     if (chat.tags) {
@@ -582,14 +606,6 @@ async function selectUser(email, phone) {
     displayMessages(chat.messages);
     markChatAsUnread(email);
     usernameId.innerHTML = phone;
-
-    // nicknameId.innerHTML = email;
-
-    // if (nickName !== email) {
-    //     nicknameId.innerHTML = nickName;
-    // } else {
-    //     nicknameId.innerHTML = '';
-    // }
 
     const chatContainer = document.querySelector('.chat-container');
     const userContainer = document.querySelector('.users-container');

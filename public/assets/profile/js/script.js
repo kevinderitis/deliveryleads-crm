@@ -38,8 +38,6 @@ function insertName(nombre) {
 function setOrdersAndLeads(ordenesActivas, leadsRecibidos) {
   var ordenesElement = document.getElementById('ordersNumber');
   var leadsElement = document.getElementById('leadsNumber');
-  console.log(ordenesElement)
-  console.log(leadsElement)
   if (ordenesElement && leadsElement) {
     ordenesElement.innerHTML = ordenesActivas;
     leadsElement.innerHTML = leadsRecibidos;
@@ -185,8 +183,6 @@ async function fetchDataFromServer() {
     }
 
     const data = await response.json();
-
-    console.log(data)
 
     const nombre = data.name;
     const email = data.email;

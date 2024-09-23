@@ -325,21 +325,30 @@ document.getElementById('submit-new-user').addEventListener('click', async funct
   event.preventDefault();
 
   const username = document.getElementById('new-username').value.replace(/\s+/g, '');
-  const phone = document.getElementById('new-phone').value;
-  const phoneError = document.getElementById('phone-error');
+  // const phone = document.getElementById('new-phone').value;
+  const email = document.getElementById('new-email').value;
+  const phoneError = document.getElementById('email-error');
+  // const phoneError = document.getElementById('phone-error');
 
   phoneError.style.display = 'none';
   phoneError.textContent = '';
 
-  if (username === '' || phone === '') {
+  if (username === '' || email === '') {
     phoneError.textContent = 'Por favor, complete ambos campos.';
     phoneError.style.display = 'block';
     return;
   }
 
-  const phoneRegex = /^[0-9]+$/;
-  if (!phoneRegex.test(phone)) {
-    phoneError.textContent = 'Por favor, ingrese un número de teléfono válido (solo dígitos).';
+  // const phoneRegex = /^[0-9]+$/;
+  // if (!phoneRegex.test(phone)) {
+  //   phoneError.textContent = 'Por favor, ingrese un número de teléfono válido (solo dígitos).';
+  //   phoneError.style.display = 'block';
+  //   return;
+  // }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    phoneError.textContent = 'Por favor, ingrese un correo electrónico válido.';
     phoneError.style.display = 'block';
     return;
   }
@@ -352,7 +361,8 @@ document.getElementById('submit-new-user').addEventListener('click', async funct
       },
       body: JSON.stringify({
         username,
-        phone
+        // phone,
+        email
       })
     });
 

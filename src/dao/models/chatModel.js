@@ -39,6 +39,9 @@ const chatSchema = new mongoose.Schema({
   phone: {
     type: String
   },
+  email: {
+    type: String
+  },
   password: {
     type: String
   }

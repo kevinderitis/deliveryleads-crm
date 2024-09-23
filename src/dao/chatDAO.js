@@ -113,7 +113,7 @@ export const getUsersList = async email => {
 export const getFilteredUsersList = async (email, filter) => {
   try {
     const chats = await Chat.find({
-      participants: email,
+      username: email,
       tags: filter
     }).sort({ updatedAt: -1 });
 
@@ -138,7 +138,7 @@ export const sendMessageToClient = async (phone, message) => {
 
 export const changeNickname = async (nickName, userId, password) => {
   try {
-    const chat = await Chat.findOne({ participants: userId });
+    const chat = await Chat.findOne({ username: userId });
 
     if (!chat) {
       throw new Error('Chat no encontrado para este participante');
@@ -155,7 +155,7 @@ export const changeNickname = async (nickName, userId, password) => {
   }
 };
 
-export const setUserProperties = async (phone, username) => {
+export const setUserProperties = async (email, username) => {
   try {
     const chat = await Chat.findOne({ username });
 
@@ -163,7 +163,7 @@ export const setUserProperties = async (phone, username) => {
       throw new Error('Chat no encontrado para este participante');
     }
     chat.username = username;
-    chat.phone = phone
+    chat.email = email
 
     await chat.save();
   } catch (error) {
@@ -173,7 +173,7 @@ export const setUserProperties = async (phone, username) => {
 
 export const addTagToChatByParticipant = async (participant, tagName) => {
   try {
-    const chat = await Chat.findOne({ participants: participant });
+    const chat = await Chat.findOne({ username: participant });
     if (!chat) {
       throw new Error('Chat no encontrado para este participante');
     }
@@ -193,7 +193,7 @@ export const addTagToChatByParticipant = async (participant, tagName) => {
 
 export const removeTagFromChatByParticipant = async (participant, tagName) => {
   try {
-    const chat = await Chat.findOne({ participants: participant });
+    const chat = await Chat.findOne({ username: participant });
     if (!chat) {
       throw new Error('Chat no encontrado para este participante');
     }

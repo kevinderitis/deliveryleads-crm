@@ -41,10 +41,9 @@ export const signup = async (req, res) => {
 
 export const leadSignUp = async (req, res) => {
     // Funcion a cambiar para unificar numero
-    const { username, phone } = req.body;
+    const { username, email } = req.body;
     try {
         const existingLead = await getChatForUser(username);
-        const formattedPhone = formatNumber(phone);
 
         if (existingLead) {
             return res.status(400).send({ result: 'error', msg: `El nombre de usuario ya está registrado` });
@@ -54,10 +53,11 @@ export const leadSignUp = async (req, res) => {
         let to = client.email;
         await addWelcomeMessage(to, username, `Bienvenido ${username}! Soy Carla, tu cajera de confianza. En que puedo ayudarte?`)
 
-        if (phone) {
-            // await changeNickname(phone, username);
-            await setUserProperties(formattedPhone, username);
-        }
+        // if (phone) {
+        //     // await changeNickname(phone, username);
+        //     await setUserProperties(email, username);
+        // }
+        await setUserProperties(email, username);
 
         req.session.lead = username;
 
