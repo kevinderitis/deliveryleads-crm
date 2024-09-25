@@ -444,34 +444,44 @@ function isSocialMediaBrowser() {
   return (userAgent.includes("Instagram") || userAgent.includes("FBAN") || userAgent.includes("FBAV"));
 }
 
-// document.addEventListener('DOMContentLoaded', (event) => {
 
-//   if (isSocialMediaBrowser()) {
-//     const url = window.location.href;
-//     window.open(url, '_blank');
-//   }
-//   stablishWsConnection();
-// });
+ument.addEventListener('DOMContentLoaded', (event) => {
+  const targetUrl = "https://gana-online.online";
+  const chromeLink = "googlechrome://" + targetUrl;
 
-document.addEventListener('DOMContentLoaded', (event) => {
   if (isSocialMediaBrowser()) {
-
-    alert("Estás usando un navegador interno. Para una mejor experiencia abrir en navegador externo");
-
-    const url = "intent://gana-online.online#Intent;scheme=https;end";
-    const fallbackUrl = "https://gana-online.online";
-
-    window.location.href = url;
+    window.location.href = chromeLink;
 
     setTimeout(() => {
       if (document.visibilityState === 'visible') {
-        window.open(fallbackUrl, '_system');
+        window.location.href = targetUrl;
       }
-    }, 10000);
-  }
+    }, 1000); 
+  } 
 
   stablishWsConnection();
 });
+
+
+// document.addEventListener('DOMContentLoaded', (event) => {
+//   if (isSocialMediaBrowser()) {
+
+//     alert("Para una mejor experiencia vamos a abrir la pagina en tu navegador. Presiona aceptar y luego permitir cuando lo solicite.");
+
+//     const url = "intent://gana-online.online#Intent;scheme=https;end";
+//     const fallbackUrl = "https://gana-online.online";
+
+//     window.location.href = url;
+
+//     setTimeout(() => {
+//       if (document.visibilityState === 'visible') {
+//         window.open(fallbackUrl, '_system');
+//       }
+//     }, 10000);
+//   }
+
+//   stablishWsConnection();
+// });
 
 function onUserRegistration() {
   console.log("Usuario registrado. Enviando evento a Facebook Pixel.");
