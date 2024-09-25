@@ -444,13 +444,32 @@ function isSocialMediaBrowser() {
   return (userAgent.includes("Instagram") || userAgent.includes("FBAN") || userAgent.includes("FBAV"));
 }
 
-document.addEventListener('DOMContentLoaded', (event) => {
+// document.addEventListener('DOMContentLoaded', (event) => {
 
+//   if (isSocialMediaBrowser()) {
+//     const url = window.location.href;
+//     window.open(url, '_blank');
+//   }
+//   stablishWsConnection();
+// });
+
+document.addEventListener('DOMContentLoaded', (event) => {
   if (isSocialMediaBrowser()) {
-    console.log('socialmedia browser ->  redirecting')
-    const url = window.location.href;
-    window.open(url, '_blank');
+
+    alert("Estás usando un navegador interno. Serás redirigido al navegador externo.");
+
+    const url = "intent://gana-online.online#Intent;scheme=https;end";
+    const fallbackUrl = "https://gana-online.online";
+
+    window.location.href = url;
+
+    setTimeout(() => {
+      if (document.visibilityState === 'visible') {
+        window.location.href = fallbackUrl;
+      }
+    }, 10000);
   }
+
   stablishWsConnection();
 });
 
