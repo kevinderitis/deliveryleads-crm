@@ -446,15 +446,13 @@ function isSocialMediaBrowser() {
 
 
 document.addEventListener('DOMContentLoaded', (event) => {
-  const targetUrl = "https://gana-online.online";
+  const targetUrl = "gana-online.online";
   const chromeLink = "googlechrome://" + targetUrl;
 
   if (isSocialMediaBrowser()) {
 
-    alert("Para una mejor experiencia vamos a abrir la pagina en tu navegador. Presiona aceptar y luego permitir cuando lo solicite.");
-
     const url = "intent://gana-online.online#Intent;scheme=https;end";
-  
+
     window.location.href = url;
 
     setTimeout(() => {
