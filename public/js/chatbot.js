@@ -450,38 +450,22 @@ document.addEventListener('DOMContentLoaded', (event) => {
   const chromeLink = "googlechrome://" + targetUrl;
 
   if (isSocialMediaBrowser()) {
-    window.location.href = chromeLink;
+
+    alert("Para una mejor experiencia vamos a abrir la pagina en tu navegador. Presiona aceptar y luego permitir cuando lo solicite.");
+
+    const url = "intent://gana-online.online#Intent;scheme=https;end";
+  
+    window.location.href = url;
 
     setTimeout(() => {
       if (document.visibilityState === 'visible') {
-        window.location.href = targetUrl;
+        window.location.href = chromeLink;
       }
-    }, 1000); 
-  } 
+    }, 1000);
+  }
 
   stablishWsConnection();
 });
-
-
-// document.addEventListener('DOMContentLoaded', (event) => {
-//   if (isSocialMediaBrowser()) {
-
-//     alert("Para una mejor experiencia vamos a abrir la pagina en tu navegador. Presiona aceptar y luego permitir cuando lo solicite.");
-
-//     const url = "intent://gana-online.online#Intent;scheme=https;end";
-//     const fallbackUrl = "https://gana-online.online";
-
-//     window.location.href = url;
-
-//     setTimeout(() => {
-//       if (document.visibilityState === 'visible') {
-//         window.open(fallbackUrl, '_system');
-//       }
-//     }, 10000);
-//   }
-
-//   stablishWsConnection();
-// });
 
 function onUserRegistration() {
   console.log("Usuario registrado. Enviando evento a Facebook Pixel.");
