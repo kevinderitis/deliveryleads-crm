@@ -106,10 +106,15 @@ export const setupWebSocketServer = (server) => {
                 console.log(`Connection closed for user: ${userEmail}`);
             });
 
-            const interval = setInterval(() => {
-                if (ws.readyState === ws.OPEN) {
-                    ws.ping();
-                }
+            setInterval(() => {
+                userConnections.forEach((connections, userEmail) => {
+                    connections.forEach((ws) => {
+                        if (ws.readyState === WebSocket.OPEN) {
+                            ws.ping();
+                            console.log(`Ping sent to ${userEmail}`);
+                        }
+                    });
+                });
             }, PING_INTERVAL);
 
             ws.on('pong', () => {
