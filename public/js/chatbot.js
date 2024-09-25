@@ -445,7 +445,7 @@ function isSocialMediaBrowser() {
 }
 
 
-ument.addEventListener('DOMContentLoaded', (event) => {
+document.addEventListener('DOMContentLoaded', (event) => {
   const targetUrl = "https://gana-online.online";
   const chromeLink = "googlechrome://" + targetUrl;
 
