@@ -455,8 +455,19 @@ function isSocialMediaBrowser() {
 
 document.addEventListener('DOMContentLoaded', (event) => {
   if (isSocialMediaBrowser()) {
+
+    alert("Estás usando un navegador interno. Para una mejor experiencia abrir en navegador externo");
+
     const url = "intent://gana-online.online#Intent;scheme=https;end";
+    const fallbackUrl = "https://gana-online.online";
+
     window.location.href = url;
+
+    setTimeout(() => {
+      if (document.visibilityState === 'visible') {
+        window.open(fallbackUrl, '_system');
+      }
+    }, 10000);
   }
 
   stablishWsConnection();
