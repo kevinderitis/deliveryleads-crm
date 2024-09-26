@@ -132,7 +132,7 @@ function sendMessage(msg) {
 var INDEX = 0;
 
 function sendInitialMessage(user) {
-  const initialMessage = `Hola ${user}, mi nombre es Carla y estoy acá para ayudarte. Recordá que solo por HOY con tu carga de 5000 tenes 2000 de regalo!! 🎁 ¿Cuanto te gustaria cargar?`;
+  const initialMessage = `Hola ${user}, mi nombre es Lorena y estoy acá para ayudarte. El casino es www.casinohades.net. Recordá que solo por HOY con tu carga de 5000 tenes 2000 de regalo!! 🎁 ¿Cuanto te gustaria cargar?`;
   generate_message(initialMessage, 'user');
 }
 
