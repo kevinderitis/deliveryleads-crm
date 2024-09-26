@@ -6,6 +6,17 @@ import config from '../config/config.js';
 const userConnections = new Map();
 const PING_INTERVAL = config.PING_INTERVAL_WS || 30000;
 
+const pingAllConnections = () => {
+    userConnections.forEach((connections, userEmail) => {
+        connections.forEach((ws) => {
+            if (ws.readyState === WebSocket.OPEN) {
+                console.log(`Enviando ping a: ${userEmail}`);
+                ws.ping();
+            }
+        });
+    });
+};
+
 export const setupWebSocketServer = (server) => {
     const wss = new WebSocketServer({ server });
 
@@ -73,7 +84,7 @@ export const setupWebSocketServer = (server) => {
                                 title: '¡Nuevo mensaje!',
                                 body: 'Tienes un nuevo mensaje.',
                                 icon: '/icon.png',
-                              });
+                            });
 
                             if (subscriptionsMap.has(to)) {
                                 try {
@@ -106,24 +117,12 @@ export const setupWebSocketServer = (server) => {
                 console.log(`Connection closed for user: ${userEmail}`);
             });
 
-            setInterval(() => {
-                userConnections.forEach((connections, userEmail) => {
-                    connections.forEach((ws) => {
-                        if (ws.readyState === WebSocket.OPEN) {
-                            ws.ping();
-                            console.log(`Ping sent to ${userEmail}`);
-                        }
-                    });
-                });
-            }, PING_INTERVAL);
+            setInterval(pingAllConnections, PING_INTERVAL);
 
             ws.on('pong', () => {
                 console.log(`Pong received from ${userEmail}`);
             });
 
-            ws.on('close', () => {
-                clearInterval(interval);
-            });
         } else {
             console.error('User email not provided in the query string');
             ws.close();
