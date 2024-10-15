@@ -254,13 +254,16 @@ function renderChatMessage(user, message, image, audioUrl, date) {
     let minutes = dateObj.getMinutes().toString().length === 1 ? `0${dateObj.getMinutes()}` : dateObj.getMinutes();
     const formattedDate = `${hours}:${minutes}`;
 
+    // <img src="data:image/jpeg;base64,${image}" alt="">  esto se cambia por la otra parte si es de wpp <img src="${image}"> mas abajo
+    // <source src="audios/${audioUrl}" type="audio/mp3">  esto se cambia por la otra parte si es de wpp <source src="${audioUrl}" type="audio/mp3">
+
     if (user === 'user') {
         if (image) {
             li.innerHTML = `
         <div class="user-chat-box">
             <span>${selectedUser}: </span>
             <div class="image-container">
-                <img src="data:image/jpeg;base64,${image}" alt="">
+                <img src="${image}">
             </div>
         </div>`;
         } else if (audioUrl) {
@@ -269,7 +272,7 @@ function renderChatMessage(user, message, image, audioUrl, date) {
             <span>${selectedUser}: </span>
             <div class="audio-container">
                 <audio controls>
-                    <source src="audios/${audioUrl}" type="audio/mp3">
+                    <source src="${audioUrl}" type="audio/mp3">
                     Your browser does not support the audio element.
                 </audio>
             </div>
@@ -453,7 +456,7 @@ async function renderUsers() {
     list.forEach(user => {
         let userName = user.username;
         let lastMessage = user.messages.slice(-1)[0];
-        let preview = lastMessage.text;
+        let preview = lastMessage.text ? lastMessage.text : 'media';
         let to = lastMessage.to === 'user' ? 'Tú: ' : '';
 
         let statusColor = user.online ? 'green' : 'white';
@@ -466,6 +469,7 @@ async function renderUsers() {
                 </div>
                 <p class="name-time">
                     <span class="name">${userName}</span>
+                    <span class="nickname">${user.nickname}</span>
                     <span class="preview">${to}${preview}</span>
                 </p>
             </li>

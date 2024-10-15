@@ -7,6 +7,7 @@ import paymentRouter from './src/routes/paymentRouter.js';
 import authRouter from './src/routes/authRouter.js';
 import draftOrderRouter from './src/routes/draftOrderRouter.js';
 import whatsappRouter from './src/routes/whatsappRouter.js';
+import messengerRouter from './src/routes/messengerRouter.js';
 import crmRouter from './src/routes/crm.js';
 import { setupWebSocketServer } from './src/websocket/ws-handler.js';
 import session from 'express-session';
@@ -57,6 +58,7 @@ app.use('/payment', paymentRouter)
 app.use('/auth', authRouter)
 app.use('/draft', draftOrderRouter)
 app.use('/whatsapp', whatsappRouter);
+app.use('/messenger', messengerRouter);
 
 // initializeClient();
 

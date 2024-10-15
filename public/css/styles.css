@@ -148,6 +148,11 @@ main {
 
 .name {
     font-weight: 600;
+    display: none !important;
+}
+
+.nickname {
+    font-weight: 600;
 }
 
 .time {

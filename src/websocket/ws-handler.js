@@ -2,6 +2,7 @@ import { WebSocketServer, WebSocket } from 'ws';
 import { addClientMessageServices, addUserMessageServices, sendWhatsappMessage, sendUnofficialWhatsapp, getChatForUserService } from '../services/chatServices.js';
 import { subscriptionsMap } from '../routes/crm.js';
 import config from '../config/config.js';
+import { sendMessengerMessage } from '../routes/messengerRouter.js';
 
 const userConnections = new Map();
 const PING_INTERVAL = config.PING_INTERVAL_WS || 30000;
@@ -40,11 +41,13 @@ export const setupWebSocketServer = (server) => {
                         console.log(`Message from ${userEmail}: ${text} -> ${selectedUser}`);
                         await addClientMessageServices(userEmail, selectedUser, text);
 
-                        if (selectedUser.endsWith('@c.us')) {
-                            await sendUnofficialWhatsapp(selectedUser, text);
-                        } else {
-                            // await sendWhatsappMessage(selectedUser, text);
-                        }
+                        await sendMessengerMessage(selectedUser, { text });
+
+                        // if (selectedUser.endsWith('@c.us')) {
+                        //     await sendUnofficialWhatsapp(selectedUser, text);
+                        // } else {
+                        //     await sendWhatsappMessage(selectedUser, text);
+                        // }
 
 
                         const recipientConnections = userConnections.get(selectedUser) || [];

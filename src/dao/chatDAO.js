@@ -26,7 +26,7 @@ export const addUserMessage = async (from, to, text, image, audioUrl) => {
     let chat = await Chat.findOne({ username: from });
 
     if (!chat) {
-      chat = new Chat({ username: to, client: from , messages: [] });
+      chat = new Chat({ username: from, client: to , messages: [] });
     }
 
     chat.messages.push({ from: 'user', to: 'client', text, image, audioUrl });
@@ -91,9 +91,9 @@ export const getMessagesForUser = async user => {
   }
 }
 
-export const getChatForUser = async username => {
+export const getChatForUser = async client => {
   try {
-    const chat = await Chat.findOne({ username });
+    const chat = await Chat.findOne({ client });
     return chat;
   } catch (error) {
     throw new Error('Error retrieving messages: ' + error.message);
