@@ -458,6 +458,7 @@ async function renderUsers() {
         let lastMessage = user.messages.slice(-1)[0];
         let preview = lastMessage.text ? lastMessage.text : 'media';
         let to = lastMessage.to === 'user' ? 'Tú: ' : '';
+        let nickname = user.nickname ? user.nickname : userName;
 
         let statusColor = user.online ? 'green' : 'white';
 
@@ -469,7 +470,7 @@ async function renderUsers() {
                 </div>
                 <p class="name-time">
                     <span class="name">${userName}</span>
-                    <span class="nickname">${user.nickname}</span>
+                    <span class="nickname">${nickname}</span>
                     <span class="preview">${to}${preview}</span>
                 </p>
             </li>
