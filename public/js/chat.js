@@ -1,6 +1,14 @@
 let selectedUser;
 let selectedTag;
 
+function openEmojiPicker() {
+    const emojiPicker = new EmojiMart.Picker({
+        onEmojiSelect: (emoji) => insertEmoji(emoji.native),
+    });
+
+    emojiPicker.render(document.body);
+}
+
 function markChatAsRead(chatValue) {
     let unreadChats = JSON.parse(localStorage.getItem('unreadChats')) || [];
 
@@ -801,6 +809,25 @@ function swalNotification(senderName, messageContent) {
 
 }
 
+const emojiBtn = document.getElementById('emoji-btn');
+const emojiPicker = document.getElementById('emoji-picker');
+
+emojiBtn.addEventListener('click', () => {
+    emojiPicker.style.display =
+        emojiPicker.style.display === 'none' || emojiPicker.style.display === '' ? 'block' : 'none';
+});
+
+function addEmoji(emoji) {
+    const messageInput = document.getElementById('message');
+    messageInput.value += emoji;
+    emojiPicker.style.display = 'none';
+}
+
+document.addEventListener('click', (event) => {
+    if (!emojiPicker.contains(event.target) && event.target !== emojiBtn) {
+        emojiPicker.style.display = 'none';
+    }
+});
 
 function renderFilteredUsers(tag) {
     console.log(tag);
@@ -936,3 +963,5 @@ if ('serviceWorker' in navigator) {
             console.log('Fallo en el registro del Service Worker:', error);
         });
 }
+
+

@@ -51,14 +51,11 @@
                     <h1 id="username-id" onclick="copyNumber()"></h1>
                 </div>
                 <div id="buttons-section" class="buttonsSection">
-                    <button class="custom-button" onclick="newChat()">
+                    <!-- <button class="custom-button" onclick="newChat()">
                         <i class="fab fa-whatsapp"></i> Chat
-                    </button>
+                    </button> -->
                     <button class="custom-button" onclick="createUser()">
                         <i class="fas fa-user"></i> Usuario
-                    </button>
-                    <button class="custom-button">
-                        <i class="fas fa-wallet"></i> Pago
                     </button>
                     <button class="custom-button" onclick="addUserTag()">
                         <i class="fas fa-tag"></i> Etiquetas
@@ -69,6 +66,9 @@
                     <button class="custom-button" onclick="saveUserEmail()">
                         <i class="fas fa-envelope"></i> Email
                     </button>
+                    <button class="custom-button">
+                        <i class="fas fa-wallet"></i> Pago
+                    </button>
                 </div>
                 <div id="tag-section" class="tagSection">
                 </div>
@@ -76,10 +76,42 @@
                 </ul>
                 <div class="chat-form">
                     <input type="text" id="message" placeholder="Escribe un mensaje..." />
+                    <button class="custom-button" id="emoji-btn">
+                        <i class="fas fa-smile"></i>
+                    </button>
                     <button class="custom-button" onclick="selectPredefinedMessage()">
                         <i class="fas fa-paper-plane"></i>
                     </button>
                     <button id="send" class="send-button">Enviar</button>
+                    <div id="emoji-picker">
+                                                
+                        <!-- Emojis comunes -->
+                        <span class="emoji" onclick="addEmoji('😀')">😀</span>
+                        <span class="emoji" onclick="addEmoji('😂')">😂</span>
+                        <span class="emoji" onclick="addEmoji('❤️')">❤️</span>
+                        <span class="emoji" onclick="addEmoji('😍')">😍</span>
+                        <span class="emoji" onclick="addEmoji('😎')">😎</span>
+                        <span class="emoji" onclick="addEmoji('👍')">👍</span>
+                        <span class="emoji" onclick="addEmoji('🙏')">🙏</span>
+                        <span class="emoji" onclick="addEmoji('🤔')">🤔</span>
+                        <span class="emoji" onclick="addEmoji('🎉')">🎉</span>
+                        <span class="emoji" onclick="addEmoji('👋')">👋</span>
+                        <!-- Emojis relacionados con el casino -->
+                        <span class="emoji" onclick="addEmoji('💰')">💰</span>
+                        <span class="emoji" onclick="addEmoji('🎰')">🎰</span>
+                        <span class="emoji" onclick="addEmoji('🃏')">🃏</span>
+                        <span class="emoji" onclick="addEmoji('🎁')">🎁</span>
+                        <span class="emoji" onclick="addEmoji('🎉')">🎉</span>
+                        <span class="emoji" onclick="addEmoji('🎊')">🎊</span>
+                        <span class="emoji" onclick="addEmoji('🥳')">🥳</span>
+                        <span class="emoji" onclick="addEmoji('🎈')">🎈</span>
+                        <span class="emoji" onclick="addEmoji('🏷️')">🏷️</span>
+                        <span class="emoji" onclick="addEmoji('💌')">💌</span>
+                        <span class="emoji" onclick="addEmoji('💸')">💸</span>
+                        <span class="emoji" onclick="addEmoji('🎲')">🎲</span>
+                        <span class="emoji" onclick="addEmoji('🤑')">🤑</span>
+                        <span class="emoji" onclick="addEmoji('🎖️')">🎖️</span>
+                    </div>
                 </div>
             </div>
         </div>

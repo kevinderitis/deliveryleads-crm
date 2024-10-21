@@ -753,3 +753,19 @@ input[type="text"] {
     z-index: 1000; 
     padding: 10px;
 }
+
+#emoji-picker {
+    display: none;
+    border: 1px solid #ccc;
+    background-color: white;
+    position: absolute;
+    z-index: 1000;
+    padding: 5px;
+    border-radius: 5px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+.emoji {
+    cursor: pointer;
+    font-size: 20px;
+    margin: 2px;
+}
