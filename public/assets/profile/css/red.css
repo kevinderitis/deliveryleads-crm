@@ -1,24 +1,44 @@
 :root {
-    --primary: #3498db;
-    --primary-darker: #2980b9;
-    --bg: #1a1a1a;
-    --white: #e0e0e0;
-    --profile-bg: #2c3e50;
-    --socials-bg: #34495e;
-    --highlight-bg: #34495e;
-    --text-bg: #bdc3c7;
-    --text: #e0e0e0;
-    --border-color: #34495e;
-    --social-color: #bdc3c7;
-    --active: #3498db;
-    --tab-bg: #2c3e50;
-    --tabs-border: #34495e;
+    --primary: #d93d3dc7;
+    /* Rojo primario */
+    --primary-darker: #CC0000;
+    /* Rojo oscuro */
+    --bg: #FE5B5B;
+    /* Color de fondo */
+    --white: #FFF;
+    /* Blanco */
+    --profile-bg: #FFF;
+    /* Fondo del perfil */
+    --socials-bg: #F9FAFC;
+    /* Fondo de redes sociales */
+    --highlight-bg: #F9FAFC;
+    /* Color de fondo destacado */
+    --text-bg: #878789;
+    /* Color de fondo del texto */
+    --text: #797C83;
+    /* Color de texto */
+    --border-color: #F4F4F4;
+    /* Color del borde */
+    --social-color: #6B6C6E;
+    /* Color de redes sociales */
+    --active: #7774B5;
+    /* Color activo */
+    --tab-bg: #EBE9FF;
+    /* Color de fondo de las pestañas */
+    --tabs-border: #F2F6F5;
+    /* Color del borde de las pestañas */
     --tab-width: 7rem;
+    /* Ancho de las pestañas */
     --tabs-gap: 0rem;
+    /* Espaciado entre pestañas */
     --tab-radius: 0.4rem;
-    --scrollbar-thumb: #34495e;
-    --scrollbar-bg: #2c3e50;
+    /* Radio de las esquinas de las pestañas */
+    --scrollbar-thumb: #e4e3f3;
+    /* Color del pulgar del scrollbar */
+    --scrollbar-bg: #F2F6F5;
+    /* Color de fondo del scrollbar */
 }
+
 
 * {
     margin: 0;
@@ -63,7 +83,7 @@ body {
     background: var(--profile-bg);
     padding: 1rem;
     border-radius: 1rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 10rem;
     min-width: 50rem;
@@ -359,8 +379,8 @@ body {
 .tab-btn {
     padding: 1rem 2rem;
     font-size: 1.2rem;
-    background-color: var(--primary);
-    color: var(--white);
+    background-color: #c9220c;
+    color: white;
     border: none;
     border-radius: 10px;
     cursor: pointer;
@@ -368,7 +388,8 @@ body {
 }
 
 .tab-btn:hover {
-    background-color: var(--primary-darker);
+    background-color: #5f1106;
+    /* Verde más oscuro */
 }
 
 .orders-table {
@@ -379,16 +400,17 @@ body {
 .orders-table th,
 .orders-table td {
     padding: 8px;
-    border: 1px solid var(--border-color);
+    border: 1px solid #ddd;
     text-align: center;
+    /* Centrar el contenido */
 }
 
 .orders-table th {
-    background-color: var(--highlight-bg);
+    background-color: #f2f2f2;
 }
 
 .orders-table tbody tr:nth-child(even) {
-    background-color: var(--socials-bg);
+    background-color: #f2f2f2;
 }
 
 .logout-btn {
@@ -404,34 +426,36 @@ body {
     left: 20px;
     position: absolute;
     height: 4rem;
-    width: 6rem;
+    width: 10rem;
     overflow: hidden;
 }
 
-.swal2-popup {
-    background-color: var(--profile-bg) !important;
-    color: var(--text) !important;
-}
-
 .swal2-confirm {
-    background-color: var(--primary) !important;
-    border-color: var(--primary) !important;
+    background-color: #4CAF50 !important;
+    /* Verde */
+    border-color: #4CAF50 !important;
+    /* Borde verde */
 }
 
-.swal2-cancel, .swal2-deny {
-    background-color: var(--socials-bg) !important;
-    border-color: var(--socials-bg) !important;
-    color: var(--text) !important;
+.swal2-cancel {
+    background-color: #999999 !important;
+    border-color: #999999 !important;
+}
+
+
+.swal2-deny {
+    background-color: #999999 !important;
+    border-color: #999999 !important;
 }
 
 #adminBtn {
-    background-color: var(--socials-bg);
-    color: var(--text);
-}
-
-#adminBtn:hover {
-    background-color: var(--highlight-bg);
-}
+    background-color: gray; 
+    color: white; 
+  }
+  
+  #adminBtn:hover {
+    background-color: darkgray; 
+  }
 
 @media only screen and (max-width: 768px) {
     .profile {
