@@ -155,6 +155,36 @@ export const changeNickname = async (nickName, userId, password) => {
   }
 };
 
+export const savePhoneNumber = async (phone, userId) => {
+  try {
+    const chat = await Chat.findOne({ username: userId });
+
+    if (!chat) {
+      throw new Error('Chat no encontrado para este participante');
+    }
+    chat.phone = phone;
+
+    await chat.save();
+  } catch (error) {
+    console.error('Error al agregar el phone:', error.message);
+  }
+};
+
+export const saveUserEmail = async (email, userId) => {
+  try {
+    const chat = await Chat.findOne({ username: userId });
+
+    if (!chat) {
+      throw new Error('Chat no encontrado para este participante');
+    }
+    chat.email = email;
+
+    await chat.save();
+  } catch (error) {
+    console.error('Error al agregar el email:', error.message);
+  }
+};
+
 export const setUserProperties = async (email, username) => {
   try {
     const chat = await Chat.findOne({ username });

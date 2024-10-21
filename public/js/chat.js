@@ -156,6 +156,111 @@ async function createUser() {
 
 }
 
+async function savePhone(phone, userId) {
+    try {
+        await fetch(`/crm/phone/${phone}/${userId}`, {
+            method: 'GET'
+        });
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: 'Número de teléfono guardado correctamente'
+        });
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un problema al guardar el número de teléfono'
+        });
+    }
+}
+
+async function savePhoneNumber() {
+    Swal.fire({
+        title: 'Ingresa el número de teléfono',
+        html: '<input id="swal-input-phone" class="swal2-input" placeholder="Número de teléfono">',
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
+        cancelButtonText: 'Cancelar',
+        preConfirm: () => {
+            const phone = document.getElementById('swal-input-phone').value;
+            if (!phone) {
+                Swal.showValidationMessage('El número de teléfono es obligatorio');
+                return false;
+            }
+            if (!/^\d+$/.test(phone)) {
+                Swal.showValidationMessage('El número de teléfono debe contener solo dígitos');
+                return false;
+            }
+            if (phone.length < 7) {
+                Swal.showValidationMessage('El número de teléfono debe tener al menos 7 dígitos');
+                return false;
+            }
+            return phone;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const phone = result.value;
+            let userId = getUsernameIdValue();
+            savePhone(phone, userId);
+        }
+    });
+}
+
+async function saveEmailToUser(email, userId) {
+    try {
+        const response = await fetch(`/crm/email/${email}/${userId}`, {
+            method: 'GET'
+        });
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: 'Correo electrónico guardado correctamente'
+        });
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un problema al guardar el correo electrónico'
+        });
+    }
+}
+
+async function saveUserEmail() {
+    Swal.fire({
+        title: 'Ingresa el correo electrónico',
+        html: '<input id="swal-input-email" class="swal2-input" placeholder="Correo electrónico">',
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
+        cancelButtonText: 'Cancelar',
+        preConfirm: () => {
+            const email = document.getElementById('swal-input-email').value;
+            if (!email) {
+                Swal.showValidationMessage('El correo electrónico es obligatorio');
+                return false;
+            }
+            const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailPattern.test(email)) {
+                Swal.showValidationMessage('El correo electrónico no es válido');
+                return false;
+            }
+            return email;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const email = result.value;
+            let userId = getUsernameIdValue();
+            saveEmailToUser(email, userId);
+        }
+    });
+}
+
 function editContact() {
     Swal.fire({
         title: 'Ingresa tu nickname',
@@ -438,7 +543,6 @@ async function getFilteredList(email, filter) {
     }
 }
 
-
 async function renderUsers() {
     const userEmail = await getUserEmail();
     let list;
@@ -483,7 +587,7 @@ async function renderUsers() {
     applyUnreadStyles();
 
     if (!selectedUser) {
-        selectUser(list[0].username, list[0].phone);
+        selectUser(list[0].username, list[0].username);
     }
 }
 

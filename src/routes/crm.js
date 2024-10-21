@@ -5,7 +5,7 @@ import { WebSocket } from "ws";
 import { addClientMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService, getUsersFilteredListService } from '../services/chatServices.js';
 import { deliverLeadToClient } from "../services/leadService.js";
 import { isAuthenticated } from "../middleware/middleware.js";
-import { addTagToChatByParticipant, changeNickname, removeTagFromChatByParticipant } from "../dao/chatDAO.js";
+import { addTagToChatByParticipant, changeNickname, removeTagFromChatByParticipant, savePhoneNumber, saveUserEmail } from "../dao/chatDAO.js";
 import axios from "axios";
 import webPush from 'web-push';
 
@@ -114,6 +114,20 @@ crmRouter.get('/nickname/:nickname/:user', isAuthenticated, async (req, res) => 
     let nickName = req.params.nickname;
     let userId = req.params.user;
     let response = await changeNickname(nickName, userId);
+    res.send(response);
+});
+
+crmRouter.get('/phone/:number/:user', isAuthenticated, async (req, res) => {
+    let phoneNumber = req.params.number;
+    let userId = req.params.user;
+    let response = await savePhoneNumber(phoneNumber, userId);
+    res.send(response);
+});
+
+crmRouter.get('/email/:email/:user', isAuthenticated, async (req, res) => {
+    let email = req.params.email;
+    let userId = req.params.user;
+    let response = await saveUserEmail(email, userId);
     res.send(response);
 });
 
