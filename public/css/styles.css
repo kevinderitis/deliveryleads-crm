@@ -55,7 +55,7 @@ main {
 
 .users-container {
     width: 300px;
-    overflow-y: auto;    
+    overflow-y: auto;
     border-right: 1px solid #34495e;
 }
 
@@ -89,13 +89,13 @@ main {
 }
 
 .status-dot {
-    width: 10px;        
-    height: 10px;       
-    border-radius: 50%; 
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
     position: absolute;
-    bottom: 5px;        
-    right: 5px;         
-    border: 2px solid #1a1a1a; 
+    bottom: 5px;
+    right: 5px;
+    border: 2px solid #1a1a1a;
 }
 
 .user img {
@@ -131,17 +131,17 @@ main {
 }
 
 .name-time {
-    max-width: 100%; 
-    overflow: hidden; 
-    text-overflow: ellipsis; 
-    white-space: nowrap; 
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .name-time span {
-    display: block; 
-    overflow-wrap: break-word; 
-    word-break: break-word; 
-    white-space: normal; 
+    display: block;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
 }
 
 .name {
@@ -190,6 +190,29 @@ main {
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
     transition: background-color 0.3s;
+}
+
+
+.chat-box::-webkit-scrollbar,
+.users-container::-webkit-scrollbar {
+    width: 12px;
+}
+
+.chat-box::-webkit-scrollbar-track,
+.users-container::-webkit-scrollbar-track {
+    background: #1E1E1E;
+}
+
+.chat-box::-webkit-scrollbar-thumb,
+.users-container::-webkit-scrollbar-thumb {
+    background-color: #3498db;
+    border-radius: 6px;
+    border: 3px solid #1E1E1E;
+}
+
+.chat-box::-webkit-scrollbar-thumb:hover,
+.users-container::-webkit-scrollbar-thumb:hover {
+    background-color: #0056b3;
 }
 
 .chat-avatar img {
@@ -354,7 +377,7 @@ input[type="text"] {
     .return-button {
         display: block;
     }
-    
+
     .users {
         width: 100%;
         height: auto;
@@ -373,13 +396,13 @@ input[type="text"] {
     }
 
     .buttonsSection {
-        display: flex;             
-        flex-wrap: wrap;           
-        justify-content: space-between;             
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
         max-width: 100%;
         overflow: hidden;
     }
-    
+
     .chat-box {
         height: 50vh;
     }
@@ -590,7 +613,7 @@ input[type="text"] {
 .swal2-select {
     border: 1px solid #3498db;
     border-radius: 4px;
-    background-color:  #34495e;
+    background-color: #34495e;
     color: #e0e0e0;
     padding: 8px;
     font-size: 16px;
@@ -599,7 +622,7 @@ input[type="text"] {
 
 .swal2-select:focus {
     border-color: #2980b9;
-    box-shadow: 0 0 5px rgba(52, 152,219, 0.2);
+    box-shadow: 0 0 5px rgba(52, 152, 219, 0.2);
     outline: none;
 }
 
@@ -676,7 +699,7 @@ input[type="text"] {
     font-size: 16px;
     cursor: pointer;
     border-radius: 4px;
-    width: auto; 
+    width: auto;
     text-align: left;
     display: flex;
     justify-content: space-between;
@@ -687,11 +710,11 @@ input[type="text"] {
     display: none;
     position: absolute;
     background-color: #2c3e50;
-    min-width: 200px; 
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    min-width: 200px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
     z-index: 1;
     border-radius: 4px;
-    top: 100%; 
+    top: 100%;
     left: 0;
 }
 
@@ -725,7 +748,7 @@ input[type="text"] {
     color: #e0e0e0;
 }
 
-.user-search + .dropdown {
+.user-search+.dropdown {
     margin-top: 10px;
 }
 
@@ -744,9 +767,9 @@ input[type="text"] {
 
 .filter-container {
     position: sticky;
-    top: 0; 
-    background-color: #2c3e50; 
-    z-index: 1000; 
+    top: 0;
+    background-color: #2c3e50;
+    z-index: 1000;
     padding: 10px;
 }
 
