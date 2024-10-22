@@ -940,7 +940,7 @@ document.getElementById('user-search').addEventListener('input', function () {
     const users = document.querySelectorAll('.users .person');
 
     users.forEach(function (user) {
-        const userName = user.querySelector('.name').textContent.toLowerCase();
+        const userName = user.querySelector('.nickname').textContent.toLowerCase();
         if (userName.includes(filter)) {
             user.style.display = '';
         } else {
