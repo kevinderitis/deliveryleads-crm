@@ -9,15 +9,16 @@ import crypto from 'crypto';
 
 export const addClientMessageServices = async (from, to, text, image, audioUrl) => {
     try {
-        await addMessage(from, to, text, image, audioUrl);
+       const chat = await addMessage(from, to, text, image, audioUrl);
+       return chat;
     } catch (error) {
         console.log(error);
     }
 }
 
-export const addUserMessageServices = async (from, to, text, image, audioUrl) => {
+export const addUserMessageServices = async (from, to, text, image, audioUrl, fanpageId) => {
     try {
-        await addUserMessage(from, to, text, image, audioUrl);
+        await addUserMessage(from, to, text, image, audioUrl, fanpageId);
     } catch (error) {
         console.log(error);
     }

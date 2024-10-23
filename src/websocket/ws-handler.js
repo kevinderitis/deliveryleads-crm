@@ -39,9 +39,9 @@ export const setupWebSocketServer = (server) => {
 
                     if (type !== 'lead') {
                         console.log(`Message from ${userEmail}: ${text} -> ${selectedUser}`);
-                        await addClientMessageServices(userEmail, selectedUser, text);
+                        let chat = await addClientMessageServices(userEmail, selectedUser, text);
 
-                        await sendMessengerMessage(selectedUser, { text });
+                        await sendMessengerMessage(selectedUser, { text }, chat.fanpageId);
 
                         // if (selectedUser.endsWith('@c.us')) {
                         //     await sendUnofficialWhatsapp(selectedUser, text);

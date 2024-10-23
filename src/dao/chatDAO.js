@@ -21,12 +21,12 @@ export const addMessage = async (from, to, text, image, audioUrl) => {
   }
 };
 
-export const addUserMessage = async (from, to, text, image, audioUrl) => {
+export const addUserMessage = async (from, to, text, image, audioUrl, fanpageId) => {
   try {
     let chat = await Chat.findOne({ username: from });
 
     if (!chat) {
-      chat = new Chat({ username: from, client: to , messages: [] });
+      chat = new Chat({ username: from, client: to , messages: [], fanpageId });
     }
 
     chat.messages.push({ from: 'user', to: 'client', text, image, audioUrl });

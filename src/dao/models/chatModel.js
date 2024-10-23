@@ -44,6 +44,9 @@ const chatSchema = new mongoose.Schema({
   },
   password: {
     type: String
+  },
+  fanpageId: {
+    type: String
   }
 
 }, { timestamps: true });

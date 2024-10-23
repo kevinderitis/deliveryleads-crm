@@ -5,11 +5,19 @@ import { getChatForUserService, addClientMessageServices, addUserMessageServices
 import { userConnections } from '../websocket/ws-handler.js';
 import { WebSocket } from "ws";
 import { deliverLeadToClient } from "../services/leadService.js";
+import { pageAccessTokens } from '../config/pageAccessToken.js';
 
-const PAGE_ACCESS_TOKEN = process.env.MESSENGER_ACCESS_TOKEN;
+const PAGE_ACCESS_TOKEN_DEFAULT = process.env.MESSENGER_ACCESS_TOKEN;
 const VERIFY_TOKEN = process.env.MESSENGER_VERIFY_TOKEN;
 
-export const sendMessengerMessage = async (recipientId, message) => {
+export const sendMessengerMessage = async (recipientId, message, pageId) => {
+    console.log(`PAGE ID = ${pageId}`);
+    const PAGE_ACCESS_TOKEN = pageAccessTokens[pageId] ? pageAccessTokens[pageId] : PAGE_ACCESS_TOKEN_DEFAULT;
+
+    if (!PAGE_ACCESS_TOKEN) {
+        console.error(`No se encontró el token de acceso para la página ${pageId}`);
+        return;
+    }
     try {
         const response = await axios.post(
             `https://graph.facebook.com/v20.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`,
@@ -30,6 +38,7 @@ messengerRouter.post('/webhook', async (req, res) => {
     if (body.object === 'page') {
         for (const entry of body.entry) {
             const webhookEvent = entry.messaging[0];
+            const fanpageId = entry.id;
             const senderId = webhookEvent.sender.id;
             let imageUrl;
             let audioUrl;
@@ -60,7 +69,7 @@ messengerRouter.post('/webhook', async (req, res) => {
                     to = client.email;
                 }
 
-                await addUserMessageServices(senderId, to, message.text, imageUrl, audioUrl);
+                await addUserMessageServices(senderId, to, message.text, imageUrl, audioUrl, fanpageId);
 
                 const recipientConnections = userConnections.get(to) || [];
                 recipientConnections.forEach(ws => {
