@@ -7,12 +7,12 @@ import { WebSocket } from "ws";
 import { deliverLeadToClient } from "../services/leadService.js";
 import { pageAccessTokens } from '../config/pageAccessToken.js';
 
-const PAGE_ACCESS_TOKEN_DEFAULT = process.env.MESSENGER_ACCESS_TOKEN;
+// const PAGE_ACCESS_TOKEN = process.env.MESSENGER_ACCESS_TOKEN;
 const VERIFY_TOKEN = process.env.MESSENGER_VERIFY_TOKEN;
 
 export const sendMessengerMessage = async (recipientId, message, pageId) => {
     console.log(`PAGE ID = ${pageId}`);
-    const PAGE_ACCESS_TOKEN = pageAccessTokens[pageId] ? pageAccessTokens[pageId] : PAGE_ACCESS_TOKEN_DEFAULT;
+    const PAGE_ACCESS_TOKEN = pageAccessTokens[pageId];
 
     if (!PAGE_ACCESS_TOKEN) {
         console.error(`No se encontró el token de acceso para la página ${pageId}`);
