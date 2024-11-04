@@ -465,11 +465,22 @@ function copyNumber() {
     });
 }
 
+
+
 function selectPredefinedMessage() {
     const predefinedMessages = [
-        { title: 'Bienvenida', content: 'Hola, bienvenido a nuestro servicio.' },
-        { title: 'Pago Pendiente', content: 'Tienes un pago pendiente. Por favor, realiza el pago lo antes posible.' },
-        { title: 'Confirmación de Pedido', content: 'Tu pedido ha sido confirmado y está en camino.' },
+        {
+            title: 'Bienvenida', content: `Bienvenido! Somos LD club, más de 10 años en el rubro! 
+
+        ¡𝐉𝐔𝐆𝐀 𝐒𝐈𝐍 𝐋𝐈𝐌𝐈𝐓𝐄𝐒, 𝑪𝑶𝑵 𝑺𝑬𝑮𝑼𝑹𝑰𝑫𝑨𝑫, 𝑷𝑹𝑰𝑽𝑨𝑪𝑰𝑫𝑨𝑫 𝒀 𝑪𝑶𝑵𝑭𝑰𝑨𝑵𝒁𝑨!
+        
+        𝗕𝗼𝗻𝗼 𝗱𝗲 𝗯𝗶𝗲𝗻𝘃𝗲𝗻𝗶𝗱𝗮 𝗱𝗲𝗹 𝟯𝟬% 𝗱𝗲𝘀𝗱𝗲 𝟯.𝟬𝟬𝟬 𝗲𝗻 𝗹𝗮 𝗺𝗲𝗷𝗼𝗿 𝗽𝗹𝗮𝘁𝗮𝗳𝗼𝗿𝗺𝗮 𝗱𝗲𝗹 𝗺𝗲𝗿𝗰𝗮𝗱𝗼 🔥
+        https://www.ghostrouter.online/vudu
+        𝙋𝙚𝙙𝙞́ 𝙩𝙪 𝙪𝙨𝙪𝙖𝙧𝙞𝙤 𝙙𝙚 𝙡𝙖 𝙨𝙪𝙚𝙧𝙩𝙚 
+        
+        𝙋𝘼𝙂𝙊 𝙀𝙉 𝙀𝙇 𝘿𝙄́𝘼` },
+        { title: 'Link', content: 'Te dejo el link de la plataforma: https://www.ghostrouter.online/vudu' },
+        { title: 'Whatsapp', content: 'Te dejo el numero de whatsapp para que nos contactes con este link: https://www.ghostrouter.online/phone' },
         { title: 'Recordatorio de Cita', content: 'Este es un recordatorio de tu cita programada.' },
         { title: 'Agradecimiento', content: 'Gracias por tu compra. Esperamos verte pronto de nuevo.' }
     ];
