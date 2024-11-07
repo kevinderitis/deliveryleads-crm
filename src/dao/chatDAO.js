@@ -102,7 +102,7 @@ export const getChatForUser = async client => {
 
 export const getUsersList = async email => {
   try {
-    const chats = await Chat.find({ client: email }).sort({ updatedAt: -1 });
+    const chats = await Chat.find({ client: email, status: 'active' }).sort({ updatedAt: -1 });
 
     return chats;
   } catch (error) {
@@ -114,7 +114,8 @@ export const getFilteredUsersList = async (email, filter) => {
   try {
     const chats = await Chat.find({
       client: email,
-      tags: filter
+      tags: filter,
+      status: 'active'
     }).sort({ updatedAt: -1 });
 
     return chats;
@@ -245,5 +246,23 @@ export const removeTagFromChatByParticipant = async (participant, tagName) => {
     }
   } catch (error) {
     console.error('Error al eliminar el tag:', error.message);
+  }
+};
+
+export const deleteChatByUser = async (username) => {
+  try {
+    const chat = await Chat.findOne({ username });
+
+    if (!chat) {
+      throw new Error('Chat no encontrado para este participante');
+    }
+
+    chat.status = 'inactive';
+
+    await chat.save();
+
+    console.log(`Chat con username ${username} marcado como inactivo.`);
+  } catch (error) {
+    console.error('Error al actualizar el chat:', error.message);
   }
 };

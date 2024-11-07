@@ -663,6 +663,24 @@ input[type="text"] {
     transform: translateY(0);
 }
 
+.custom-button.delete-button {
+    background-color: #e74c3c; 
+    color: #fff; 
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    
+}
+
+.custom-button.delete-button:hover {
+    background-color: #c0392b; 
+}
+
+.custom-button.delete-button i {
+    margin-right: 5px; 
+}
+
 .user-search {
     width: 100%;
     padding: 10px;

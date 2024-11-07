@@ -5,7 +5,7 @@ import { WebSocket } from "ws";
 import { addClientMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService, getUsersFilteredListService } from '../services/chatServices.js';
 import { deliverLeadToClient } from "../services/leadService.js";
 import { isAuthenticated } from "../middleware/middleware.js";
-import { addTagToChatByParticipant, changeNickname, removeTagFromChatByParticipant, savePhoneNumber, saveUserEmail } from "../dao/chatDAO.js";
+import { addTagToChatByParticipant, changeNickname, deleteChatByUser, removeTagFromChatByParticipant, savePhoneNumber, saveUserEmail } from "../dao/chatDAO.js";
 import axios from "axios";
 import webPush from 'web-push';
 
@@ -151,6 +151,17 @@ crmRouter.get('/tags/remove/:number/:tag', isAuthenticated, async (req, res) => 
     let tag = req.params.tag;
     let response = await removeTagFromChatByParticipant(chatId, tag);
     res.send(response);
+});
+
+crmRouter.delete('/delete/chat/:username', isAuthenticated, async (req, res) => {
+    let username = req.params.username;
+    try {
+        let response = await deleteChatByUser(username)
+        res.status(200).send({ message: 'Chat eliminado exitosamente', response });
+    } catch (error) {
+        console.error('Error al eliminar el chat:', error);
+        res.status(500).send({ message: 'Hubo un problema al eliminar el chat', error: error.message });
+    }
 });
 
 // const getImageBase64 = async (imageId) => {

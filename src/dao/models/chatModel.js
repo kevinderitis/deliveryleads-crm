@@ -47,6 +47,10 @@ const chatSchema = new mongoose.Schema({
   },
   fanpageId: {
     type: String
+  },
+  status: {
+    type: String,
+    default: 'active'
   }
 
 }, { timestamps: true });

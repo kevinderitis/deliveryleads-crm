@@ -295,6 +295,50 @@ function editContact() {
     });
 }
 
+async function deleteChat(userId) {
+    let url = `/crm/delete/chat/${userId}`;
+    try {
+        await fetch(url, { method: 'DELETE' });
+        console.log('Chat eliminado exitosamente');
+
+        Swal.fire({
+            title: 'Chat eliminado',
+            text: `El chat de "${userId}" ha sido eliminado exitosamente.`,
+            icon: 'success',
+            confirmButtonText: 'OK'
+        });
+
+    } catch (error) {
+        console.error('Error al eliminar el chat:', error);
+        Swal.fire({
+            title: 'Error',
+            text: 'Hubo un problema al eliminar el chat. Por favor, intenta nuevamente.',
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    }
+}
+
+async function confirmDeleteChat() {
+    Swal.fire({
+        title: '¿Estás seguro?',
+        text: 'Esta acción eliminará el chat de forma definitiva. No podrás recuperarlo después.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Eliminar',
+        cancelButtonText: 'Cancelar',
+        focusCancel: true
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let userId = getUsernameIdValue();
+            deleteChat(userId);
+        }
+        renderUsers();
+    });
+}
+
 function addUserTag() {
     Swal.fire({
         title: 'Selecciona una etiqueta',
