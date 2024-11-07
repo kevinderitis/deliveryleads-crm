@@ -367,37 +367,43 @@ function renderChatMessage(user, message, image, audioUrl, date) {
     let minutes = dateObj.getMinutes().toString().length === 1 ? `0${dateObj.getMinutes()}` : dateObj.getMinutes();
     const formattedDate = `${hours}:${minutes}`;
 
-    // <img src="data:image/jpeg;base64,${image}" alt="">  esto se cambia por la otra parte si es de wpp <img src="${image}"> mas abajo
-    // <source src="audios/${audioUrl}" type="audio/mp3">  esto se cambia por la otra parte si es de wpp <source src="${audioUrl}" type="audio/mp3">
+    function makeLinksClickable(text) {
+        const urlPattern = /(http[s]?:\/\/[^\s]+)/g;
+        return text.replace(urlPattern, '<a href="$1" target="_blank">$1</a>');
+    }
+
+    const formattedMessage = makeLinksClickable(message);
 
     if (user === 'user') {
         if (image) {
             li.innerHTML = `
-        <div class="user-chat-box">
-            <span>${selectedUser}: </span>
-            <div class="image-container">
-                <img src="${image}">
-            </div>
-        </div>`;
+                <div class="user-chat-box">
+                    <span>${selectedUser}: </span>
+                    <div class="image-container">
+                        <img src="${image}">
+                    </div>
+                </div>`;
         } else if (audioUrl) {
             li.innerHTML = `
-        <div class="user-chat-box">
-            <span>${selectedUser}: </span>
-            <div class="audio-container">
-                <audio controls>
-                    <source src="${audioUrl}" type="audio/mp3">
-                    Your browser does not support the audio element.
-                </audio>
-            </div>
-        </div>`;
+                <div class="user-chat-box">
+                    <span>${selectedUser}: </span>
+                    <div class="audio-container">
+                        <audio controls>
+                            <source src="${audioUrl}" type="audio/mp3">
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>
+                </div>`;
         } else {
             li.innerHTML = `
-        <span class="user-chat-box">${selectedUser}: </span> 
-        <span class="message-chat-box">${message}</span>
-        <span class="message-time">${formattedDate}</span>`;
+                <span class="user-chat-box">${selectedUser}: </span> 
+                <span class="message-chat-box">${formattedMessage}</span>
+                <span class="message-time">${formattedDate}</span>`;
         }
     } else {
-        li.innerHTML = `<span class="user-chat-box">Tú: </span> <span class="message-chat-box">${message}</span> <span class="message-time">${formattedDate}</span>`;
+        li.innerHTML = `<span class="user-chat-box">Tú: </span> 
+                        <span class="message-chat-box">${formattedMessage}</span> 
+                        <span class="message-time">${formattedDate}</span>`;
         li.classList.add('other-message');
     }
 
