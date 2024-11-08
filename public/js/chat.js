@@ -412,6 +412,9 @@ function renderChatMessage(user, message, image, audioUrl, date) {
     const formattedDate = `${hours}:${minutes}`;
 
     function makeLinksClickable(text) {
+        if (!text || typeof text !== 'string') {
+            return '';
+        }
         const urlPattern = /(http[s]?:\/\/[^\s]+)/g;
         return text.replace(urlPattern, '<a href="$1" target="_blank">$1</a>');
     }
