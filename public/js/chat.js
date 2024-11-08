@@ -126,7 +126,7 @@ async function createUser() {
             confirmButtonText: 'Aceptar'
         }).then((result) => {
             if (result.isConfirmed) {
-                inputMessage.value = `Usuario: ${userChat.nickname} -> Contraseña: ${userChat.password}`;;
+                inputMessage.value = `https://vudu.bet/ Usuario: ${userChat.nickname} -> Contraseña: ${userChat.password}`;;
             }
         });
     } else {
@@ -530,8 +530,9 @@ function selectPredefinedMessage() {
         
         𝙋𝘼𝙂𝙊 𝙀𝙉 𝙀𝙇 𝘿𝙄́𝘼` },
         { title: 'Link', content: 'Te dejo el link de la plataforma: https://www.ghostrouter.online/vudu' },
-        { title: 'Whatsapp', content: 'Te dejo el numero de whatsapp para que nos contactes con este link: https://www.ghostrouter.online/phone' },
-        { title: 'Recordatorio de Cita', content: 'Este es un recordatorio de tu cita programada.' },
+        { title: 'Whatsapp', content: 'Te dejo mi numero de Whatsapp para que sigamos hablando por ahi! Agendame! https://www.ghostrouter.online/phone' },
+        { title: 'Whatsapp2', content: 'Pasame tus datos para el premio a este numero por favor! https://www.ghostrouter.online/phone' },
+        { title: 'Cronograma', content: 'LOS PREMIOS SE PAGAN EN EL DIA!' },
         { title: 'Agradecimiento', content: 'Gracias por tu compra. Esperamos verte pronto de nuevo.' }
     ];
 
