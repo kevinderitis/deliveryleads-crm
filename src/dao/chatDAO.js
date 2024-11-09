@@ -79,7 +79,7 @@ export const getMessagesForChat = async (fromParam, toParam) => {
 
 export const getMessagesForUser = async user => {
   try {
-    const chat = await Chat.findOne({ username: user });
+    const chat = await Chat.findOne({ username: user }, { messages: { $slice: -10 } });
 
     if (!chat) {
       return [];
