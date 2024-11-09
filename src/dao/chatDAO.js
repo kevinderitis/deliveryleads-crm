@@ -8,7 +8,7 @@ export const addMessage = async (from, to, text, image, audioUrl) => {
     let chat = await Chat.findOne({ username: to, client: from });
 
     if (!chat) {
-      chat = new Chat({ username: to, client: from , messages: [] });
+      chat = new Chat({ username: to, client: from, messages: [] });
     }
 
     chat.messages.push({ from: 'client', to: 'user', text, image, audioUrl });
@@ -26,7 +26,7 @@ export const addUserMessage = async (from, to, text, image, audioUrl, fanpageId)
     let chat = await Chat.findOne({ username: from });
 
     if (!chat) {
-      chat = new Chat({ username: from, client: to , messages: [], fanpageId });
+      chat = new Chat({ username: from, client: to, messages: [], fanpageId });
     }
 
     chat.messages.push({ from: 'user', to: 'client', text, image, audioUrl });
@@ -44,7 +44,7 @@ export const addWelcomeMessage = async (from, to, text, image, audioUrl) => {
     let chat = await Chat.findOne({ username: to, client: from });
 
     if (!chat) {
-      chat = new Chat({ username: to, client: from , messages: [] });
+      chat = new Chat({ username: to, client: from, messages: [] });
     }
 
     chat.messages.push({ from: 'client', to: 'user', text, image, audioUrl });
@@ -62,11 +62,11 @@ export const getMessagesForChat = async (fromParam, toParam) => {
   try {
     // const chat = await Chat.findOne({ participants: { $all: participants } });
     const chat = await Chat.find({
-        $or: [
-          { from: fromParam, to: toParam },
-          { from: toParam, to: fromParam }
-        ]
-      });
+      $or: [
+        { from: fromParam, to: toParam },
+        { from: toParam, to: fromParam }
+      ]
+    });
     if (!chat) {
       return [];
     }
@@ -100,15 +100,18 @@ export const getChatForUser = async client => {
   }
 }
 
-export const getUsersList = async email => {
+export const getUsersList = async (email) => {
   try {
-    const chats = await Chat.find({ client: email, status: 'active' }).sort({ updatedAt: -1 });
+    const chats = await Chat.find(
+      { client: email, status: 'active' },
+      { messages: { $slice: -1 } }
+    ).sort({ updatedAt: -1 }).limit(100);;
 
     return chats;
   } catch (error) {
     throw new Error('Error retrieving user list: ' + error.message);
   }
-}
+};
 
 export const getFilteredUsersList = async (email, filter) => {
   try {
@@ -116,7 +119,9 @@ export const getFilteredUsersList = async (email, filter) => {
       client: email,
       tags: filter,
       status: 'active'
-    }).sort({ updatedAt: -1 });
+    },
+      { messages: { $slice: -1 } }
+    ).sort({ updatedAt: -1 }).limit(100);;
 
     return chats;
   } catch (error) {
