@@ -17,6 +17,8 @@ import config from './src/config/config.js';
 import { initializeClient } from './src/routes/whatsappRouter.js';
 import ejs from 'ejs';
 import { filterBots } from './src/middleware/middleware.js';
+import compression from 'compression';
+import minify from 'express-minify';
 
 const app = express();
 const server = http.createServer(app);
@@ -27,6 +29,8 @@ app.use(cors({
   }));
 
 app.set('view engine', 'ejs');
+app.use(compression());
+app.use(minify());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static('public', {
