@@ -23,6 +23,7 @@ const server = http.createServer(app);
 export const wss = setupWebSocketServer(server);
 
 app.use(cors({
+    origin: 'http://localhost:5173',
     credentials: true
   }));
 
