@@ -37,6 +37,13 @@ function applyUnreadStyles() {
     });
 };
 
+function applyReadStyles(chatValue) {
+    const listItem = document.querySelector(`li[data-chat="${chatValue}"]`);
+    if (listItem) {
+        listItem.style.backgroundColor = '#1a1a1a';
+    }
+};
+
 
 function applySelectedStyle(chatValue) {
     const previouslySelected = document.querySelector('li.person.selected');
@@ -798,6 +805,10 @@ async function selectUser(email, phone) {
     } else {
         chatContainer.style.display = 'block';
     }
+
+
+    applySelectedStyle(email)
+    applyReadStyles(email)
     // renderUsers();
 }
 
@@ -929,7 +940,7 @@ window.addEventListener('click', (event) => {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const userEmail = await getUserEmail();
-    const ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
+    const ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
 
     renderUsers();
 

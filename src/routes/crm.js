@@ -2,7 +2,7 @@ import { Router } from "express";
 import config from "../config/config.js";
 import { userConnections } from '../websocket/ws-handler.js';
 import { WebSocket } from "ws";
-import { addClientMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService, getUsersFilteredListService } from '../services/chatServices.js';
+import { addClientMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService, getUsersFilteredListService, addUserMessageServices } from '../services/chatServices.js';
 import { deliverLeadToClient } from "../services/leadService.js";
 import { isAuthenticated } from "../middleware/middleware.js";
 import { addTagToChatByParticipant, changeNickname, deleteChatByUser, removeTagFromChatByParticipant, savePhoneNumber, saveUserEmail } from "../dao/chatDAO.js";
@@ -23,13 +23,13 @@ crmRouter.post('/new', async (req, res) => {
         let chat = await getChatForUserService(from);
 
         if (chat) {
-            to = chat.participants.find(participant => participant !== from);
+            to = chat.username;
         } else {
             let client = await deliverLeadToClient();
             to = client.email;
         }
 
-        await addClientMessageServices(from, to, text, image);
+        await addUserMessageServices(from, to, text, image);
 
         const recipientConnections = userConnections.get(to) || [];
 
