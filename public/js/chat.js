@@ -798,7 +798,7 @@ async function selectUser(email, phone) {
     } else {
         chatContainer.style.display = 'block';
     }
-    renderUsers();
+    // renderUsers();
 }
 
 async function getUserEmail() {
