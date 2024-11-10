@@ -23,14 +23,20 @@ const server = http.createServer(app);
 export const wss = setupWebSocketServer(server);
 
 app.use(cors({
-    origin: 'http://localhost:5173',
     credentials: true
   }));
 
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static('public', {
+    maxAge: '30d', 
+    setHeaders: (res, path) => {
+      if (path.endsWith('.html')) {
+        res.setHeader('Cache-Control', 'public, max-age=604800');
+      }
+    }
+  }));
 
 app.use(session({
     secret: config.SECRET_PASSPORT,
