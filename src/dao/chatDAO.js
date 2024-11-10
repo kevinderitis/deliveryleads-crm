@@ -105,8 +105,7 @@ export const getUsersList = async (email) => {
     const chats = await Chat.find(
       { client: email, status: 'active' },
       { messages: { $slice: -1 } }
-      ).sort({ updatedAt: -1 });
-    // ).sort({ updatedAt: -1 }).limit(100);;
+    ).sort({ updatedAt: -1 }).limit(100);;
 
     return chats;
   } catch (error) {
