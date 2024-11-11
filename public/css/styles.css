@@ -681,6 +681,10 @@ input[type="text"] {
     margin-right: 5px; 
 }
 
+.open-conversation-button {
+    margin-left: auto;
+}
+
 .user-search {
     width: 100%;
     padding: 10px;

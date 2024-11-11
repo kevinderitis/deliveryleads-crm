@@ -27,6 +27,7 @@
                     <div class="dropdown">
                         <button class="dropdown-button">Filtrar</button>
                         <div class="dropdown-content">
+                            <a href="#" data-filter="All">Todos</a>
                             <a href="#" data-filter="Pendiente">Pago pendiente</a>
                             <a href="#" data-filter="Bronce">Bronce</a>
                             <a href="#" data-filter="Plata">Plata</a>
@@ -71,6 +72,9 @@
                     </button>
                     <button class="custom-button delete-button" onclick="confirmDeleteChat()">
                         <i class="fas fa-trash-alt"></i> Eliminar
+                    </button>
+                    <button class="custom-button open-conversation-button" onclick="getAllMessages()">
+                        <i class="fas fa-comments"></i>
                     </button>
                 </div>
                 <div id="tag-section" class="tagSection">

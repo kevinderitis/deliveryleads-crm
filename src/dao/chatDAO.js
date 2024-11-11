@@ -77,9 +77,14 @@ export const getMessagesForChat = async (fromParam, toParam) => {
   }
 }
 
-export const getMessagesForUser = async user => {
+export const getMessagesForUser = async (user, limit) => {
+  let chat;
   try {
-    const chat = await Chat.findOne({ username: user }, { messages: { $slice: -10 } });
+    if (limit) {
+      chat = await Chat.findOne({ username: user }, { messages: { $slice: -10 } });
+    } else {
+      chat = await Chat.findOne({ username: user });
+    }
 
     if (!chat) {
       return [];
@@ -114,14 +119,25 @@ export const getUsersList = async (email) => {
 };
 
 export const getFilteredUsersList = async (email, filter) => {
+  let chats;
   try {
-    const chats = await Chat.find({
-      client: email,
-      tags: filter,
-      status: 'active'
-    },
-      { messages: { $slice: -1 } }
-    ).sort({ updatedAt: -1 }).limit(100);;
+    if (filter === 'All') {
+      chats = await Chat.find({
+        client: email,
+        status: 'active'
+      },
+        { messages: { $slice: -1 } }
+      ).sort({ updatedAt: -1 });
+    } else {
+      chats = await Chat.find({
+        client: email,
+        tags: filter,
+        status: 'active'
+      },
+        { messages: { $slice: -1 } }
+      ).sort({ updatedAt: -1 }).limit(100);;
+    }
+
 
     return chats;
   } catch (error) {

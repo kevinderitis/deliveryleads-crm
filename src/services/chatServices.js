@@ -34,10 +34,10 @@ export const getMessagesForChatService = async (from, to) => {
     }
 }
 
-export const getMessagesForUserService = async (user) => {
+export const getMessagesForUserService = async (user, limit) => {
     try {
         // let response = await getMessagesForUser([user]);
-        let response = await getMessagesForUser(user);
+        let response = await getMessagesForUser(user, limit);
         return response;
     } catch (error) {
         console.log(error);

@@ -106,7 +106,9 @@ crmRouter.get('/users/list/:email/:filter', isAuthenticated, async (req, res) =>
 
 crmRouter.get('/chats/:selected', isAuthenticated, async (req, res) => {
     let selectedUser = req.params.selected;
-    let chat = await getMessagesForUserService(selectedUser);
+    let limit = req.query.limit;
+
+    let chat = await getMessagesForUserService(selectedUser, limit);
     res.send(chat);
 });
 

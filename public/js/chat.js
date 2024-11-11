@@ -109,7 +109,7 @@ async function saveNickname(nickname, userId, password) {
 }
 
 async function createUser() {
-    let userChat = await getChatMessages(selectedUser);
+    let userChat = await getChatMessages(selectedUser, 1);
     let inputMessage = document.getElementById('message');
     if (userChat.nickname) {
         Swal.fire({
@@ -756,9 +756,11 @@ function newChat() {
 }
 
 
-async function getChatMessages(email) {
+async function getChatMessages(email, limit) {
     try {
-        let messages = await fetch(`/crm/chats/${email}`);
+        const url = limit ? `/crm/chats/${email}?limit=${limit}` : `/crm/chats/${email}`;
+
+        let messages = await fetch(url);
         let response = await messages.json();
         return response;
     } catch (error) {
@@ -781,10 +783,17 @@ function alternateUserChat() {
     }
 }
 
+async function getAllMessages() {
+    let username = selectedUser;
+
+    let chat = await getChatMessages(username);
+    displayMessages(chat.messages);
+}
+
 async function selectUser(email, phone) {
     selectedUser = email;
     const usernameId = document.getElementById('username-id');
-    let chat = await getChatMessages(email);
+    let chat = await getChatMessages(email, 10);
 
     if (chat.tags) {
         renderTags(chat.tags);
