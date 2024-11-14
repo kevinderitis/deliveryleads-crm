@@ -5,7 +5,7 @@ import { WebSocket } from "ws";
 import { addClientMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService, getUsersFilteredListService, addUserMessageServices } from '../services/chatServices.js';
 import { deliverLeadToClient } from "../services/leadService.js";
 import { isAuthenticated } from "../middleware/middleware.js";
-import { addTagToChatByParticipant, changeNickname, deleteChatByUser, removeTagFromChatByParticipant, savePhoneNumber, saveUserEmail, getReportData } from "../dao/chatDAO.js";
+import { addTagToChatByParticipant, changeNickname, deleteChatByUser, removeTagFromChatByParticipant, savePhoneNumber, saveUserEmail, getReportData, calculateAverageResponseTime } from "../dao/chatDAO.js";
 import { createNewPayment, getPaymentReportData } from "../dao/paymentDAO.js";
 import axios from "axios";
 import webPush from 'web-push';
@@ -175,6 +175,7 @@ crmRouter.post('/report', isAuthenticated, async (req, res) => {
     try {
         const leadsData = await getReportData(client.email, startDate, endDate);
         const payments = await getPaymentReportData(client.email, startDate, endDate);
+        const averageResponseTime = await calculateAverageResponseTime(client.email, startDate, endDate);
 
         const formattedDataLeads = leadsData.reduce((acc, item) => {
             acc[item.date] = item.count;
@@ -191,7 +192,8 @@ crmRouter.post('/report', isAuthenticated, async (req, res) => {
         const reportData = {
             leads: formattedDataLeads,
             payments: formattedDataPayments,
-            totalAmount
+            totalAmount,
+            averageResponseTime
         };
 
         res.status(200).send(reportData);

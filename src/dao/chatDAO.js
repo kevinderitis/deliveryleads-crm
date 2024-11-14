@@ -300,7 +300,7 @@ export const getReportData = async (clientEmail, startDate, endDate) => {
             $gte: start,
             $lte: end
           },
-          client: clientEmail, 
+          client: clientEmail,
         }
       },
       {
@@ -323,5 +323,45 @@ export const getReportData = async (clientEmail, startDate, endDate) => {
   } catch (error) {
     console.error('Error al obtener los datos del reporte:', error.message);
     throw new Error('Error al obtener los datos del reporte');
+  }
+};
+
+export const calculateAverageResponseTime = async (clientId, startDate, endDate) => {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  try {
+    const chats = await Chat.find({
+      client: clientId,
+      createdAt: { $gte: start, $lte: end },
+    });
+
+    if (chats.length === 0) {
+      console.log("No hay chats en el rango de fechas seleccionado.");
+      return 0;
+    }
+
+    let totalResponseTime = 0;
+    let responseCount = 0;
+
+    chats.forEach(chat => {
+      const userMessage = chat.messages.find(msg => msg.from === 'user');
+      const clientMessage = chat.messages.find(msg => msg.from === 'client' && msg.createdAt > userMessage?.createdAt);
+
+      if (userMessage && clientMessage) {
+        const responseTime = clientMessage.createdAt - userMessage.createdAt;
+        totalResponseTime += responseTime;
+        responseCount++;
+      }
+    });
+
+    const averageResponseTime = responseCount > 0 ? totalResponseTime / responseCount : 0;
+
+    const averageResponseTimeMinutes = averageResponseTime / (1000 * 60);
+
+    return averageResponseTimeMinutes;
+  } catch (error) {
+    console.error('Error al calcular el tiempo de respuesta promedio:', error);
+    throw new Error('Error al calcular el tiempo de respuesta promedio');
   }
 };

@@ -41,6 +41,7 @@ async function updateTodayLeads() {
 
     document.getElementById('todayLeads').textContent = todayLeads;
     document.getElementById('totalAmount').textContent = data.totalAmount;
+    document.getElementById('responseTime').textContent = data.averageResponseTime;
     document.getElementById('todayPayments').textContent = todayConversion + '%';
 }
 
@@ -55,6 +56,7 @@ async function searchLeads() {
 
     document.getElementById('searchLeads').textContent = leads;
     document.getElementById('searchTotalAmount').textContent = data.totalAmount;
+    document.getElementById('searchResponseTime').textContent = data.averageResponseTime;
     document.getElementById('searchPayments').textContent = conversion + '%';
     document.getElementById('searchResult').style.display = 'block';
 }
