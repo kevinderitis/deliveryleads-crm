@@ -396,6 +396,57 @@ function addUserTag() {
     });
 }
 
+async function createPayment(amount, userId) {
+    try {
+        await fetch(`/crm/payment`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ amount, userId })
+        });
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: 'Pago enviado correctamente'
+        });
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un problema al enviar el pago'
+        });
+    }
+}
+
+async function createNewPayment() {
+    Swal.fire({
+        title: 'Ingresa el monto del pago',
+        html: '<input id="swal-input-amount" type="number" class="swal2-input" placeholder="Monto del pago">',
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Enviar Pago',
+        cancelButtonText: 'Cancelar',
+        preConfirm: () => {
+            const amount = parseFloat(document.getElementById('swal-input-amount').value);
+            if (isNaN(amount) || amount <= 0) {
+                Swal.showValidationMessage('El monto debe ser un número positivo');
+                return false;
+            }
+            return amount;
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            const amount = result.value;
+            let userId = getUsernameIdValue();
+            console.log(userId)
+            createPayment(amount, userId);
+        }
+    });
+}
+
 function backToProfile() {
     window.location.href = 'profile.html';
 }
@@ -719,6 +770,15 @@ async function startNewChat(from, text) {
     } catch (error) {
         console.error('There was a problem with the fetch operation:', error);
     }
+}
+
+function toggleMenu() {
+    const menu = document.getElementById("hamburger-menu");
+    menu.classList.toggle("show");
+}
+
+function goToDashboard() {
+    window.location.href = "/report.html";
 }
 
 
@@ -1050,3 +1110,11 @@ if ('serviceWorker' in navigator) {
 }
 
 
+document.addEventListener("click", function (event) {
+    const menu = document.getElementById("hamburger-menu");
+    const button = document.querySelector(".hamburger-button");
+
+    if (!menu.contains(event.target) && !button.contains(event.target)) {
+        menu.classList.remove("show");
+    }
+});

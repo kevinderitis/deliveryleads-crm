@@ -287,3 +287,41 @@ export const deleteChatByUser = async (username) => {
     console.error('Error al actualizar el chat:', error.message);
   }
 };
+
+export const getReportData = async (clientEmail, startDate, endDate) => {
+  try {
+    const start = new Date(`${startDate}T00:00:00.000Z`);
+    const end = new Date(`${endDate}T23:59:59.999Z`);
+
+    const reportData = await Chat.aggregate([
+      {
+        $match: {
+          createdAt: {
+            $gte: start,
+            $lte: end
+          },
+          client: clientEmail, 
+        }
+      },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: '%Y-%m-%d', date: '$createdAt' }
+          },
+          chatCount: { $sum: 1 }
+        }
+      },
+      {
+        $sort: { _id: 1 }
+      }
+    ]);
+
+    return reportData.map(entry => ({
+      date: entry._id,
+      count: entry.chatCount
+    }));
+  } catch (error) {
+    console.error('Error al obtener los datos del reporte:', error.message);
+    throw new Error('Error al obtener los datos del reporte');
+  }
+};

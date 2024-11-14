@@ -811,3 +811,41 @@ input[type="text"] {
     font-size: 20px;
     margin: 2px;
 }
+
+.hamburger-button {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: white;
+}
+
+.hamburger-menu {
+    display: none;
+    position: absolute;
+    top: 50px;
+    right: 20px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 10px;
+    z-index: 1000;
+}
+
+.hamburger-menu a {
+    display: block;
+    padding: 10px;
+    color: #333;
+    text-decoration: none;
+}
+
+.hamburger-menu a:hover {
+    background-color: #f0f0f0;
+}
+
+.hamburger-menu.show {
+    display: block;
+}

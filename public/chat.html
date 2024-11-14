@@ -17,6 +17,15 @@
         <div class="marquee-wrapper">
             <img src="images/logovegasnew.png" alt="Logo" class="logo-small" onclick="backToProfile()">
         </div>
+
+        <button class="hamburger-button" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div id="hamburger-menu" class="hamburger-menu">
+            <a href="#" onclick="goToDashboard()">Reportes</a>
+            <a href="#" onclick="goToMain()">Chat</a>
+        </div>
     </header>
     <main>
         <!-- <h2 class="contact-title">Contactos</h2> -->
@@ -67,7 +76,7 @@
                     <button class="custom-button" onclick="saveUserEmail()">
                         <i class="fas fa-envelope"></i> Email
                     </button>
-                    <button class="custom-button">
+                    <button class="custom-button" onclick="createNewPayment()">
                         <i class="fas fa-wallet"></i> Pago
                     </button>
                     <button class="custom-button delete-button" onclick="confirmDeleteChat()">

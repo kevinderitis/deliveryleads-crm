@@ -5,7 +5,8 @@ import { WebSocket } from "ws";
 import { addClientMessageServices, getChatForUserService, getUsersListService, getMessagesForUserService, getUsersFilteredListService, addUserMessageServices } from '../services/chatServices.js';
 import { deliverLeadToClient } from "../services/leadService.js";
 import { isAuthenticated } from "../middleware/middleware.js";
-import { addTagToChatByParticipant, changeNickname, deleteChatByUser, removeTagFromChatByParticipant, savePhoneNumber, saveUserEmail } from "../dao/chatDAO.js";
+import { addTagToChatByParticipant, changeNickname, deleteChatByUser, removeTagFromChatByParticipant, savePhoneNumber, saveUserEmail, getReportData } from "../dao/chatDAO.js";
+import { createNewPayment, getPaymentReportData } from "../dao/paymentDAO.js";
 import axios from "axios";
 import webPush from 'web-push';
 
@@ -166,22 +167,58 @@ crmRouter.delete('/delete/chat/:username', isAuthenticated, async (req, res) => 
     }
 });
 
-// const getImageBase64 = async (imageId) => {
-//     const url = `${config.WHATSAPP_API_URL}/${imageId}`;
-//     try {
-//         const response = await axios.get(url, {
-//             responseType: 'arraybuffer',
-//             headers: {
-//                 Authorization: `Bearer ${config.WHATSAPP_ACCESS_TOKEN}`
-//             }
-//         });
-//         const base64 = Buffer.from(response.data, 'binary').toString('base64');
-//         console.log(`Base 64 ----> ${base64}`)
-//         return base64;
-//     } catch (error) {
-//         console.error('Error fetching image:', error);
-//     }
-// };
+
+crmRouter.post('/report', isAuthenticated, async (req, res) => {
+    const { startDate, endDate } = req.body;
+    const client = req.session.user;
+
+    try {
+        const leadsData = await getReportData(client.email, startDate, endDate);
+        const payments = await getPaymentReportData(client.email, startDate, endDate);
+
+        const formattedDataLeads = leadsData.reduce((acc, item) => {
+            acc[item.date] = item.count;
+            return acc;
+        }, {});
+
+        let totalAmount = 0;
+        const formattedDataPayments = payments.reduce((acc, item) => {
+            acc[item.date] = item.paymentCount;
+            totalAmount += item.totalAmount;
+            return acc;
+        }, {});
+
+        const reportData = {
+            leads: formattedDataLeads,
+            payments: formattedDataPayments,
+            totalAmount
+        };
+
+        res.status(200).send(reportData);
+    } catch (error) {
+        console.error('Error al obtener el reporte:', error);
+        res.status(500).send({ message: 'Hubo un problema al obtener el reporte', error: error.message });
+    }
+});
+
+crmRouter.post('/payment', async (req, res) => {
+    let client = req.session.user;
+    try {
+        const { amount, userId } = req.body;
+
+        if (!amount || amount <= 0 || !userId) {
+            return res.status(400).json({ message: 'Datos de pago inválidos' });
+        }
+
+        await createNewPayment(userId, client.email, amount);
+
+        res.status(200).json({ message: 'Pago recibido correctamente' });
+    } catch (error) {
+        console.error('Error al procesar el pago:', error);
+        res.status(500).json({ message: 'Error al procesar el pago' });
+    }
+});
+
 
 const getImageBase64 = async (imageId) => {
     const url = `${config.WHATSAPP_API_URL}/${imageId}`;
@@ -322,7 +359,7 @@ crmRouter.post('/subscription/send', async (req, res) => {
         return res.status(404).json({ error: 'Suscripción no encontrada.' });
     }
 
-    res.status(201).json({ msg: 'Sent'});
+    res.status(201).json({ msg: 'Sent' });
 });
 
 export default crmRouter;

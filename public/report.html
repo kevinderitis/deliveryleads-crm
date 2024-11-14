@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Reporte de Leads</title>
+    <link rel="stylesheet" href="assets/reports/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+    <header>
+        <h1>Dashboard de Leads</h1>
+        <button class="hamburger-button" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div id="hamburger-menu" class="hamburger-menu">
+            <a href="#" onclick="goToDashboard()">Reportes</a>
+            <a href="#" onclick="goToMain()">Chat</a>
+        </div>
+    </header>
+    <main>
+        <div class="container">
+            <!-- Resumen de Hoy -->
+            <div class="card">
+                <h2>Resumen de Hoy</h2>
+                <div class="stat-card-container">
+                    <div class="stat-card">
+                        <h3 id="todayLeads">0</h3>
+                        <p>Leads de Hoy</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="totalAmount">0</h3>
+                        <p>Total $</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="todayPayments">0</h3>
+                        <p>Conversión</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Búsqueda por Fecha -->
+            <div class="card">
+                <h2>Búsqueda por Fecha</h2>
+                <div class="date-picker">
+                    <input type="date" id="searchDate" aria-label="Seleccionar fecha para buscar">
+                    <button onclick="searchLeads()">Buscar</button>
+                </div>
+                <div class="stat-card-container" id="searchResult" style="display: none;">
+                    <div class="stat-card">
+                        <h3 id="searchLeads">0</h3>
+                        <p>Leads en la fecha seleccionada</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="searchTotalAmount">0</h3>
+                        <p>Total</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3 id="searchPayments">0</h3>
+                        <p>Conversión</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Histórico de Leads -->
+            <div class="card">
+                <h2>Histórico de Leads</h2>
+                <div class="chart-controls">
+                    <div class="date-range">
+                        <label for="startDate">Desde:</label>
+                        <input type="date" id="startDate" aria-label="Fecha de inicio para el gráfico">
+                        <label for="endDate">Hasta:</label>
+                        <input type="date" id="endDate" aria-label="Fecha de fin para el gráfico">
+                    </div>
+                    <button onclick="updateChart()">Actualizar Gráfico</button>
+                </div>
+                <canvas id="leadsChart"></canvas>
+            </div>
+        </div>
+    </main>
+    <script src="js/report.js"></script>
+</body>
+
+</html>
