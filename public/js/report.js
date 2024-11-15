@@ -25,13 +25,13 @@ function initDashboard() {
 }
 
 function setInitialDates() {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toLocaleDateString('en-CA');
     document.getElementById('startDate').value = today;
     document.getElementById('endDate').value = today;
 }
 
 async function updateTodayLeads() {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toLocaleDateString('en-CA');
     const data = await fetchReportData(today, today);
 
     const todayLeads = data.leads[today] || 0;
@@ -41,7 +41,7 @@ async function updateTodayLeads() {
 
     document.getElementById('todayLeads').textContent = todayLeads;
     document.getElementById('totalAmount').textContent = data.totalAmount;
-    document.getElementById('responseTime').textContent = data.averageResponseTime;
+    document.getElementById('responseTime').textContent = data.averageResponseTime.toFixed(2);
     document.getElementById('todayPayments').textContent = todayConversion + '%';
 }
 
@@ -56,7 +56,7 @@ async function searchLeads() {
 
     document.getElementById('searchLeads').textContent = leads;
     document.getElementById('searchTotalAmount').textContent = data.totalAmount;
-    document.getElementById('searchResponseTime').textContent = data.averageResponseTime;
+    document.getElementById('searchResponseTime').textContent = data.averageResponseTime.toFixed(2);
     document.getElementById('searchPayments').textContent = conversion + '%';
     document.getElementById('searchResult').style.display = 'block';
 }

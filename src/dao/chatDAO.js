@@ -327,8 +327,8 @@ export const getReportData = async (clientEmail, startDate, endDate) => {
 };
 
 export const calculateAverageResponseTime = async (clientId, startDate, endDate) => {
-  const start = new Date(startDate);
-  const end = new Date(endDate);
+  const start = new Date(`${startDate}T00:00:00Z`);
+  const end = new Date(`${endDate}T23:59:59.999Z`);
 
   try {
     const chats = await Chat.find({
