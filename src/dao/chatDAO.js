@@ -118,32 +118,59 @@ export const getUsersList = async (email) => {
   }
 };
 
-export const getFilteredUsersList = async (email, filter) => {
-  let chats;
+// export const getFilteredUsersList = async (email, filter) => {
+//   let chats;
+//   try {
+//     if (filter === 'All') {
+//       chats = await Chat.find({
+//         client: email,
+//         status: 'active'
+//       },
+//         { messages: { $slice: -1 } }
+//       ).sort({ updatedAt: -1 });
+//     } else {
+//       chats = await Chat.find({
+//         client: email,
+//         tags: filter,
+//         status: 'active'
+//       },
+//         { messages: { $slice: -1 } }
+//       ).sort({ updatedAt: -1 }).limit(100);;
+//     }
+
+
+//     return chats;
+//   } catch (error) {
+//     throw new Error('Error retrieving user list: ' + error.message);
+//   }
+// }
+
+export const getFilteredUsersList = async (email, filter, limit = 100, offset = 0) => {
   try {
-    if (filter === 'All') {
-      chats = await Chat.find({
-        client: email,
-        status: 'active'
-      },
-        { messages: { $slice: -1 } }
-      ).sort({ updatedAt: -1 });
-    } else {
-      chats = await Chat.find({
-        client: email,
-        tags: filter,
-        status: 'active'
-      },
-        { messages: { $slice: -1 } }
-      ).sort({ updatedAt: -1 }).limit(100);;
+    const query = {
+      client: email,
+      status: 'active',
+    };
+
+    if (filter !== 'All') {
+      query.tags = filter;
     }
 
+    const totalDocuments = await Chat.countDocuments(query);
 
-    return chats;
+    const chats = await Chat.find(query, { messages: { $slice: -1 } })
+      .sort({ updatedAt: -1 })
+      .skip(offset)
+      .limit(limit);
+
+    return {
+      total: totalDocuments,
+      chats,
+    };
   } catch (error) {
     throw new Error('Error retrieving user list: ' + error.message);
   }
-}
+};
 
 export const sendMessageToClient = async (phone, message) => {
   try {

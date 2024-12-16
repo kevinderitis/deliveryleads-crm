@@ -1,5 +1,6 @@
 let selectedUser;
 let selectedTag;
+let selectedPage;
 
 function openEmojiPicker() {
     const emojiPicker = new EmojiMart.Picker({
@@ -664,9 +665,10 @@ async function getUserList(email) {
     }
 }
 
-async function getFilteredList(email, filter) {
+async function getFilteredList(email, filter, page) {
     try {
-        let response = await fetch(`/crm/users/list/${email}/${filter}`)
+        let pageNum = page ? page : 1;
+        let response = await fetch(`/crm/users/list/${email}/${filter}/${pageNum}`)
         let userList = await response.json();
         return userList;
     } catch (error) {
@@ -677,10 +679,14 @@ async function getFilteredList(email, filter) {
 async function renderUsers() {
     const userEmail = await getUserEmail();
     let list;
+    let pages;
     if (!selectedTag) {
         list = await getUserList(userEmail);
     } else {
-        list = await getFilteredList(userEmail, selectedTag);
+        let page = selectedPage ? selectedPage : 1;
+        let users = await getFilteredList(userEmail, selectedTag, page);
+        list = users.list
+        pages = users.pages;
     }
 
     const usersList = document.querySelector('.users');
@@ -714,12 +720,47 @@ async function renderUsers() {
         usersList.innerHTML += userElement;
     });
 
+    renderPaginationControls(pages);
+
     applySelectedStyle(selectedUser);
     applyUnreadStyles();
 
     if (!selectedUser) {
         selectUser(list[0].username, list[0].username);
     }
+}
+
+
+function renderPaginationControls(totalPages) {
+    const paginationContainer = document.querySelector('.pagination');
+    paginationContainer.innerHTML = '';
+
+    if (totalPages) {
+        const prevButton = `
+        <button ${selectedPage === 1 ? 'disabled' : ''} class="pagination-btn" data-page="${selectedPage - 1}">
+            Anterior
+        </button>
+    `;
+
+        const nextButton = `
+        <button ${selectedPage === totalPages ? 'disabled' : ''} class="pagination-btn" data-page="${selectedPage + 1}">
+            Siguiente
+        </button>
+    `;
+
+        paginationContainer.innerHTML = prevButton + `${selectedPage} de ${totalPages} ` + nextButton;
+    }
+
+
+    document.querySelectorAll('.pagination-btn').forEach(button => {
+        button.addEventListener('click', (e) => {
+            const newPage = parseInt(e.target.dataset.page);
+            if (newPage > 0 && newPage <= totalPages) {
+                selectedPage = newPage;
+                renderUsers();
+            }
+        });
+    });
 }
 
 // async function renderUsers() {
@@ -990,6 +1031,7 @@ function handleDropdownSelection(event) {
     if (event.target.tagName === 'A') {
         const filterValue = event.target.getAttribute('data-filter');
         selectedTag = filterValue;
+        selectedPage = 1;
         renderUsers();
         dropdownContent.style.display = 'none';
     }
@@ -1097,6 +1139,7 @@ document.getElementById('user-search').addEventListener('input', function () {
 
 function clearFilter() {
     selectedTag = undefined;
+    selectedPage = 1;
     renderUsers();
 }
 

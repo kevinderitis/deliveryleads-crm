@@ -94,12 +94,17 @@ crmRouter.get('/users/list/:email', isAuthenticated, async (req, res) => {
     }
 });
 
-crmRouter.get('/users/list/:email/:filter', isAuthenticated, async (req, res) => {
+crmRouter.get('/users/list/:email/:filter/:page', isAuthenticated, async (req, res) => {
     let email = req.params.email;
     let filter = req.params.filter;
+    let page = req.params.page;
+    let response = {};
     try {
-        let userList = await getUsersFilteredListService(email, filter);
-        res.send(userList)
+        let userList = await getUsersFilteredListService(email, filter, page);
+        response.list = userList.chats;
+        response.pages = Math.ceil(userList.total / 100);
+
+        res.send(response)
     } catch (error) {
         res.send('No se pudo obtener lista')
     }

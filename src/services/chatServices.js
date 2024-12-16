@@ -69,16 +69,19 @@ export const getUsersListService = async (email) => {
     }
 }
 
-export const getUsersFilteredListService = async (email, filter) => {
+export const getUsersFilteredListService = async (email, filter, page = 1) => {
     try {
-        let response = await getFilteredUsersList(email, filter);
+        const limit = 100;
+        const offset = (page - 1) * limit;
 
-        const usersWithOnlineStatus = response.map(user => ({
+        let response = await getFilteredUsersList(email, filter, limit, offset);
+
+        const chats = response.chats.map(user => ({
             ...user._doc, 
             online: userConnections.has(user.email) 
         }));
 
-        return usersWithOnlineStatus;
+        return { chats, total: response.total };
     } catch (error) {
         console.log(error);
     }
