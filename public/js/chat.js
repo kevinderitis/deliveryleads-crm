@@ -1,4 +1,5 @@
 let selectedUser;
+let selectedUserType;
 let selectedTag;
 let selectedPage;
 
@@ -222,6 +223,59 @@ async function savePhoneNumber() {
             const phone = result.value;
             let userId = getUsernameIdValue();
             savePhone(phone, userId);
+        }
+    });
+}
+
+async function changeWhatsappNumber(phone) {
+    try {
+        await fetch(`/crm/whatsapp/${phone}`, {
+            method: 'GET'
+        });
+
+        Swal.fire({
+            icon: 'success',
+            title: 'Éxito',
+            text: 'Número de teléfono guardado correctamente'
+        });
+
+    } catch (error) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Hubo un problema al guardar el número de teléfono'
+        });
+    }
+}
+
+async function changeWhatsapp() {
+    Swal.fire({
+        title: 'Ingresa el número de teléfono',
+        html: '<input id="swal-input-phone" class="swal2-input" placeholder="Número de teléfono">',
+        focusConfirm: false,
+        showCancelButton: true,
+        confirmButtonText: 'Guardar',
+        cancelButtonText: 'Cancelar',
+        preConfirm: () => {
+            const phone = document.getElementById('swal-input-phone').value;
+            if (!phone) {
+                Swal.showValidationMessage('El número de teléfono es obligatorio');
+                return false;
+            }
+            if (!/^\d+$/.test(phone)) {
+                Swal.showValidationMessage('El número de teléfono debe contener solo dígitos');
+                return false;
+            }
+            if (phone.length < 7) {
+                Swal.showValidationMessage('El número de teléfono debe tener al menos 7 dígitos');
+                return false;
+            }
+            return phone;
+        }
+    }).then(async (result) => {
+        if (result.isConfirmed) {
+            const phone = result.value;
+            await changeWhatsappNumber(phone);
         }
     });
 }
@@ -692,7 +746,8 @@ async function renderUsers() {
     const usersList = document.querySelector('.users');
     usersList.innerHTML = '';
 
-    let img = "https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=mail@ashallendesign.co.uk";
+    // let img = "https://api.dicebear.com/7.x/adventurer-neutral/svg?seed=mail@ashallendesign.co.uk";
+    let img = "https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Facebook_Messenger_logo_2020.svg/1200px-Facebook_Messenger_logo_2020.svg.png";
 
     list.forEach(user => {
         let userName = user.username;
@@ -701,12 +756,14 @@ async function renderUsers() {
         let to = lastMessage.to === 'user' ? 'Tú: ' : '';
         let nickname = user.nickname ? user.nickname : userName;
 
-        let statusColor = user.online ? 'green' : 'white';
+        let statusColor = user.online || user.type === 'lead' ? 'green' : 'white';
+
+        let imgFin = user.type === 'lead' ? 'https://clipart-library.com/2023/Star-Clipart-PNG.jpg' : img;
 
         const userElement = `
             <li class="person" data-chat="${userName}">
                 <div class="user">
-                    <img src="${img}" alt="${userName}">
+                    <img src="${imgFin}" alt="${userName}">
                     <span class="status-dot" style="background-color: ${statusColor};"></span>
                 </div>
                 <p class="name-time">
@@ -892,10 +949,12 @@ async function getAllMessages() {
 }
 
 async function selectUser(email, phone) {
-    selectedUser = email;
+    selectedUser = email; 
     const usernameId = document.getElementById('username-id');
     let chat = await getChatMessages(email, 10);
 
+    selectedUserType = chat.type;
+    
     if (chat.tags) {
         renderTags(chat.tags);
     } else {
@@ -1051,7 +1110,7 @@ window.addEventListener('click', (event) => {
 
 document.addEventListener('DOMContentLoaded', async () => {
     const userEmail = await getUserEmail();
-    const ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
+    const ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userEmail)}`);
 
     renderUsers();
 
@@ -1078,7 +1137,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     function sendMessage() {
         const input = document.querySelector('#message');
         if (input.value.trim()) {
-            const message = JSON.stringify({ userEmail, text: input.value, selectedUser });
+            const message = JSON.stringify({ userEmail, text: input.value, selectedUser, type: selectedUserType });
             ws.send(message);
             let currentDateTime = getCurrentDateTime();
             renderChatMessage(userEmail, input.value, '', '', currentDateTime);

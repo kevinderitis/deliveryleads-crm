@@ -21,15 +21,15 @@ export const addMessage = async (from, to, text, image, audioUrl) => {
   }
 };
 
-export const addUserMessage = async (from, to, text, image, audioUrl, fanpageId) => {
+export const addUserMessage = async (from, to, text, image, audioUrl, fanpageId, type) => {
   try {
     let chat = await Chat.findOne({ username: from });
 
     if (!chat) {
-      chat = new Chat({ username: from, client: to, messages: [], fanpageId });
+      chat = new Chat({ username: from, client: to, messages: [], fanpageId, type });
     }
 
-    chat.messages.push({ from: 'user', to: 'client', text, image, audioUrl });
+    chat. messages.push({ from: 'user', to: 'client', text, image, audioUrl });
 
     await chat.save();
 
@@ -98,7 +98,25 @@ export const getMessagesForUser = async (user, limit) => {
 
 export const getChatForUser = async client => {
   try {
+    const chat = await Chat.findOne({ username: client });
+    return chat;
+  } catch (error) {
+    throw new Error('Error retrieving messages: ' + error.message);
+  }
+}
+
+export const getChatForUserByClient = async client => {
+  try {
     const chat = await Chat.findOne({ client });
+    return chat;
+  } catch (error) {
+    throw new Error('Error retrieving messages: ' + error.message);
+  }
+}
+
+export const getChatByNickName = async nickname => {
+  try {
+    const chat = await Chat.findOne({ nickname });
     return chat;
   } catch (error) {
     throw new Error('Error retrieving messages: ' + error.message);

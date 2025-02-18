@@ -9,6 +9,7 @@ import { addTagToChatByParticipant, changeNickname, deleteChatByUser, removeTagF
 import { createNewPayment, getPaymentReportData } from "../dao/paymentDAO.js";
 import axios from "axios";
 import webPush from 'web-push';
+import { getDefaultConfig, updateWhatsapp } from "../dao/configDAO.js";
 
 const crmRouter = Router();
 
@@ -367,6 +368,17 @@ crmRouter.post('/subscription/send', async (req, res) => {
     }
 
     res.status(201).json({ msg: 'Sent' });
+});
+
+crmRouter.get('/whatsapp/:number', isAuthenticated, async (req, res) => {
+    let phoneNumber = req.params.number;
+    let response = await updateWhatsapp(phoneNumber);
+    res.send(response);
+});
+
+crmRouter.get('/whatsapp', async (req, res) => {
+    let config = await getDefaultConfig();
+    res.send({ whatsapp: config.whatsapp });
 });
 
 export default crmRouter;

@@ -3,6 +3,7 @@ import { addClientMessageServices, addUserMessageServices, sendWhatsappMessage, 
 import { subscriptionsMap } from '../routes/crm.js';
 import config from '../config/config.js';
 import { sendMessengerMessage } from '../routes/messengerRouter.js';
+import { getChatByNickName } from '../dao/chatDAO.js';
 
 const userConnections = new Map();
 const PING_INTERVAL = config.PING_INTERVAL_WS || 30000;
@@ -60,18 +61,27 @@ export const setupWebSocketServer = (server) => {
                         console.log(text)
                         console.log(userEmail);
 
-                        let chat = await getChatForUserService(userEmail);
+                        let chat = await getChatByNickName(userEmail);
                         let imageBase64;
                         let audioUrl;
                         let to;
 
                         if (chat) {
                             to = chat.client;
-                        } else {
-                            let client = await deliverLeadToClient();
-                            to = client.email;
                         }
-                        await addUserMessageServices(userEmail, to, text, imageBase64, audioUrl);
+                        // } else {
+                        //     let client = await deliverLeadToClient();
+                        //     to = client.email;
+                        // }
+
+                        if (selectedUser) {
+                            await addClientMessageServices(userEmail, selectedUser, text);
+                            to = selectedUser;
+                        } else {
+                            let fanpageId;
+                            await addUserMessageServices(userEmail, to, text, imageBase64, audioUrl, fanpageId, type);
+                        }
+
 
                         if (userConnections.has(to)) {
                             const recipientConnections = userConnections.get(to) || [];

@@ -94,16 +94,20 @@ function sendServicesNotification(user) {
 async function stablishWsConnection() {
   let userData = await getUserEmail();
   if (userData.email) {
-    ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userData.email)}`);
-    renderMessages(userData.chat.messages, userData.email);
+    ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userData.email)}`);
+
+    console.log(userData)
+    let messages = userData.chat ? userData.chat.messages : [];
+
+    renderMessages(messages, userData.email);
     $("#chat-circle").toggle('scale');
     $(".chat-box").toggle('scale');
 
     subscribeUser();
 
     ws.onmessage = (event) => {
-      const { user, text } = JSON.parse(event.data);
-      generate_message(text, 'user')
+      const { user, textMessage } = JSON.parse(event.data);
+      generate_message(textMessage, 'user')
 
       if (document.hidden) {
         console.log('La página está oculta. Enviando notificación...');
@@ -154,7 +158,7 @@ function generate_message(msg, type) {
   var imgSrc = (type === 'user')
     ? "images/carla.jpeg"
     : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/male3-512.png";
-
+ 
   str += "<div id='cm-msg-" + INDEX + "' class=\"chat-msg " + type + "\">";
   str += "          <span class=\"msg-avatar\">";
   str += "            <img src=\"" + imgSrc + "\">";
@@ -388,7 +392,7 @@ document.getElementById('submit-new-user').addEventListener('click', async funct
 
 function renderMessages(messages, user) {
   messages.forEach(element => {
-    let name = element.from === user ? 'self' : 'user'
+    let name = element.from === 'user' ? 'self' : 'user'
     generate_message(element.text, name);
   });
 }
@@ -519,4 +523,26 @@ function urlBase64ToUint8Array(base64String) {
     outputArray[i] = rawData.charCodeAt(i);
   }
   return outputArray;
+}
+
+async function getWhatsappConfig() {
+  try {
+    let response = await fetch('/crm/whatsapp');
+    let data = await response.json();
+    return data.whatsapp;
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+async function openWhatsappLink() {
+  let whatsappNumber = await getWhatsappConfig();
+  let url = 'https://wa.me/' + whatsappNumber;
+  window.open(url, '_blank');
+}
+
+function openCasinoLink() {
+  let url = 'https://vudu8.bet/';
+  window.open(url, '_blank');
 }

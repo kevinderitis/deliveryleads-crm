@@ -51,6 +51,9 @@ const chatSchema = new mongoose.Schema({
   status: {
     type: String,
     default: 'active'
+  },
+  type: {
+    type: String
   }
 
 }, { timestamps: true });

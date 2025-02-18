@@ -348,12 +348,37 @@ a:focus {
 .slider_section .detail-box .btn-box .btn2 {
   display: inline-block;
   padding: 10px 15px;
-  background-color: #000000;
-  color: #ffffff;
-  border-radius: 0;
+  background-color: rgb(65, 216, 65) !important;
+  /* color: #ffffff; */
+  color: black;
+  border-radius: 20px;
   -webkit-transition: all 0.3s;
   transition: all 0.3s;
   border: none;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 30px;
+  color: white;
+  font-weight: bold;
+}
+
+.slider_section .detail-box .btn-box .btn3 {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #FFD700 !important;
+  /* color: #ffffff; */
+  color: black;
+  border-radius: 20px;
+  -webkit-transition: all 0.3s;
+  transition: all 0.3s;
+  border: none;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 30px;
+  color: black;
+  font-weight: bold;
 }
 
 .slider_section .detail-box .btn-box .btn2:hover {
@@ -1015,7 +1040,7 @@ a:focus {
     -webkit-transition: all 0.3s;
     transition: all 0.3s;
     border: none;
-    position: absolute;
+    position: relative;
     left: 50%;
     transform: translateX(-50%);
     margin-top: 30px;
@@ -1120,7 +1145,7 @@ a:focus {
 }
 
 .hades-logo {
-  max-width: 150px;
+  max-width: 195px;
   display: block;
   margin: 0 auto;
 }
@@ -1164,6 +1189,11 @@ a:focus {
   float: right;
   font-size: 28px;
   font-weight: bold;
+}
+
+.slogan{
+  margin-top: 80px;
+  text-align: center;
 }
 
 .close:hover,

@@ -1,6 +1,6 @@
 import bcrypt from 'bcrypt';
 import { getClientByEmail, createNewClient, isAdmin } from '../dao/clientDAO.js';
-import { addWelcomeMessage, changeNickname, getChatForUser, setUserProperties } from '../dao/chatDAO.js';
+import { addWelcomeMessage, changeNickname, getChatForUser, setUserProperties, getChatByNickName } from '../dao/chatDAO.js';
 import { deliverLeadToClient } from '../services/leadService.js';
 
 const formatNumber = number => {
@@ -71,7 +71,7 @@ export const leadSignUp = async (req, res) => {
 export const leadLogin = async (req, res) => {
     const { username, password } = req.body;
     try {
-        const existingLead = await getChatForUser(username);
+        const existingLead =    await getChatByNickName(username);
 
         if (!existingLead) {
             return res.status(400).send({ result: 'error', msg: `El usuario no existe.` });

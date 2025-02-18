@@ -1,4 +1,4 @@
-import { addMessage, addUserMessage ,getMessagesForChat, getMessagesForUser, getChatForUser, getUsersList, sendMessageToClient, getFilteredUsersList } from "../dao/chatDAO.js";
+import { addMessage, addUserMessage ,getMessagesForChat, getMessagesForUser, getChatForUserByClient, getUsersList, sendMessageToClient, getFilteredUsersList } from "../dao/chatDAO.js";
 import { sendMessageUnofficial } from "../routes/whatsappRouter.js";
 import { userConnections } from "../websocket/ws-handler.js";
 import axios from 'axios';
@@ -16,9 +16,9 @@ export const addClientMessageServices = async (from, to, text, image, audioUrl) 
     }
 }
 
-export const addUserMessageServices = async (from, to, text, image, audioUrl, fanpageId) => {
+export const addUserMessageServices = async (from, to, text, image, audioUrl, fanpageId, type) => {
     try {
-        await addUserMessage(from, to, text, image, audioUrl, fanpageId);
+        await addUserMessage(from, to, text, image, audioUrl, fanpageId, type);
     } catch (error) {
         console.log(error);
     }
@@ -47,7 +47,7 @@ export const getMessagesForUserService = async (user, limit) => {
 export const getChatForUserService = async (user) => {
     try {
         // let response = await getChatForUser([user]);
-        let response = await getChatForUser(user);
+        let response = await getChatForUserByClient(user);
         return response;
     } catch (error) {
         console.log(error);
