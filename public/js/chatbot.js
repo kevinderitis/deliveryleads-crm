@@ -96,7 +96,6 @@ async function stablishWsConnection() {
   if (userData.email) {
     ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userData.email)}`);
 
-    console.log(userData)
     let messages = userData.chat ? userData.chat.messages : [];
 
     renderMessages(messages, userData.email);
@@ -106,8 +105,9 @@ async function stablishWsConnection() {
     subscribeUser();
 
     ws.onmessage = (event) => {
-      const { user, textMessage } = JSON.parse(event.data);
-      generate_message(textMessage, 'user')
+      const { user, text, textMessage } = JSON.parse(event.data);
+      let content = text ? text : textMessage;
+      generate_message(content, 'user')
 
       if (document.hidden) {
         console.log('La página está oculta. Enviando notificación...');
