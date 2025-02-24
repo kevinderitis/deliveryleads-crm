@@ -98,7 +98,8 @@ export const getMessagesForUser = async (user, limit) => {
 
 export const getChatForUser = async client => {
   try {
-    const chat = await Chat.findOne({ username: client });
+    // const chat = await Chat.findOne({ username: client });
+    const chat = await Chat.findOne({ username: client }, { messages: { $slice: -100 }});
     return chat;
   } catch (error) {
     throw new Error('Error retrieving messages: ' + error.message);
