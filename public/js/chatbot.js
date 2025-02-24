@@ -546,3 +546,59 @@ function openCasinoLink() {
   let url = 'https://vudu8.bet/';
   window.open(url, '_blank');
 }
+
+
+// Listener para el botón de enviar imagen
+document.getElementById('chat-send-image').addEventListener('click', function() {
+  document.getElementById('chat-image-input').click();
+});
+
+// Listener para el input file (cuando se seleccione la imagen)
+document.getElementById('chat-image-input').addEventListener('change', function(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    const imageData = e.target.result; // Esto es un Data URL en base64
+    // Envía la imagen a través del WebSocket o la función que uses para enviar mensajes
+    sendImageMessage(imageData);
+    // Opcional: muestra la imagen en el chat (tipo 'self')
+    generate_image_message(imageData, 'self');
+  };
+  reader.readAsDataURL(file);
+});
+
+// Función para enviar imagen por WebSocket
+function sendImageMessage(imageData) {
+  const message = JSON.stringify({ image: imageData, type: 'lead', text: 'Imagen enviada' });
+  if (ws) {
+    ws.send(message);
+  } else {
+    generate_image_message(imageData, 'user');
+  }
+}
+
+// Función para renderizar el mensaje de imagen en el chat
+function generate_image_message(imageData, type) {
+  INDEX++;
+  // Define la imagen de avatar según el tipo
+  var imgSrc = (type === 'user')
+    ? "images/carla.jpeg"
+    : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/male3-512.png";
+  
+  let str = "";
+  str += "<div id='cm-msg-" + INDEX + "' class='chat-msg " + type + "'>";
+  str += "  <span class='msg-avatar'>";
+  str += "    <img src='" + imgSrc + "'>";
+  str += "  </span>";
+  str += "  <div class='cm-msg-text'>";
+  // Inserta la imagen en el mensaje
+  str += "    <img src='" + imageData + "' alt='Imagen enviada' style='max-width: 200px; border-radius: 8px;'/>";
+  str += "  </div>";
+  str += "</div>";
+  
+  $(".chat-logs").append(str);
+  $("#cm-msg-" + INDEX).hide().fadeIn(300);
+  $(".chat-logs").stop().animate({ scrollTop: $(".chat-logs")[0].scrollHeight }, 1000);
+}

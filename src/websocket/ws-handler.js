@@ -36,7 +36,7 @@ export const setupWebSocketServer = (server) => {
 
             ws.on('message', async (message) => {
                 try {
-                    const { text, selectedUser, type } = JSON.parse(message);
+                    const { text, selectedUser, type, image } = JSON.parse(message);
 
                     if (type !== 'lead') {
                         console.log(`Message from ${userEmail}: ${text} -> ${selectedUser}`);
@@ -79,6 +79,7 @@ export const setupWebSocketServer = (server) => {
                             to = selectedUser;
                         } else {
                             let fanpageId;
+                            imageBase64 = image ? image : null;
                             await addUserMessageServices(userEmail, to, text, imageBase64, audioUrl, fanpageId, type);
                         }
 

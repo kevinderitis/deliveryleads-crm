@@ -139,6 +139,20 @@
     height:35px;  
     background-color: transparent !important;
   }
+
+  .chat-submit-img {  
+    position:relative;
+    bottom:3px;
+    right: 10px;
+    background: transparent;
+    box-shadow:none;
+    border:none;
+    border-radius:50%;
+    color: black !important;
+    width:35px;
+    height:35px;  
+    background-color: transparent !important;
+  }
   .chat-logs {
     padding:15px; 
     height:370px;
