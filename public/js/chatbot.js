@@ -94,7 +94,7 @@ function sendServicesNotification(user) {
 async function stablishWsConnection() {
   let userData = await getUserEmail();
   if (userData.email) {
-    ws = new WebSocket(`ws://${window.location.host}?userEmail=${encodeURIComponent(userData.email)}`);
+    ws = new WebSocket(`wss://${window.location.host}?userEmail=${encodeURIComponent(userData.email)}`);
 
     let messages = userData.chat ? userData.chat.messages : [];
 
