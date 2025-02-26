@@ -122,7 +122,6 @@ const toggleClientState = (isStarted) => {
   const stopButton = document.getElementById('stop-button');
   const startTd = document.getElementById('start-td');
   const stopTd = document.getElementById('stop-td');
-  console.log(`El valor es: ${isStarted}`)
   if (!isStarted) {
     startButton.style.display = 'block';
     stopButton.style.display = 'none';
@@ -251,7 +250,6 @@ async function changeClientState(state) {
   const formData = {
     state
   };
-  console.log(url)
   try {
     const response = await fetch(url, {
       method: 'PUT',

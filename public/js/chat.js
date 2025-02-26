@@ -496,7 +496,6 @@ async function createNewPayment() {
         if (result.isConfirmed) {
             const amount = result.value;
             let userId = getUsernameIdValue();
-            console.log(userId)
             createPayment(amount, userId);
         }
     });

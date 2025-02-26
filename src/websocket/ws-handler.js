@@ -12,7 +12,6 @@ const pingAllConnections = () => {
     userConnections.forEach((connections, userEmail) => {
         connections.forEach((ws) => {
             if (ws.readyState === WebSocket.OPEN) {
-                console.log(`Enviando ping a: ${userEmail}`);
                 ws.ping();
             }
         });
@@ -39,7 +38,6 @@ export const setupWebSocketServer = (server) => {
                     const { text, selectedUser, type, image } = JSON.parse(message);
 
                     if (type !== 'lead') {
-                        console.log(`Message from ${userEmail}: ${text} -> ${selectedUser}`);
                         let chat = await addClientMessageServices(userEmail, selectedUser, text);
 
                         await sendMessengerMessage(selectedUser, { text }, chat.fanpageId);
@@ -58,9 +56,6 @@ export const setupWebSocketServer = (server) => {
                             }
                         });
                     } else {
-                        console.log(text)
-                        console.log(userEmail);
-
                         let chat = await getChatByNickName(userEmail);
                         let imageBase64;
                         let audioUrl;

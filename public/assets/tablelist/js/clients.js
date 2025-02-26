@@ -249,7 +249,6 @@ const renderClients = async clients => {
     const endIndex = startIndex + itemsOnPage;
 
     const mappedClients = clients.slice(startIndex, endIndex);
-    console.log(mappedClients)
     mappedClients.map(client => {
         tableBody.innerHTML = mappedClients.map((client) => {
             return `
@@ -394,8 +393,6 @@ const editWelcomeMessage = async (client) => {
             focusConfirm: false,
             preConfirm: async () => {
                 const newMessage = Swal.getPopup().querySelector('#swal-input-welcome-message').value;
-                console.log(client.email);
-                console.log(newMessage);
                 await updateWelcomeMessage(client.email, newMessage);
                 return newMessage;
             }
@@ -440,7 +437,6 @@ const editClientPassword = async (clientEmail) => {
                 return newMessage;
             }
         });
-        console.log(result.isConfirmed)
         if (result.isConfirmed) {
             Swal.fire({
                 title: '¡Guardado!',
@@ -503,7 +499,6 @@ const udpateClientPassword = async (username, newPassword) => {
 
 const filterClients = () => {
     const searchInput = document.getElementById('searchInput').value.toLowerCase();
-    console.log(clients);
     const filteredClients = clients.filter(client => {
         const clientName = client.name ? client.name.toLowerCase() : '';
         const clientEmail = client.email ? client.email.toLowerCase() : '';

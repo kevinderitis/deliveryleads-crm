@@ -8,10 +8,6 @@ let confirmPassword = document.getElementById("confirm-password");
 loginForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    console.log('Email:', email.value);
-    console.log('Password:', password.value);
-    console.log('Nombre:', username.value);
-
     const formData = {
         email: email.value,
         password: password.value,

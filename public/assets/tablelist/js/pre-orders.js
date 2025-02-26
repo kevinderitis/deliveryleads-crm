@@ -46,7 +46,6 @@ async function approvePreOrder(orderId) {
 
 const renderOrders = async () => {
     const orders = await fetchOrders();
-    console.log(orders)
     let tableBody = document.getElementById('order-rows');
     tableBody.innerHTML = '';
 
