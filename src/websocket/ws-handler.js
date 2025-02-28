@@ -126,7 +126,7 @@ export const setupWebSocketServer = (server) => {
             setInterval(pingAllConnections, PING_INTERVAL);
 
             ws.on('pong', () => {
-                console.log(`Pong received from ${userEmail}`);
+                // console.log(`Pong received from ${userEmail}`);
             });
 
         } else {
