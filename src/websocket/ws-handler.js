@@ -38,16 +38,13 @@ export const setupWebSocketServer = (server) => {
                     const { text, selectedUser, type, image } = JSON.parse(message);
 
                     if (type !== 'lead') {
+
+                        // Agregar validacion de fecha de ultimo mensaje del usuario seleccionado. selectedUser hay que obtener el ultimo mensaje enviado por el usuario para comparar 
+                        // si la fecha es mayor a 24 horas
+                        
                         let chat = await addClientMessageServices(userEmail, selectedUser, text);
 
                         await sendMessengerMessage(selectedUser, { text }, chat.fanpageId);
-
-                        // if (selectedUser.endsWith('@c.us')) {
-                        //     await sendUnofficialWhatsapp(selectedUser, text);
-                        // } else {
-                        //     await sendWhatsappMessage(selectedUser, text);
-                        // }
-
 
                         const recipientConnections = userConnections.get(selectedUser) || [];
                         recipientConnections.forEach((recipientWs) => {

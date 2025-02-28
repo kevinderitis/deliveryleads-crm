@@ -145,8 +145,18 @@ export const logout = async (req, res) => {
 };
 
 export const userEmail = async (req, res) => {
-    let email = req.user ? req.user.email : req.session.user.email;
-    res.send({ email })
+    try {
+        if (req.user && req.user.email) {
+            return res.send({ email: req.user.email });
+        } else if (req.session.user && req.session.user.email) {
+            return res.send({ email: req.session.user.email });
+        } else {
+            throw new Error('No hay usuario autenticado en la sesión');
+        }
+    } catch (error) {
+        console.error('Error en userEmail:', error);
+        return res.status(500).send({ error: 'Error interno del servidor' });
+    }
 };
 
 export const leadEmail = async (req, res) => {
