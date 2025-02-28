@@ -165,7 +165,7 @@ const getClientByEmail = async (email) => {
     try {
         const client = await Client.findOne({ email: email });
         if (!client) {
-            console.log('Cliente no encontrado')
+            console.log('Cliente no encontrado!')
         }
         return client;
     } catch (error) {

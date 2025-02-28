@@ -4,7 +4,7 @@ const getUserByEmail = async (email) => {
     try {
         const user = await User.findOne({ email });
         if (!user) {
-            console.log('Cliente no encontrado')
+            console.log('Cliente no encontrado-')
         }
         return user;
     } catch (error) {
