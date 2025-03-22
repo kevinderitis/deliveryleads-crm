@@ -1,9 +1,10 @@
 import { WebSocketServer, WebSocket } from 'ws';
 import { addClientMessageServices, addUserMessageServices, sendWhatsappMessage, sendUnofficialWhatsapp, getChatForUserService } from '../services/chatServices.js';
+import { deliverLeadToClient } from '../services/leadService.js';
 import { subscriptionsMap } from '../routes/crm.js';
 import config from '../config/config.js';
 import { sendMessengerMessage } from '../routes/messengerRouter.js';
-import { getChatByNickName } from '../dao/chatDAO.js';
+import { getChatByNickName, getChatForUser } from '../dao/chatDAO.js';
 
 const userConnections = new Map();
 const PING_INTERVAL = config.PING_INTERVAL_WS || 30000;
@@ -21,9 +22,23 @@ const pingAllConnections = () => {
 export const setupWebSocketServer = (server) => {
     const wss = new WebSocketServer({ server });
 
-    wss.on('connection', (ws, req) => {
+    wss.on('connection', async (ws, req) => {
         const queryParams = new URL(req.url, `http://${req.headers.host}`).searchParams;
         const userEmail = queryParams.get('userEmail');
+        const origin = queryParams.get('origin');
+
+        if (origin === "newChat") {
+            const chat = (await getChatByNickName(userEmail)) || (await getChatForUser(userEmail));
+
+            if (chat) {
+                const initialChatData = {
+                    type: "initialChat", 
+                    messages: chat.messages,
+                };
+
+                ws.send(JSON.stringify(initialChatData)); 
+            }
+        }
 
         if (userEmail) {
             if (!userConnections.has(userEmail)) {
@@ -41,7 +56,7 @@ export const setupWebSocketServer = (server) => {
 
                         // Agregar validacion de fecha de ultimo mensaje del usuario seleccionado. selectedUser hay que obtener el ultimo mensaje enviado por el usuario para comparar 
                         // si la fecha es mayor a 24 horas
-                        
+
                         let chat = await addClientMessageServices(userEmail, selectedUser, text);
 
                         await sendMessengerMessage(selectedUser, { text }, chat.fanpageId);
@@ -56,24 +71,21 @@ export const setupWebSocketServer = (server) => {
                         let chat = await getChatByNickName(userEmail);
                         let imageBase64;
                         let audioUrl;
-                        let to;
+     
+                        const to = chat?.client || selectedUser || (await deliverLeadToClient()).email;
 
-                        if (chat) {
-                            to = chat.client;
-                        }
-                        // } else {
-                        //     let client = await deliverLeadToClient();
-                        //     to = client.email;
-                        // }
-
-                        if (selectedUser) {
-                            await addClientMessageServices(userEmail, selectedUser, text);
-                            to = selectedUser;
-                        } else {
-                            let fanpageId;
-                            imageBase64 = image ? image : null;
-                            await addUserMessageServices(userEmail, to, text, imageBase64, audioUrl, fanpageId, type);
-                        }
+                        await (selectedUser
+                            ? addClientMessageServices(userEmail, selectedUser, text)
+                            : addUserMessageServices(
+                                userEmail,
+                                to,
+                                text,
+                                image || null,
+                                audioUrl,
+                                undefined,
+                                type
+                            )
+                        );
 
 
                         if (userConnections.has(to)) {

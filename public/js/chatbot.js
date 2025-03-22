@@ -151,20 +151,30 @@ $("#chat-submit").click(async function (e) {
 
 })
 
+function makeLinksClickable(text) {
+  if (!text || typeof text !== 'string') {
+    return '';
+  }
+  const urlPattern = /(http[s]?:\/\/[^\s]+)/g;
+  return text.replace(urlPattern, '<a href="$1" target="_blank">$1</a>');
+}
+
 function generate_message(msg, type) {
   INDEX++;
   var str = "";
 
+  const formattedMessage = makeLinksClickable(msg);
+
   var imgSrc = (type === 'user')
     ? "images/carla.jpeg"
     : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/male3-512.png";
- 
+
   str += "<div id='cm-msg-" + INDEX + "' class=\"chat-msg " + type + "\">";
   str += "          <span class=\"msg-avatar\">";
   str += "            <img src=\"" + imgSrc + "\">";
   str += "          <\/span>";
   str += "          <div class=\"cm-msg-text\">";
-  str += msg;
+  str += formattedMessage;
   str += "          <\/div>";
   str += "        <\/div>";
   $(".chat-logs").append(str);
@@ -549,17 +559,17 @@ function openCasinoLink() {
 
 
 // Listener para el botón de enviar imagen
-document.getElementById('chat-send-image').addEventListener('click', function() {
+document.getElementById('chat-send-image').addEventListener('click', function () {
   document.getElementById('chat-image-input').click();
 });
 
 // Listener para el input file (cuando se seleccione la imagen)
-document.getElementById('chat-image-input').addEventListener('change', function(event) {
+document.getElementById('chat-image-input').addEventListener('change', function (event) {
   const file = event.target.files[0];
   if (!file) return;
 
   const reader = new FileReader();
-  reader.onload = function(e) {
+  reader.onload = function (e) {
     const imageData = e.target.result; // Esto es un Data URL en base64
     // Envía la imagen a través del WebSocket o la función que uses para enviar mensajes
     sendImageMessage(imageData);
@@ -586,7 +596,7 @@ function generate_image_message(imageData, type) {
   var imgSrc = (type === 'user')
     ? "images/carla.jpeg"
     : "https://cdn1.iconfinder.com/data/icons/user-pictures/100/male3-512.png";
-  
+
   let str = "";
   str += "<div id='cm-msg-" + INDEX + "' class='chat-msg " + type + "'>";
   str += "  <span class='msg-avatar'>";
@@ -597,7 +607,7 @@ function generate_image_message(imageData, type) {
   str += "    <img src='" + imageData + "' alt='Imagen enviada' style='max-width: 200px; border-radius: 8px;'/>";
   str += "  </div>";
   str += "</div>";
-  
+
   $(".chat-logs").append(str);
   $("#cm-msg-" + INDEX).hide().fadeIn(300);
   $(".chat-logs").stop().animate({ scrollTop: $(".chat-logs")[0].scrollHeight }, 1000);
