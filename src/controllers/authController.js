@@ -51,7 +51,7 @@ export const leadSignUp = async (req, res) => {
 
         let client = await deliverLeadToClient();
         let to = client.email;
-        await addWelcomeMessage(to, username, `Hola ${username}, mi nombre es Lorena y estoy acá para ayudarte. El casino es https://casinohades.net Recordá que solo por HOY con tu carga de 5000 tenes 2000 de regalo!! 🎁 ¿Cuanto te gustaria cargar?`)
+        await addWelcomeMessage(to, username, `Hola ${username} bienvenido! https://vudu8.bet/  ¿Cuanto te gustaria cargar?`)
 
         // if (phone) {
         //     // await changeNickname(phone, username);
