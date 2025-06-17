@@ -29,7 +29,7 @@ export const addUserMessage = async (from, to, text, image, audioUrl, fanpageId,
       chat = new Chat({ username: from, client: to, messages: [], fanpageId, type });
     }
 
-    chat. messages.push({ from: 'user', to: 'client', text, image, audioUrl });
+    chat.messages.push({ from: 'user', to: 'client', text, image, audioUrl });
 
     await chat.save();
 
@@ -99,7 +99,7 @@ export const getMessagesForUser = async (user, limit) => {
 export const getChatForUser = async client => {
   try {
     // const chat = await Chat.findOne({ username: client });
-    const chat = await Chat.findOne({ username: client }, { messages: { $slice: -100 }});
+    const chat = await Chat.findOne({ username: client }, { messages: { $slice: -100 } });
     return chat;
   } catch (error) {
     throw new Error('Error retrieving messages: ' + error.message);
@@ -336,8 +336,12 @@ export const deleteChatByUser = async (username) => {
 
 export const getReportData = async (clientEmail, startDate, endDate) => {
   try {
-    const start = new Date(`${startDate}T00:00:00.000Z`);
-    const end = new Date(`${endDate}T23:59:59.999Z`);
+    const start = new Date(`${startDate}T03:00:00.000Z`);
+
+    const endDateObj = new Date(endDate);
+    endDateObj.setDate(endDateObj.getDate() + 1);
+    const endISO = endDateObj.toISOString().slice(0, 10);
+    const end = new Date(`${endISO}T02:59:59.999Z`);
 
     const reportData = await Chat.aggregate([
       {
