@@ -14,6 +14,8 @@ export const sendMessengerMessage = async (recipientId, message, pageId) => {
     console.log(`PAGE ID = ${pageId}`);
     const PAGE_ACCESS_TOKEN = pageAccessTokens[pageId];
 
+    console.log(`PAGE_ACCESS_TOKEN = ${PAGE_ACCESS_TOKEN}`);
+
     if (!PAGE_ACCESS_TOKEN) {
         console.error(`No se encontró el token de acceso para la página ${pageId}`);
         return;
